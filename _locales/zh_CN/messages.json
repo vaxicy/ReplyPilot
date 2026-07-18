@@ -382,5 +382,37 @@
   "optAiMemoryPlaceholder": {
     "message": "例如：我们店铺叫「星光小铺」，主营宠物用品，48 小时内发货，支持 7 天无理由退货……",
     "description": "AI 记忆输入框占位符"
+  },
+  "donateTitle": {
+    "message": "支持作者",
+    "description": "打赏弹窗标题"
+  },
+  "donateEntryText": {
+    "message": "点击支持作者，你的鼓励是我最大的动力！",
+    "description": "设置页底部打赏入口文字"
+  },
+  "donateTabWeChat": {
+    "message": "微信打赏",
+    "description": "打赏 tab：微信"
+  },
+  "donateTabPayPal": {
+    "message": "PayPal 打赏",
+    "description": "打赏 tab：PayPal"
+  },
+  "donateClose": {
+    "message": "关闭",
+    "description": "打赏弹窗关闭按钮"
+  },
+  "donateWeChatHint": {
+    "message": "用微信扫一扫即可赞赏。",
+    "description": "微信打赏提示"
+  },
+  "donatePayPalHint": {
+    "message": "打开 PayPal 自行选择金额。",
+    "description": "PayPal 打赏提示"
+  },
+  "donatePayPalBtn": {
+    "message": "通过 PayPal 打赏",
+    "description": "PayPal 打赏按钮"
   }
 }

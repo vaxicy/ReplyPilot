@@ -382,5 +382,37 @@
   "optAiMemoryPlaceholder": {
     "message": "e.g. Our store is \"Starlight Shop\", we sell pet supplies, ship within 48h, 7-day free returns...",
     "description": "AI memory textarea placeholder"
+  },
+  "donateTitle": {
+    "message": "Support the Author",
+    "description": "Donate modal title"
+  },
+  "donateEntryText": {
+    "message": "Support the author — your encouragement means the world to me!",
+    "description": "Donate entry text at the bottom of options"
+  },
+  "donateTabWeChat": {
+    "message": "WeChat Tip",
+    "description": "Donate tab: WeChat"
+  },
+  "donateTabPayPal": {
+    "message": "PayPal Tip",
+    "description": "Donate tab: PayPal"
+  },
+  "donateClose": {
+    "message": "Close",
+    "description": "Donate modal close button"
+  },
+  "donateWeChatHint": {
+    "message": "Scan with WeChat to tip.",
+    "description": "WeChat donate hint"
+  },
+  "donatePayPalHint": {
+    "message": "Open PayPal to choose any amount.",
+    "description": "PayPal donate hint"
+  },
+  "donatePayPalBtn": {
+    "message": "Donate via PayPal",
+    "description": "PayPal donate button"
   }
 }

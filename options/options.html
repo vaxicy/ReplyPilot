@@ -93,6 +93,36 @@
         </div>
       </section>
 
+      <p class="rp-donate-entry">
+        <button type="button" id="openDonate" class="rp-donate-link" data-i18n="donateEntryText">Support the Author</button>
+      </p>
+
+      <div class="rp-modal-overlay rp-donate-modal" id="donateModal" hidden>
+        <div class="rp-modal" role="dialog" aria-modal="true" aria-labelledby="donateModalTitle">
+          <div class="rp-modal-head">
+            <h2 id="donateModalTitle" class="rp-modal-title" data-i18n="donateTitle">Support the Author</h2>
+            <button type="button" class="rp-modal-close" id="closeDonate" aria-label="Close">×</button>
+          </div>
+          <div class="rp-donate-tabs" role="tablist">
+            <button type="button" class="rp-donate-tab rp-donate-tab-active" id="donateTabWeChat" data-tab="wechat" data-i18n="donateTabWeChat">国内</button>
+            <button type="button" class="rp-donate-tab" id="donateTabPayPal" data-tab="paypal" data-i18n="donateTabPayPal">国外</button>
+          </div>
+          <div class="rp-modal-body">
+            <div class="rp-donate-panel" id="donatePanelWeChat">
+              <img class="rp-donate-qr-lg" src="../微信赞赏码.png" alt="WeChat QR" />
+              <p class="rp-donate-card-hint" data-i18n="donateWeChatHint">Scan with WeChat to tip.</p>
+            </div>
+            <div class="rp-donate-panel" id="donatePanelPayPal" hidden>
+              <p class="rp-donate-card-hint" data-i18n="donatePayPalHint">Open PayPal to choose any amount.</p>
+              <a class="rp-btn rp-btn-primary rp-donate-paypal-btn" href="https://www.paypal.com/ncp/payment/HERUU488BH7VC" target="_blank" rel="noopener" data-i18n="donatePayPalBtn">Donate via PayPal</a>
+            </div>
+          </div>
+          <div class="rp-modal-foot">
+            <button type="button" class="rp-btn rp-btn-primary" id="donateCloseBtn" data-i18n="donateClose">Close</button>
+          </div>
+        </div>
+      </div>
+
       <div class="rp-form-actions">
         <button type="submit" class="rp-btn rp-btn-primary" data-i18n="optSave">Save</button>
         <span id="saveStatus" class="rp-save-status" role="status"></span>

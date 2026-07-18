@@ -379,3 +379,92 @@ body {
   padding: 8px 20px;
 }
 
+/* Donate section (bottom of options) */
+.rp-donate-link {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6366f1;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.12s ease, text-decoration 0.12s ease;
+}
+
+.rp-donate-link:hover {
+  text-decoration: underline;
+}
+
+/* Donate modal: wider to fit the QR */
+.rp-donate-modal .rp-modal {
+  max-width: 520px;
+}
+
+/* Donate tabs */
+.rp-donate-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 22px;
+  margin-top: 4px;
+}
+
+.rp-donate-tab {
+  appearance: none;
+  border: 1px solid #e2e5ee;
+  background: #ffffff;
+  color: #5b6172;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.rp-donate-tab:hover {
+  border-color: #d3d7e3;
+}
+
+.rp-donate-tab-active {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: #ffffff;
+}
+
+/* Donate panels */
+.rp-donate-panel {
+  text-align: center;
+  padding-top: 16px;
+}
+
+.rp-donate-qr-lg {
+  width: 260px;
+  height: 260px;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #eef0f4;
+}
+
+.rp-donate-card-hint {
+  font-size: 12px;
+  color: #9aa0ac;
+  margin: 12px 0 0;
+  line-height: 1.5;
+}
+
+.rp-donate-paypal-btn {
+  display: inline-block;
+  text-decoration: none;
+  margin-top: 12px;
+}
+
+.rp-donate-paypal-btn:hover {
+  text-decoration: none;
+}
+

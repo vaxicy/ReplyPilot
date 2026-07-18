@@ -96,6 +96,7 @@
     }
 
     bindTutorialModal();
+    bindDonateModal();
 
     var form = document.getElementById('optionsForm');
     if (form) {
@@ -117,6 +118,52 @@
     function close() { modal.hidden = true; }
 
     if (openBtn) openBtn.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (closeFooter) closeFooter.addEventListener('click', close);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) close();
+    });
+  }
+
+  function bindDonateModal() {
+    var modal = document.getElementById('donateModal');
+    if (!modal) return;
+    var openBtn = document.getElementById('openDonate');
+    var closeBtn = document.getElementById('closeDonate');
+    var closeFooter = document.getElementById('donateCloseBtn');
+
+    var tabs = modal.querySelectorAll('.rp-donate-tab');
+    var panels = {
+      wechat: document.getElementById('donatePanelWeChat'),
+      paypal: document.getElementById('donatePanelPayPal')
+    };
+
+    function switchTab(name) {
+      tabs.forEach(function (t) {
+        var active = t.getAttribute('data-tab') === name;
+        t.classList.toggle('rp-donate-tab-active', active);
+      });
+      Object.keys(panels).forEach(function (k) {
+        if (panels[k]) panels[k].hidden = (k !== name);
+      });
+    }
+
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        switchTab(t.getAttribute('data-tab'));
+      });
+    });
+
+    function open() { modal.hidden = false; }
+    function close() { modal.hidden = true; }
+
+    if (openBtn) openBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      open();
+    });
     if (closeBtn) closeBtn.addEventListener('click', close);
     if (closeFooter) closeFooter.addEventListener('click', close);
     modal.addEventListener('click', function (e) {

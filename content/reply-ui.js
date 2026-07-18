@@ -110,7 +110,7 @@ window.RP = window.RP || {};
     var regen = makeButton('rp-btn', 'regenerate');
     var ins = makeButton('rp-btn', 'insertReply');
     var copy = makeButton('rp-btn rp-btn-ghost', 'copyReply');
-    var clear = makeButton('rp-btn rp-btn-ghost rp-btn-block', 'newEmail');
+    var clear = makeButton('rp-btn rp-btn-ghost rp-btn-block', 'clearReply');
 
     // Insert/Copy are disabled until the user selects an option.
     ins.disabled = true;

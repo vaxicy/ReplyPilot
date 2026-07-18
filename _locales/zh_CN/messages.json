@@ -283,9 +283,9 @@
     "message": "简体中文",
     "description": "语言选项"
   },
-  "newEmail": {
-    "message": "新邮件",
-    "description": "新邮件/清空按钮"
+  "clearReply": {
+    "message": "清空回复",
+    "description": "清空回复按钮"
   },
   "optProviderCurrent": {
     "message": "当前服务商",

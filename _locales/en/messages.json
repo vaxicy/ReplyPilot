@@ -283,9 +283,9 @@
     "message": "简体中文",
     "description": "Language option"
   },
-  "newEmail": {
-    "message": "New Email",
-    "description": "New email / clear button"
+  "clearReply": {
+    "message": "Clear Reply",
+    "description": "Clear reply button"
   },
   "optProviderCurrent": {
     "message": "Current Provider",

@@ -8,6 +8,7 @@ window.RP = window.RP || {};
   'use strict';
 
   var ENDPOINT = 'https://api.siliconflow.cn/v1/chat/completions';
+  var DEFAULT_TIMEOUT = 30000; // 30s client-side ceiling
 
   function makeError(code, message) {
     var e = new Error(message || code);
@@ -33,6 +34,23 @@ window.RP = window.RP || {};
         return;
       }
 
+      var controller = null;
+      var timeoutId = null;
+      if (!signal) {
+        controller = new AbortController();
+        signal = controller.signal;
+        timeoutId = setTimeout(function () {
+          controller.abort();
+        }, DEFAULT_TIMEOUT);
+      }
+
+      function cleanup() {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+        }
+      }
+
       fetch(ENDPOINT, {
         method: 'POST',
         headers: {
@@ -49,6 +67,7 @@ window.RP = window.RP || {};
         signal: signal
       })
         .then(function (res) {
+          cleanup();
           if (res.status === 401) {
             throw makeError('API_KEY_INVALID', 'API key invalid (401)');
           }
@@ -64,9 +83,11 @@ window.RP = window.RP || {};
           return res.json();
         })
         .then(function (data) {
+          cleanup();
           resolve(data);
         })
         .catch(function (err) {
+          cleanup();
           if (err && err.code) {
             reject(err);
             return;

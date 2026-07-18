@@ -175,18 +175,6 @@
     "message": "Custom (OpenAI-compatible)",
     "description": "Provider option"
   },
-  "optQuickModel": {
-    "message": "Quick Model",
-    "description": "Quick model selector label"
-  },
-  "optQuickModelHint": {
-    "message": "Pick a recommended model or choose Custom to type your own Model ID.",
-    "description": "Quick model hint"
-  },
-  "quickModelCustom": {
-    "message": "Custom",
-    "description": "Custom model option"
-  },
   "optLanguage": {
     "message": "Interface Language",
     "description": "Options label"

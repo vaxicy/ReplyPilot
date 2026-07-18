@@ -1,27 +1,25 @@
 // options/options.js
-// Settings page logic: loads/saves user config, syncs the quick-model
-// dropdown with the typed model ID, and applies per-provider presets
-// (endpoint + recommended models) so any OpenAI-compatible API works.
+// Settings page logic: loads/saves user config and applies per-provider
+// presets (endpoint + default model) so any OpenAI-compatible API works.
 (function () {
   'use strict';
 
-  var ids = ['provider', 'apiEndpoint', 'apiKey', 'quickModel', 'model',
+  var ids = ['provider', 'apiEndpoint', 'apiKey', 'model',
              'language', 'tone', 'replyLanguage', 'aiMemory'];
 
   // Per-provider defaults. Custom has no preset models/endpoint.
   var PROVIDER_PRESETS = {
     siliconflow: {
       endpoint: 'https://api.siliconflow.cn/v1/chat/completions',
-      models: ['deepseek-ai/DeepSeek-V4-Flash', 'deepseek-ai/DeepSeek-V3',
-               'Qwen/Qwen2.5-72B-Instruct']
+      model: 'deepseek-ai/DeepSeek-V4-Flash'
     },
     openai: {
       endpoint: 'https://api.openai.com/v1/chat/completions',
-      models: ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo']
+      model: 'gpt-4o-mini'
     },
     custom: {
       endpoint: '',
-      models: []
+      model: ''
     }
   };
 
@@ -49,33 +47,9 @@
         }
       });
 
-      // Rebuild the quick-model dropdown to match the saved provider, then
-      // sync the selection with the saved model value. We do NOT overwrite
-      // the saved endpoint/model here.
+      // Remember the saved provider so provider-change can detect the old preset.
       var provider = document.getElementById('provider');
       currentProvider = provider ? provider.value : 'siliconflow';
-      buildQuickModelOptions(currentProvider);
-      syncQuickModelFromInput();
-    });
-  }
-
-  function buildQuickModelOptions(provider) {
-    var quickModel = document.getElementById('quickModel');
-    if (!quickModel) return;
-    var preset = PROVIDER_PRESETS[provider] || PROVIDER_PRESETS.custom;
-
-    quickModel.innerHTML = '';
-    var customOpt = document.createElement('option');
-    customOpt.value = '';
-    customOpt.setAttribute('data-i18n', 'quickModelCustom');
-    customOpt.textContent = RP.i18n.t('quickModelCustom');
-    quickModel.appendChild(customOpt);
-
-    preset.models.forEach(function (m) {
-      var o = document.createElement('option');
-      o.value = m;
-      o.textContent = m;
-      quickModel.appendChild(o);
     });
   }
 
@@ -87,34 +61,18 @@
     var preset = PROVIDER_PRESETS[provider] || PROVIDER_PRESETS.custom;
     var endpointInput = document.getElementById('apiEndpoint');
     var modelInput = document.getElementById('model');
-    var quickModel = document.getElementById('quickModel');
-
-    buildQuickModelOptions(provider);
 
     if (endpointInput && !opts.skipEndpoint) {
       endpointInput.value = preset.endpoint;
     }
 
-    if (modelInput && quickModel) {
+    if (modelInput) {
       var current = modelInput.value.trim();
-      var wasPreset = (opts.oldModels || []).indexOf(current) !== -1;
+      var wasPreset = opts.oldModel && opts.oldModel === current;
       if (!current || wasPreset) {
-        modelInput.value = preset.models[0] || '';
+        modelInput.value = preset.model;
       }
-      syncQuickModelFromInput();
     }
-  }
-
-  function syncQuickModelFromInput() {
-    var modelInput = document.getElementById('model');
-    var quickModel = document.getElementById('quickModel');
-    if (!modelInput || !quickModel) return;
-    var value = modelInput.value.trim();
-    var match = false;
-    for (var i = 0; i < quickModel.options.length; i++) {
-      if (quickModel.options[i].value === value) { match = true; break; }
-    }
-    quickModel.value = match ? value : '';
   }
 
   function bindEvents() {
@@ -131,21 +89,10 @@
     var provider = document.getElementById('provider');
     if (provider) {
       provider.addEventListener('change', function () {
-        var oldModels = (PROVIDER_PRESETS[currentProvider] || {}).models || [];
-        applyProviderPreset(provider.value, { oldModels: oldModels });
+        var oldModel = (PROVIDER_PRESETS[currentProvider] || {}).model;
+        applyProviderPreset(provider.value, { oldModel: oldModel });
         currentProvider = provider.value;
       });
-    }
-
-    var quickModel = document.getElementById('quickModel');
-    var modelInput = document.getElementById('model');
-    if (quickModel && modelInput) {
-      quickModel.addEventListener('change', function () {
-        if (quickModel.value) {
-          modelInput.value = quickModel.value;
-        }
-      });
-      modelInput.addEventListener('input', syncQuickModelFromInput);
     }
 
     var form = document.getElementById('optionsForm');

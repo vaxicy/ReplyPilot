@@ -175,18 +175,6 @@
     "message": "自定义（OpenAI 兼容）",
     "description": "服务商选项"
   },
-  "optQuickModel": {
-    "message": "快速模型",
-    "description": "快速模型标签"
-  },
-  "optQuickModelHint": {
-    "message": "选择推荐模型，或选「自定义」手动输入模型 ID。",
-    "description": "快速模型说明"
-  },
-  "quickModelCustom": {
-    "message": "自定义",
-    "description": "自定义模型选项"
-  },
   "optLanguage": {
     "message": "界面语言",
     "description": "设置标签"

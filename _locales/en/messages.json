@@ -1,10 +1,10 @@
 {
   "extName": {
-    "message": "ReplyPilot",
+    "message": "ReplyPilot for Gmail",
     "description": "Extension name"
   },
   "extDescription": {
-    "message": "AI email reply assistant for e-commerce sellers on Gmail",
+    "message": "E-commerce email reply assistant for Gmail",
     "description": "Extension description"
   },
   "assistantTitle": {

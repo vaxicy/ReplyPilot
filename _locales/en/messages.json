@@ -87,6 +87,10 @@
     "message": "Unknown error.",
     "description": "Fallback error"
   },
+  "errContextInvalidated": {
+    "message": "Extension context expired. Please refresh the page and try again.",
+    "description": "Prompt to refresh page after extension reload"
+  },
   "msgInserted": {
     "message": "Reply inserted into Gmail.",
     "description": "Success when inserted"

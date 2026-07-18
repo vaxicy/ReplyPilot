@@ -16,7 +16,8 @@ window.RP = window.RP || {};
     NETWORK_ERROR: 'errNetwork',
     TIMEOUT: 'errTimeout',
     EMPTY_RESPONSE: 'errModel',
-    PARSE_FAILED: 'errModel'
+    PARSE_FAILED: 'errModel',
+    CONTEXT_INVALIDATED: 'errContextInvalidated'
   };
 
   // The three reply strategies shown as options after generation.

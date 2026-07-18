@@ -87,6 +87,10 @@
     "message": "未知错误。",
     "description": "兜底错误"
   },
+  "errContextInvalidated": {
+    "message": "扩展上下文已失效，请刷新页面后重试。",
+    "description": "扩展被重新加载后提示刷新页面"
+  },
   "msgInserted": {
     "message": "回复已插入 Gmail。",
     "description": "插入成功提示"

@@ -31,13 +31,24 @@ window.RP = window.RP || {};
     });
   }
 
+  function isContextInvalidatedError(e) {
+    return e && typeof e.message === 'string' &&
+      e.message.toLowerCase().indexOf('extension context invalidated') !== -1;
+  }
+
   function getAll() {
-    return new Promise(function (resolve) {
+    return new Promise(function (resolve, reject) {
       try {
         chrome.storage.local.get(DEFAULTS, function (res) {
           resolve(res || {});
         });
       } catch (e) {
+        if (isContextInvalidatedError(e)) {
+          var err = new Error('Extension context invalidated');
+          err.code = 'CONTEXT_INVALIDATED';
+          reject(err);
+          return;
+        }
         RP.logger.error('storage.getAll failed', e);
         resolve(Object.assign({}, DEFAULTS));
       }

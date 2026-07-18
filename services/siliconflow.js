@@ -16,6 +16,13 @@ window.RP = window.RP || {};
     return e;
   }
 
+  function isAbortError(err) {
+    if (!err) return false;
+    if (err.name === 'AbortError' || err.code === 'AbortError' || err.code === 'ABORT_ERR') return true;
+    var msg = String(err.message || '').toLowerCase();
+    return /aborted|signal.*abort|abort.*signal|the user aborted a request/i.test(msg);
+  }
+
   // messages: [{role, content}]
   function chat(opts) {
     opts = opts || {};
@@ -41,7 +48,7 @@ window.RP = window.RP || {};
         controller = new AbortController();
         signal = controller.signal;
         timeoutId = setTimeout(function () {
-          controller.abort();
+          controller.abort(new Error('TIMEOUT'));
         }, DEFAULT_TIMEOUT);
       }
 
@@ -94,7 +101,7 @@ window.RP = window.RP || {};
             return;
           }
           // fetch-level failure: network error / timeout / CORS
-          if (err && err.name === 'AbortError') {
+          if (isAbortError(err)) {
             reject(makeError('TIMEOUT', 'Request timed out'));
           } else {
             reject(makeError('NETWORK_ERROR', 'Network error'));

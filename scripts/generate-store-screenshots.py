@@ -76,6 +76,8 @@ F = {
     "label": load_font(12, bold=True),
     "hero": load_font(26, bold=True),
     "caption": load_font(16),
+    "step_label": load_font(15, bold=True),
+    "step_number": load_font(17, bold=True),
 }
 
 
@@ -113,7 +115,7 @@ def wrap_text(draw, text, max_width, font):
 
 # ---------- Gmail chrome ----------
 
-def draw_gmail_background(draw):
+def draw_gmail_background(draw, lang="zh"):
     # Main background
     draw.rectangle([0, 0, W, H], fill=COLORS["gmail_bg"])
     # Top bar
@@ -125,7 +127,8 @@ def draw_gmail_background(draw):
     # Gmail logo
     draw_text(draw, (244, 32), "Gmail", fill=COLORS["gmail_text"], font=F["gmail_logo"], anchor="lm")
     # Search placeholder
-    draw_text(draw, (326, 32), "搜索邮件", fill=COLORS["gmail_sub"], font=F["gmail_search"], anchor="lm")
+    search_hint = {"zh": "搜索邮件", "en": "Search mail"}[lang]
+    draw_text(draw, (326, 32), search_hint, fill=COLORS["gmail_sub"], font=F["gmail_search"], anchor="lm")
 
 
 def draw_gmail_sidebar(draw, lang="zh"):
@@ -172,10 +175,11 @@ def draw_email_content(draw, lang="zh"):
 
     # Sender info
     # Avatar circle
+    avatar_letter = {"zh": "陈", "en": "A"}[lang]
+    sender_name = {"zh": "陈明", "en": "Alex Kim"}[lang]
+    sender_email = {"zh": "<chenming@example.com>", "en": "<alex.kim@example.com>"}[lang]
     draw.ellipse([264, 190, 298, 224], fill="#ea4335")
-    draw_text(draw, (281, 207), "A", fill="white", font=F["email_sender"], anchor="mm")
-    sender_name = "Adunny Baby"
-    sender_email = "<adunnyb@gmail.com>"
+    draw_text(draw, (281, 207), avatar_letter, fill="white", font=F["email_sender"], anchor="mm")
     draw_text(draw, (314, 198), sender_name, fill=COLORS["gmail_text"], font=F["email_sender"])
     draw_text(draw, (314, 218), sender_email, fill=COLORS["gmail_sub"], font=F["email_body"])
 
@@ -201,7 +205,7 @@ def draw_email_content(draw, lang="zh"):
             "另外，如果今天下单，最早什么时候可以送达？",
             "",
             "此致，",
-            "LifeMakeEasier"
+            "李华"
         ],
         "en": [
             "Hey! While I was checking out your store, I noticed something that could be costing you sales.",
@@ -211,7 +215,7 @@ def draw_email_content(draw, lang="zh"):
             "Also, if I place an order today, when is the earliest it can be delivered?",
             "",
             "Best regards,",
-            "LifeMakeEasier"
+            "Jordan Lee"
         ]
     }[lang]
     for line in body_lines:
@@ -220,20 +224,30 @@ def draw_email_content(draw, lang="zh"):
 
     # Quoted reply area
     quote_y = body_y + 24
+    quote_sender = {
+        "zh": "李华 <lihua@samplestore.com>",
+        "en": "Jordan Lee <jordan.lee@samplestore.com>"
+    }[lang]
     quote_text = {
-        "zh": "On Fri, Jul 17, 2026, 12:08 PM lilin huang <huangzero2004@gmail.com> wrote:",
-        "en": "On Fri, Jul 17, 2026, 12:08 PM lilin huang <huangzero2004@gmail.com> wrote:"
+        "zh": f"2026年7月17日 {quote_sender} 写道：",
+        "en": f"On Jul 17, 2026, {quote_sender} wrote:"
     }[lang]
     draw_text(draw, (264, quote_y), quote_text, fill=COLORS["gmail_link"], font=F["email_quote"])
     draw_text(draw, (264, quote_y + 22), "Hi,", fill=COLORS["gmail_text"], font=F["email_quote"])
     draw_text(draw, (264, quote_y + 44), "Thanks for reaching out.", fill=COLORS["gmail_text"], font=F["email_quote"])
-    draw_text(draw, (264, quote_y + 66), "The earliest delivery date depends on the specific product and delivery location. Please let me know your ZIP/postal code, and I'll check the current estimated delivery time for you.", fill=COLORS["gmail_text"], font=F["email_quote"])
+    quote_body = {
+        "zh": "最早送达时间取决于商品和地址，请提供邮编，我们帮您查询预计时效。",
+        "en": "The earliest delivery date depends on the product and location. Please share your ZIP code so we can check the estimated delivery time."
+    }[lang]
+    q_lines = wrap_text(draw, quote_body, 580, F["email_quote"])
+    for i, line in enumerate(q_lines):
+        draw_text(draw, (264, quote_y + 66 + i * 18), line, fill=COLORS["gmail_text"], font=F["email_quote"])
 
     # Reply box at bottom
     reply_y = H - 120
     rounded_rect(draw, (264, reply_y, 560, reply_y + 50), fill=COLORS["gmail_bg"], radius=24, outline=COLORS["gmail_border"], width=1)
     draw_text(draw, (288, reply_y + 25), "✏", fill=COLORS["gmail_sub"], font=F["email_body"], anchor="lm")
-    reply_placeholder = {"zh": "回复 Adunny Baby...", "en": "Reply to Adunny Baby..."}[lang]
+    reply_placeholder = {"zh": "回复 陈明...", "en": "Reply to Alex Kim..."}[lang]
     draw_text(draw, (318, reply_y + 25), reply_placeholder, fill=COLORS["gmail_sub"], font=F["email_body"], anchor="lm")
 
     # Send button
@@ -305,38 +319,39 @@ def draw_rp_options(draw, x, y, w, lang="zh"):
 
     options = {
         "zh": [
-            ("积极支持", "Hi there! Thank you so much for reaching out with your feedback—we truly apprec..."),
-            ("客观中性", "Hello, thank you for your message regarding feedback on our store. We take all c..."),
-            ("委婉拒绝", "Hi, thank you for your interest in providing feedback. At this time, we are not...")
+            ("积极支持", "您好！感谢您的反馈，我们非常重视。今天下单将尽快安排发货，预计 2–3 个工作日送达。"),
+            ("客观中性", "您好，感谢来信。发货时间取决于商品与收货地址，请提供邮编以便查询。"),
+            ("委婉拒绝", "您好，感谢关注。目前暂不接收额外反馈，如有其他问题欢迎随时联系。")
         ],
         "en": [
-            ("Positive", "Hi there! Thank you so much for reaching out with your feedback—we truly apprec..."),
-            ("Neutral", "Hello, thank you for your message regarding feedback on our store. We take all c..."),
-            ("Decline", "Hi, thank you for your interest in providing feedback. At this time, we are not...")
+            ("Positive", "Thanks for your feedback! Order today and we'll ship ASAP—delivery in 2–3 business days."),
+            ("Neutral", "Thanks for your message. Delivery time depends on product & address—share your ZIP code."),
+            ("Decline", "Thanks for your interest. We're not collecting extra feedback now, but feel free to ask.")
         ]
     }[lang]
 
     yy = y + 24
     for title, preview in options:
         # Option card
-        rounded_rect(draw, (x + 14, yy, x + w - 14, yy + 86), fill=COLORS["rp_bg"], radius=10, outline="#e2e5ee", width=1)
-        draw_text(draw, (x + 28, yy + 12), title, fill=COLORS["rp_text"], font=F["rp_option_title"])
+        card_h = 100
+        rounded_rect(draw, (x + 14, yy, x + w - 14, yy + card_h), fill=COLORS["rp_bg"], radius=10, outline="#e2e5ee", width=1)
+        draw_text(draw, (x + 28, yy + 14), title, fill=COLORS["rp_text"], font=F["rp_option_title"])
 
         # Preview text (clamped to 2 lines)
         lines = wrap_text(draw, preview, w - 52, F["rp_small"])
-        py = yy + 32
+        py = yy + 36
         for line in lines[:2]:
             draw_text(draw, (x + 28, py), line, fill=COLORS["rp_sub"], font=F["rp_small"])
-            py += 17
+            py += 18
 
         # Select button
         btn_text = {"zh": "选择此方案", "en": "Use this"}[lang]
         btn_w = 82
         btn_x = x + w - 14 - btn_w
-        btn_y = yy + 52
+        btn_y = yy + 70
         draw_rp_button(draw, btn_x, btn_y, btn_w, 26, btn_text, primary=False, lang=lang)
 
-        yy += 94
+        yy += 108
 
     return yy - y
 
@@ -416,13 +431,46 @@ def draw_tutorial_annotation(draw, lang="zh"):
     pass
 
 
+def draw_step_label(draw, lang, state):
+    """Draw a prominent step label above the ReplyPilot card."""
+    labels = {
+        ("zh", "idle"): ("1", "打开邮件旁的 ReplyPilot"),
+        ("en", "idle"): ("1", "Open ReplyPilot next to the email"),
+        ("zh", "options"): ("2", "一键生成多个回复方案"),
+        ("en", "options"): ("2", "Generate multiple reply options"),
+        ("zh", "result"): ("3", "选择方案并插入 Gmail"),
+        ("en", "result"): ("3", "Select a reply and insert into Gmail"),
+    }
+    step_number, step_desc = labels[(lang, state)]
+    x, y = 900, 20
+    w, h = 360, 36
+
+    # Background pill
+    rounded_rect(draw, (x, y, x + w, y + h), fill=COLORS["rp_primary"], radius=10)
+
+    # Number badge (white circle)
+    badge_radius = 12
+    badge_cx = x + 22
+    badge_cy = y + h // 2
+    draw.ellipse(
+        [badge_cx - badge_radius, badge_cy - badge_radius,
+         badge_cx + badge_radius, badge_cy + badge_radius],
+        fill="white"
+    )
+    draw_text(draw, (badge_cx, badge_cy + 1), step_number, fill=COLORS["rp_primary"], font=F["step_number"], anchor="mm")
+
+    # Description text
+    draw_text(draw, (x + 44, y + h // 2 + 1), step_desc, fill="white", font=F["step_label"], anchor="lm")
+
+
 def screenshot(lang, state, filename):
     img = Image.new("RGBA", (W, H), COLORS["gmail_bg"])
     draw = ImageDraw.Draw(img)
 
-    draw_gmail_background(draw)
+    draw_gmail_background(draw, lang=lang)
     draw_gmail_sidebar(draw, lang=lang)
     draw_email_content(draw, lang=lang)
+    draw_step_label(draw, lang=lang, state=state)
     draw_rp_card(img, draw, lang=lang, state=state)
 
     out_dir = OUT / lang

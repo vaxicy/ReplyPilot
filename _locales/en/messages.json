@@ -203,6 +203,66 @@
     "message": "Reload the Gmail tab to apply language changes.",
     "description": "Options reload hint"
   },
+  "optTutorialHint": {
+    "message": "Not sure how to set up?",
+    "description": "Setup tutorial hint"
+  },
+  "optTutorialLink": {
+    "message": "View setup guide",
+    "description": "Setup tutorial link"
+  },
+  "optTutorialTitle": {
+    "message": "Setup Guide",
+    "description": "Tutorial modal title"
+  },
+  "optTutorialStep1Title": {
+    "message": "Pick a provider",
+    "description": "Tutorial step 1 title"
+  },
+  "optTutorialStep1": {
+    "message": "Choose SiliconFlow, OpenAI, or Custom (OpenAI-compatible) in the AI Provider dropdown.",
+    "description": "Tutorial step 1 description"
+  },
+  "optTutorialStep2Title": {
+    "message": "API endpoint",
+    "description": "Tutorial step 2 title"
+  },
+  "optTutorialStep2": {
+    "message": "The API endpoint is auto-filled by the provider. Edit it only if you use a proxy.",
+    "description": "Tutorial step 2 description"
+  },
+  "optTutorialStep3Title": {
+    "message": "API Key",
+    "description": "Tutorial step 3 title"
+  },
+  "optTutorialStep3": {
+    "message": "Get your API Key from the provider console and paste it into the API Key field.",
+    "description": "Tutorial step 3 description"
+  },
+  "optTutorialStep4Title": {
+    "message": "Model ID",
+    "description": "Tutorial step 4 title"
+  },
+  "optTutorialStep4": {
+    "message": "Type the model ID, e.g. deepseek-ai/DeepSeek-V4-Flash or gpt-4o-mini.",
+    "description": "Tutorial step 4 description"
+  },
+  "optTutorialExampleTitle": {
+    "message": "Examples",
+    "description": "Tutorial examples title"
+  },
+  "optTutorialExampleSf": {
+    "message": "— SiliconFlow",
+    "description": "Example label"
+  },
+  "optTutorialExampleOai": {
+    "message": "— OpenAI",
+    "description": "Example label"
+  },
+  "optTutorialClose": {
+    "message": "Close",
+    "description": "Tutorial modal close button"
+  },
   "toneProfessional": {
     "message": "Professional",
     "description": "Tone option"

@@ -203,6 +203,66 @@
     "message": "请刷新 Gmail 标签页以应用语言更改。",
     "description": "设置重载提示"
   },
+  "optTutorialHint": {
+    "message": "不知道怎么配置？",
+    "description": "配置教程提示"
+  },
+  "optTutorialLink": {
+    "message": "查看配置教程",
+    "description": "配置教程链接"
+  },
+  "optTutorialTitle": {
+    "message": "配置教程",
+    "description": "教程弹窗标题"
+  },
+  "optTutorialStep1Title": {
+    "message": "选择服务商",
+    "description": "教程步骤1标题"
+  },
+  "optTutorialStep1": {
+    "message": "在「AI 服务商」下拉中选择 SiliconFlow、OpenAI 或自定义（OpenAI 兼容）。",
+    "description": "教程步骤1说明"
+  },
+  "optTutorialStep2Title": {
+    "message": "API 接口地址",
+    "description": "教程步骤2标题"
+  },
+  "optTutorialStep2": {
+    "message": "接口地址默认随服务商自动填充，使用代理时再手动修改。",
+    "description": "教程步骤2说明"
+  },
+  "optTutorialStep3Title": {
+    "message": "API Key",
+    "description": "教程步骤3标题"
+  },
+  "optTutorialStep3": {
+    "message": "在服务商后台获取 API Key 并粘贴到「API Key」一栏。",
+    "description": "教程步骤3说明"
+  },
+  "optTutorialStep4Title": {
+    "message": "模型 ID",
+    "description": "教程步骤4标题"
+  },
+  "optTutorialStep4": {
+    "message": "填写模型 ID，例如 deepseek-ai/DeepSeek-V4-Flash 或 gpt-4o-mini。",
+    "description": "教程步骤4说明"
+  },
+  "optTutorialExampleTitle": {
+    "message": "示例",
+    "description": "教程示例标题"
+  },
+  "optTutorialExampleSf": {
+    "message": "— 硅基流动",
+    "description": "示例标注"
+  },
+  "optTutorialExampleOai": {
+    "message": "— OpenAI",
+    "description": "示例标注"
+  },
+  "optTutorialClose": {
+    "message": "关闭",
+    "description": "教程弹窗关闭按钮"
+  },
   "toneProfessional": {
     "message": "专业",
     "description": "语气选项"

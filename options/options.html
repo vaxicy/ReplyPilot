@@ -13,6 +13,12 @@
     </header>
 
     <form id="optionsForm" class="rp-form" autocomplete="off">
+      <div class="rp-tutorial-banner">
+        <span class="rp-tutorial-icon" aria-hidden="true">📘</span>
+        <span class="rp-tutorial-text" data-i18n="optTutorialHint">Not sure how to set up?</span>
+        <button type="button" class="rp-tutorial-link" id="openTutorial" data-i18n="optTutorialLink">Setup Guide</button>
+      </div>
+
       <section class="rp-section">
         <h2 class="rp-section-title" data-i18n="optProvider">AI Provider</h2>
         <div class="rp-field">
@@ -92,6 +98,43 @@
         <span id="saveStatus" class="rp-save-status" role="status"></span>
       </div>
     </form>
+  </div>
+
+  <div class="rp-modal-overlay" id="tutorialModal" hidden>
+    <div class="rp-modal" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
+      <div class="rp-modal-head">
+        <h2 id="tutorialTitle" class="rp-modal-title" data-i18n="optTutorialTitle">Setup Guide</h2>
+        <button type="button" class="rp-modal-close" id="closeTutorial" aria-label="Close">×</button>
+      </div>
+      <div class="rp-modal-body">
+        <ol class="rp-tutorial-steps">
+          <li>
+            <span class="rp-step-title" data-i18n="optTutorialStep1Title">Pick a provider</span>
+            <span class="rp-step-desc" data-i18n="optTutorialStep1">Choose SiliconFlow, OpenAI, or Custom (OpenAI-compatible) in the AI Provider dropdown.</span>
+          </li>
+          <li>
+            <span class="rp-step-title" data-i18n="optTutorialStep2Title">API endpoint</span>
+            <span class="rp-step-desc" data-i18n="optTutorialStep2">The API endpoint is auto-filled by the provider. Edit it only if you use a proxy.</span>
+          </li>
+          <li>
+            <span class="rp-step-title" data-i18n="optTutorialStep3Title">API Key</span>
+            <span class="rp-step-desc" data-i18n="optTutorialStep3">Get your API Key from the provider console and paste it into the API Key field.</span>
+          </li>
+          <li>
+            <span class="rp-step-title" data-i18n="optTutorialStep4Title">Model ID</span>
+            <span class="rp-step-desc" data-i18n="optTutorialStep4">Type the model ID, e.g. deepseek-ai/DeepSeek-V4-Flash or gpt-4o-mini.</span>
+          </li>
+        </ol>
+        <div class="rp-tutorial-examples">
+          <div class="rp-example-title" data-i18n="optTutorialExampleTitle">Examples</div>
+          <div class="rp-example-row"><code>deepseek-ai/DeepSeek-V4-Flash</code><span data-i18n="optTutorialExampleSf">— SiliconFlow</span></div>
+          <div class="rp-example-row"><code>gpt-4o-mini</code><span data-i18n="optTutorialExampleOai">— OpenAI</span></div>
+        </div>
+      </div>
+      <div class="rp-modal-foot">
+        <button type="button" class="rp-btn rp-btn-primary" id="tutorialCloseBtn" data-i18n="optTutorialClose">Close</button>
+      </div>
+    </div>
   </div>
 
   <script src="../utils/i18n.js"></script>

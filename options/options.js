@@ -95,6 +95,8 @@
       });
     }
 
+    bindTutorialModal();
+
     var form = document.getElementById('optionsForm');
     if (form) {
       form.addEventListener('submit', function (e) {
@@ -102,6 +104,27 @@
         saveSettings();
       });
     }
+  }
+
+  function bindTutorialModal() {
+    var modal = document.getElementById('tutorialModal');
+    if (!modal) return;
+    var openBtn = document.getElementById('openTutorial');
+    var closeBtn = document.getElementById('closeTutorial');
+    var closeFooter = document.getElementById('tutorialCloseBtn');
+
+    function open() { modal.hidden = false; }
+    function close() { modal.hidden = true; }
+
+    if (openBtn) openBtn.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (closeFooter) closeFooter.addEventListener('click', close);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) close();
+    });
   }
 
   function saveSettings() {

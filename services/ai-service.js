@@ -123,6 +123,7 @@ window.RP = window.RP || {};
       return RP.siliconflow.chat({
         apiKey: s.rp_apiKey,
         model: s.rp_model,
+        endpoint: s.rp_apiEndpoint,
         messages: messages
       }).then(function (data) {
         var reply = parseReply(extractContent(data));
@@ -165,6 +166,7 @@ window.RP = window.RP || {};
       return RP.siliconflow.chat({
         apiKey: s.rp_apiKey,
         model: s.rp_model,
+        endpoint: s.rp_apiEndpoint,
         messages: messages
       }).then(function (data) {
         var options = parseOptions(extractContent(data));

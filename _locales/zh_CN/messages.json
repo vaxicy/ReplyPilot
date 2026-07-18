@@ -132,7 +132,7 @@
     "description": "设置标签"
   },
   "optProviderHint": {
-    "message": "v1 暂时只支持 SiliconFlow。",
+    "message": "选择服务商，或选「自定义」接入任意 OpenAI 兼容接口。",
     "description": "服务商说明"
   },
   "optApiKey": {
@@ -148,8 +148,32 @@
     "description": "设置标签"
   },
   "optModelHint": {
-    "message": "将发送给 SiliconFlow。例如 deepseek-ai/DeepSeek-V4-Flash",
+    "message": "模型 ID 会发送给接口。例如 deepseek-ai/DeepSeek-V4-Flash",
     "description": "模型 ID 说明"
+  },
+  "optApiEndpoint": {
+    "message": "API 接口地址",
+    "description": "API 接口字段标签"
+  },
+  "optApiEndpointPlaceholder": {
+    "message": "https://.../v1/chat/completions",
+    "description": "接口地址占位符"
+  },
+  "optApiEndpointHint": {
+    "message": "OpenAI 兼容的 /chat/completions 地址。选择服务商后自动填充，可改为代理地址。",
+    "description": "接口地址说明"
+  },
+  "providerSiliconFlow": {
+    "message": "硅基流动 (SiliconFlow)",
+    "description": "服务商选项"
+  },
+  "providerOpenAI": {
+    "message": "OpenAI",
+    "description": "服务商选项"
+  },
+  "providerCustom": {
+    "message": "自定义（OpenAI 兼容）",
+    "description": "服务商选项"
   },
   "optQuickModel": {
     "message": "快速模型",

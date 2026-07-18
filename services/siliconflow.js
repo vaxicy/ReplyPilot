@@ -19,10 +19,11 @@ window.RP = window.RP || {};
   // messages: [{role, content}]
   function chat(opts) {
     opts = opts || {};
-    var apiKey = opts.apiKey;
-    var model = opts.model;
-    var messages = opts.messages || [];
-    var signal = opts.signal; // optional AbortSignal for timeout
+      var apiKey = opts.apiKey;
+      var model = opts.model;
+      var messages = opts.messages || [];
+      var endpoint = opts.endpoint || ENDPOINT; // OpenAI-compatible URL
+      var signal = opts.signal; // optional AbortSignal for timeout
 
     return new Promise(function (resolve, reject) {
       if (!apiKey) {
@@ -51,7 +52,7 @@ window.RP = window.RP || {};
         }
       }
 
-      fetch(ENDPOINT, {
+      fetch(endpoint, {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer ' + apiKey,

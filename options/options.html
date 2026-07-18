@@ -17,10 +17,18 @@
         <h2 class="rp-section-title" data-i18n="optProvider">AI Provider</h2>
         <div class="rp-field">
           <label for="provider" data-i18n="optProviderCurrent">Current Provider</label>
-          <select id="provider" name="provider" disabled>
-            <option value="siliconflow">SiliconFlow</option>
+          <select id="provider" name="provider">
+            <option value="siliconflow" data-i18n="providerSiliconFlow">SiliconFlow</option>
+            <option value="openai" data-i18n="providerOpenAI">OpenAI</option>
+            <option value="custom" data-i18n="providerCustom">Custom (OpenAI-compatible)</option>
           </select>
-          <p class="rp-hint" data-i18n="optProviderHint">SiliconFlow is the only provider in v1.</p>
+          <p class="rp-hint" data-i18n="optProviderHint">Pick a provider or choose Custom for any OpenAI-compatible API.</p>
+        </div>
+
+        <div class="rp-field">
+          <label for="apiEndpoint" data-i18n="optApiEndpoint">API Endpoint</label>
+          <input type="text" id="apiEndpoint" name="apiEndpoint" data-i18n-placeholder="optApiEndpointPlaceholder" />
+          <p class="rp-hint" data-i18n="optApiEndpointHint">OpenAI-compatible /chat/completions URL. Auto-filled by provider; edit for proxies.</p>
         </div>
 
         <div class="rp-field">
@@ -44,7 +52,7 @@
         <div class="rp-field">
           <label for="model" data-i18n="optModel">Model ID</label>
           <input type="text" id="model" name="model" data-i18n-placeholder="optModel" />
-          <p class="rp-hint" data-i18n="optModelHint">The model ID is sent to SiliconFlow. e.g. deepseek-ai/DeepSeek-V4-Flash</p>
+          <p class="rp-hint" data-i18n="optModelHint">The model ID is sent to the API. e.g. deepseek-ai/DeepSeek-V4-Flash</p>
         </div>
       </section>
 

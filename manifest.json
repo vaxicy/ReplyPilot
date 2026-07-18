@@ -10,7 +10,9 @@
   ],
   "host_permissions": [
     "https://mail.google.com/*",
-    "https://api.siliconflow.cn/*"
+    "https://api.siliconflow.cn/*",
+    "https://api.openai.com/*",
+    "https://*/*"
   ],
   "action": {
     "default_popup": "popup/popup.html",

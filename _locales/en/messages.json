@@ -132,7 +132,7 @@
     "description": "Options label"
   },
   "optProviderHint": {
-    "message": "SiliconFlow is the only provider in v1.",
+    "message": "Pick a provider or choose Custom for any OpenAI-compatible API.",
     "description": "AI provider hint"
   },
   "optApiKey": {
@@ -148,8 +148,32 @@
     "description": "Options label"
   },
   "optModelHint": {
-    "message": "Sent to SiliconFlow. e.g. deepseek-ai/DeepSeek-V4-Flash",
+    "message": "The model ID is sent to the API. e.g. deepseek-ai/DeepSeek-V4-Flash",
     "description": "Model ID hint"
+  },
+  "optApiEndpoint": {
+    "message": "API Endpoint",
+    "description": "API endpoint field label"
+  },
+  "optApiEndpointPlaceholder": {
+    "message": "https://.../v1/chat/completions",
+    "description": "Endpoint placeholder"
+  },
+  "optApiEndpointHint": {
+    "message": "OpenAI-compatible /chat/completions URL. Auto-filled by provider; edit for proxies.",
+    "description": "Endpoint hint"
+  },
+  "providerSiliconFlow": {
+    "message": "SiliconFlow",
+    "description": "Provider option"
+  },
+  "providerOpenAI": {
+    "message": "OpenAI",
+    "description": "Provider option"
+  },
+  "providerCustom": {
+    "message": "Custom (OpenAI-compatible)",
+    "description": "Provider option"
   },
   "optQuickModel": {
     "message": "Quick Model",

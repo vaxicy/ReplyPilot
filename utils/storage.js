@@ -9,7 +9,8 @@ window.RP = window.RP || {};
 
   var DEFAULTS = {
     rp_language: '',            // '' => follow browser locale
-    rp_provider: 'siliconflow', // only SiliconFlow in v1
+    rp_provider: 'siliconflow', // siliconflow | openai | custom
+    rp_apiEndpoint: 'https://api.siliconflow.cn/v1/chat/completions',
     rp_apiKey: '',
     rp_model: 'deepseek-ai/DeepSeek-V4-Flash',
     rp_tone: 'professional',      // professional | friendly | short | luxury

@@ -1,0 +1,199 @@
+/* options/options.css — ReplyPilot settings page. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f7f8fb;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: #1f2330;
+}
+
+.rp-options {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.rp-options-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.rp-options-logo {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.rp-options-header h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #2b2f3a;
+  letter-spacing: -0.2px;
+}
+
+.rp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rp-section {
+  border: 1px solid #e6e8ef;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 20px 22px 22px;
+  margin: 0;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04);
+}
+
+.rp-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2b2f3a;
+  margin: 0 0 12px;
+  letter-spacing: 0.2px;
+}
+
+.rp-field {
+  margin-top: 16px;
+}
+
+.rp-field:first-of-type {
+  margin-top: 0;
+}
+
+.rp-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2b2f3a;
+  margin-bottom: 6px;
+}
+
+.rp-field input,
+.rp-field select,
+.rp-field textarea {
+  width: 100%;
+  border: 1px solid #e2e5ee;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #1f2330;
+  background: #fbfbfd;
+  outline: none;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.rp-field input::placeholder,
+.rp-field textarea::placeholder {
+  color: #9aa0ac;
+}
+
+.rp-field input:focus,
+.rp-field select:focus,
+.rp-field textarea:focus {
+  border-color: #8b8ef5;
+  box-shadow: 0 0 0 3px rgba(123, 127, 245, 0.15);
+  background: #ffffff;
+}
+
+.rp-field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+.rp-field select:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  background-color: #f1f2f7;
+}
+
+.rp-field textarea {
+  resize: vertical;
+  line-height: 1.5;
+  min-height: 80px;
+}
+
+.rp-hint {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #9aa0ac;
+  line-height: 1.5;
+}
+
+.rp-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.rp-btn {
+  appearance: none;
+  border: 1px solid #e2e5ee;
+  background: #ffffff;
+  color: #2b2f3a;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 22px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+}
+
+.rp-btn:hover {
+  background: #f6f7fb;
+  border-color: #d3d7e3;
+}
+
+.rp-btn:active {
+  transform: translateY(1px);
+}
+
+.rp-btn-primary {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(99, 102, 241, 0.2);
+}
+
+.rp-btn-primary:hover {
+  background: #5457e6;
+  border-color: #5457e6;
+}
+
+.rp-save-status {
+  font-size: 13px;
+  color: #1a8a4f;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.rp-save-status-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 520px) {
+  .rp-options {
+    padding: 20px 16px 40px;
+  }
+
+  .rp-section {
+    padding: 16px 16px 18px;
+  }
+}

@@ -1,0 +1,88 @@
+// services/siliconflow.js
+// SiliconFlow chat completions client (OpenAI-compatible).
+// The API key and model are read from user settings at call time; nothing is
+// hard-coded. Errors are normalized into codes the UI can present friendly text.
+window.RP = window.RP || {};
+
+(function (RP) {
+  'use strict';
+
+  var ENDPOINT = 'https://api.siliconflow.cn/v1/chat/completions';
+
+  function makeError(code, message) {
+    var e = new Error(message || code);
+    e.code = code;
+    return e;
+  }
+
+  // messages: [{role, content}]
+  function chat(opts) {
+    opts = opts || {};
+    var apiKey = opts.apiKey;
+    var model = opts.model;
+    var messages = opts.messages || [];
+    var signal = opts.signal; // optional AbortSignal for timeout
+
+    return new Promise(function (resolve, reject) {
+      if (!apiKey) {
+        reject(makeError('API_KEY_MISSING', 'API key missing'));
+        return;
+      }
+      if (!model) {
+        reject(makeError('MODEL_MISSING', 'Model ID missing'));
+        return;
+      }
+
+      fetch(ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + apiKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: messages,
+          temperature: 0.7,
+          max_tokens: 1500,
+          stream: false
+        }),
+        signal: signal
+      })
+        .then(function (res) {
+          if (res.status === 401) {
+            throw makeError('API_KEY_INVALID', 'API key invalid (401)');
+          }
+          if (res.status === 404) {
+            throw makeError('MODEL_NOT_FOUND', 'Model not found (404)');
+          }
+          if (res.status === 429) {
+            throw makeError('RATE_LIMITED', 'Rate limited (429)');
+          }
+          if (!res.ok) {
+            throw makeError('HTTP_' + res.status, 'HTTP error ' + res.status);
+          }
+          return res.json();
+        })
+        .then(function (data) {
+          resolve(data);
+        })
+        .catch(function (err) {
+          if (err && err.code) {
+            reject(err);
+            return;
+          }
+          // fetch-level failure: network error / timeout / CORS
+          if (err && err.name === 'AbortError') {
+            reject(makeError('TIMEOUT', 'Request timed out'));
+          } else {
+            reject(makeError('NETWORK_ERROR', 'Network error'));
+          }
+        });
+    });
+  }
+
+  RP.siliconflow = {
+    ENDPOINT: ENDPOINT,
+    chat: chat
+  };
+})(window.RP);

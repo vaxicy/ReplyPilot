@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="rp-popup">
+    <header class="rp-popup-header">
+      <span class="rp-popup-logo">✨</span>
+      <h1 data-i18n="extName">ReplyPilot</h1>
+    </header>
+
+    <section class="rp-status">
+      <div class="rp-status-row">
+        <span class="rp-status-label" data-i18n="popupAiConfig">AI Configuration</span>
+        <span id="aiStatus" class="rp-badge">—</span>
+      </div>
+      <div class="rp-status-row">
+        <span class="rp-status-label" data-i18n="popupCurrentSite">Current Site</span>
+        <span id="siteStatus" class="rp-badge">Gmail</span>
+      </div>
+    </section>
+
+    <section class="rp-actions">
+      <button id="openSettings" class="rp-btn rp-btn-primary" data-i18n="popupOpenSettings">Open Settings</button>
+      <button id="refresh" class="rp-btn" data-i18n="popupRefresh">Refresh Assistant</button>
+    </section>
+
+    <footer class="rp-popup-footer">
+      <span data-i18n="popupVersion">Version 1.0.0</span>
+    </footer>
+  </div>
+
+  <script src="../utils/i18n.js"></script>
+  <script src="../utils/storage.js"></script>
+  <script src="../utils/logger.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

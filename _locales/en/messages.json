@@ -1,0 +1,310 @@
+{
+  "extName": {
+    "message": "ReplyPilot",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "AI email reply assistant for e-commerce sellers on Gmail",
+    "description": "Extension description"
+  },
+  "assistantTitle": {
+    "message": "ReplyPilot Assistant",
+    "description": "Title shown on the injected card"
+  },
+  "generateReply": {
+    "message": "Generate Reply",
+    "description": "Generate reply button"
+  },
+  "regenerate": {
+    "message": "Regenerate",
+    "description": "Regenerate reply button"
+  },
+  "insertReply": {
+    "message": "Insert Reply",
+    "description": "Insert reply button"
+  },
+  "copyReply": {
+    "message": "Copy Reply",
+    "description": "Copy reply button"
+  },
+  "statusReady": {
+    "message": "Ready",
+    "description": "Status: ready"
+  },
+  "statusGenerating": {
+    "message": "Generating...",
+    "description": "Status: generating"
+  },
+  "statusDone": {
+    "message": "Reply generated",
+    "description": "Status: reply generated"
+  },
+  "statusError": {
+    "message": "Error: {{reason}}",
+    "description": "Status: error with reason placeholder"
+  },
+  "errNoApiKey": {
+    "message": "API key not configured. Open Settings to add it.",
+    "description": "Error when API key missing"
+  },
+  "errNoEmail": {
+    "message": "Could not read the email content. Make sure the email is open.",
+    "description": "Error when email content unreadable"
+  },
+  "errInsertFailed": {
+    "message": "Failed to insert reply into Gmail.",
+    "description": "Error when insert fails"
+  },
+  "errApiInvalid": {
+    "message": "API Key is invalid (401). Check your key in Settings.",
+    "description": "Error 401"
+  },
+  "errModelNotFound": {
+    "message": "Model not found (404). Check the Model ID in Settings.",
+    "description": "Error 404"
+  },
+  "errModelMissing": {
+    "message": "Model ID is missing. Set it in Settings.",
+    "description": "Model ID missing"
+  },
+  "errRateLimited": {
+    "message": "Too many requests (429). Please wait and try again.",
+    "description": "Error 429"
+  },
+  "errNetwork": {
+    "message": "Network error. Check your connection or the API endpoint.",
+    "description": "Network error"
+  },
+  "errTimeout": {
+    "message": "Request timed out. Try again later.",
+    "description": "Timeout"
+  },
+  "errModel": {
+    "message": "The model returned an unexpected response.",
+    "description": "Model response error"
+  },
+  "errUnknown": {
+    "message": "Unknown error.",
+    "description": "Fallback error"
+  },
+  "msgInserted": {
+    "message": "Reply inserted into Gmail.",
+    "description": "Success when inserted"
+  },
+  "msgCopied": {
+    "message": "Copied to clipboard.",
+    "description": "Success when copied"
+  },
+  "popupAiConfig": {
+    "message": "AI Configuration",
+    "description": "Popup label"
+  },
+  "popupCurrentSite": {
+    "message": "Current Site",
+    "description": "Popup label"
+  },
+  "popupOpenSettings": {
+    "message": "Open Settings",
+    "description": "Popup button"
+  },
+  "popupRefresh": {
+    "message": "Refresh Assistant",
+    "description": "Popup button"
+  },
+  "popupVersion": {
+    "message": "Version 1.0.0",
+    "description": "Popup version text"
+  },
+  "statusConfigured": {
+    "message": "Configured",
+    "description": "Badge configured"
+  },
+  "statusNotConfigured": {
+    "message": "Not configured",
+    "description": "Badge not configured"
+  },
+  "optionsTitle": {
+    "message": "ReplyPilot Settings",
+    "description": "Options page title"
+  },
+  "optProvider": {
+    "message": "AI Provider",
+    "description": "Options label"
+  },
+  "optProviderHint": {
+    "message": "SiliconFlow is the only provider in v1.",
+    "description": "AI provider hint"
+  },
+  "optApiKey": {
+    "message": "API Key",
+    "description": "Options label"
+  },
+  "optApiKeyHint": {
+    "message": "Stored locally in chrome.storage.local. Never written to code or logs.",
+    "description": "API key hint"
+  },
+  "optModel": {
+    "message": "Model ID",
+    "description": "Options label"
+  },
+  "optModelHint": {
+    "message": "Sent to SiliconFlow. e.g. deepseek-ai/DeepSeek-V4-Flash",
+    "description": "Model ID hint"
+  },
+  "optQuickModel": {
+    "message": "Quick Model",
+    "description": "Quick model selector label"
+  },
+  "optQuickModelHint": {
+    "message": "Pick a recommended model or choose Custom to type your own Model ID.",
+    "description": "Quick model hint"
+  },
+  "quickModelCustom": {
+    "message": "Custom",
+    "description": "Custom model option"
+  },
+  "optLanguage": {
+    "message": "Interface Language",
+    "description": "Options label"
+  },
+  "optLanguageHint": {
+    "message": "Controls the extension's UI language. Reply language is set separately below.",
+    "description": "Hint for language setting"
+  },
+  "optTone": {
+    "message": "Reply Tone",
+    "description": "Options label"
+  },
+  "optPreferences": {
+    "message": "Preferences",
+    "description": "Preferences section legend"
+  },
+  "optSave": {
+    "message": "Save",
+    "description": "Options save button"
+  },
+  "optSaved": {
+    "message": "Settings saved.",
+    "description": "Options saved message"
+  },
+  "optNeedReload": {
+    "message": "Reload the Gmail tab to apply language changes.",
+    "description": "Options reload hint"
+  },
+  "toneProfessional": {
+    "message": "Professional",
+    "description": "Tone option"
+  },
+  "toneFriendly": {
+    "message": "Friendly",
+    "description": "Tone option"
+  },
+  "toneShort": {
+    "message": "Short",
+    "description": "Tone option"
+  },
+  "toneLuxury": {
+    "message": "Luxury Brand",
+    "description": "Tone option"
+  },
+  "optReplyLanguage": {
+    "message": "Reply Language",
+    "description": "Reply language setting label"
+  },
+  "optReplyLanguageHint": {
+    "message": "Controls the language of the generated reply, independent of the interface language.",
+    "description": "Reply language hint"
+  },
+  "replyLanguageAuto": {
+    "message": "Auto (follow customer email)",
+    "description": "Reply language option"
+  },
+  "replyLanguageChinese": {
+    "message": "Chinese",
+    "description": "Reply language option"
+  },
+  "replyLanguageEnglish": {
+    "message": "English",
+    "description": "Reply language option"
+  },
+  "optionTitle": {
+    "message": "Choose a reply",
+    "description": "Options list title"
+  },
+  "optionPositive": {
+    "message": "Positive",
+    "description": "Option name"
+  },
+  "optionNeutral": {
+    "message": "Neutral",
+    "description": "Option name"
+  },
+  "optionDecline": {
+    "message": "Decline",
+    "description": "Option name"
+  },
+  "selectThisOption": {
+    "message": "Use this",
+    "description": "Select option button"
+  },
+  "replyStrategy": {
+    "message": "Reply Strategy",
+    "description": "Strategy selector label"
+  },
+  "strategyAuto": {
+    "message": "Auto",
+    "description": "Auto strategy"
+  },
+  "strategyPositive": {
+    "message": "Positive",
+    "description": "Positive strategy"
+  },
+  "strategyNeutral": {
+    "message": "Neutral",
+    "description": "Neutral strategy"
+  },
+  "strategyDecline": {
+    "message": "Decline",
+    "description": "Decline strategy"
+  },
+  "strategyApologize": {
+    "message": "Apologize",
+    "description": "Apologize strategy"
+  },
+  "strategyEscalate": {
+    "message": "Escalate",
+    "description": "Escalate strategy"
+  },
+  "langEnglish": {
+    "message": "English",
+    "description": "Language option"
+  },
+  "langChinese": {
+    "message": "简体中文",
+    "description": "Language option"
+  },
+  "newEmail": {
+    "message": "New Email",
+    "description": "New email / clear button"
+  },
+  "optProviderCurrent": {
+    "message": "Current Provider",
+    "description": "Provider field label"
+  },
+  "optAiMemoryContent": {
+    "message": "Memory Content",
+    "description": "AI memory content field label"
+  },
+  "optAiMemory": {
+    "message": "AI Memory",
+    "description": "AI memory setting label"
+  },
+  "optAiMemoryHint": {
+    "message": "Add your store name, common replies, personal style, etc. The AI will automatically use this context when generating replies.",
+    "description": "AI memory hint"
+  },
+  "optAiMemoryPlaceholder": {
+    "message": "e.g. Our store is \"Starlight Shop\", we sell pet supplies, ship within 48h, 7-day free returns...",
+    "description": "AI memory textarea placeholder"
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "extName": {
+    "message": "ReplyPilot",
+    "description": "扩展名称"
+  },
+  "extDescription": {
+    "message": "面向电商卖家的 Gmail AI 邮件回复助手",
+    "description": "扩展描述"
+  },
+  "assistantTitle": {
+    "message": "ReplyPilot 助手",
+    "description": "注入卡片的标题"
+  },
+  "generateReply": {
+    "message": "生成回复",
+    "description": "生成回复按钮"
+  },
+  "regenerate": {
+    "message": "重新生成",
+    "description": "重新生成按钮"
+  },
+  "insertReply": {
+    "message": "插入回复",
+    "description": "插入回复按钮"
+  },
+  "copyReply": {
+    "message": "复制回复",
+    "description": "复制回复按钮"
+  },
+  "statusReady": {
+    "message": "就绪",
+    "description": "状态：就绪"
+  },
+  "statusGenerating": {
+    "message": "生成中...",
+    "description": "状态：生成中"
+  },
+  "statusDone": {
+    "message": "回复已生成",
+    "description": "状态：回复已生成"
+  },
+  "statusError": {
+    "message": "错误：{{reason}}",
+    "description": "状态：错误，含原因占位符"
+  },
+  "errNoApiKey": {
+    "message": "未配置 API Key，请打开设置添加。",
+    "description": "缺少 API Key 时提示"
+  },
+  "errNoEmail": {
+    "message": "无法读取邮件内容，请确认邮件已打开。",
+    "description": "无法读取邮件时提示"
+  },
+  "errInsertFailed": {
+    "message": "插入回复到 Gmail 失败。",
+    "description": "插入失败提示"
+  },
+  "errApiInvalid": {
+    "message": "API Key 无效 (401)，请在设置中检查。",
+    "description": "错误 401"
+  },
+  "errModelNotFound": {
+    "message": "模型不存在 (404)，请在设置中检查模型 ID。",
+    "description": "错误 404"
+  },
+  "errModelMissing": {
+    "message": "模型 ID 缺失，请在设置中填写。",
+    "description": "模型 ID 缺失"
+  },
+  "errRateLimited": {
+    "message": "请求过多 (429)，请稍后再试。",
+    "description": "错误 429"
+  },
+  "errNetwork": {
+    "message": "网络错误，请检查连接或接口地址。",
+    "description": "网络错误"
+  },
+  "errTimeout": {
+    "message": "请求超时，请稍后重试。",
+    "description": "超时"
+  },
+  "errModel": {
+    "message": "模型返回了异常结果。",
+    "description": "模型返回错误"
+  },
+  "errUnknown": {
+    "message": "未知错误。",
+    "description": "兜底错误"
+  },
+  "msgInserted": {
+    "message": "回复已插入 Gmail。",
+    "description": "插入成功提示"
+  },
+  "msgCopied": {
+    "message": "已复制到剪贴板。",
+    "description": "复制成功提示"
+  },
+  "popupAiConfig": {
+    "message": "AI 配置",
+    "description": "弹窗标签"
+  },
+  "popupCurrentSite": {
+    "message": "当前网站",
+    "description": "弹窗标签"
+  },
+  "popupOpenSettings": {
+    "message": "打开设置",
+    "description": "弹窗按钮"
+  },
+  "popupRefresh": {
+    "message": "刷新助手",
+    "description": "弹窗按钮"
+  },
+  "popupVersion": {
+    "message": "版本 1.0.0",
+    "description": "弹窗版本文本"
+  },
+  "statusConfigured": {
+    "message": "已配置",
+    "description": "徽章：已配置"
+  },
+  "statusNotConfigured": {
+    "message": "未配置",
+    "description": "徽章：未配置"
+  },
+  "optionsTitle": {
+    "message": "ReplyPilot 设置",
+    "description": "设置页标题"
+  },
+  "optProvider": {
+    "message": "AI 服务商",
+    "description": "设置标签"
+  },
+  "optProviderHint": {
+    "message": "v1 暂时只支持 SiliconFlow。",
+    "description": "服务商说明"
+  },
+  "optApiKey": {
+    "message": "API Key",
+    "description": "设置标签"
+  },
+  "optApiKeyHint": {
+    "message": "存储在本地 chrome.storage.local，不会写入代码或日志。",
+    "description": "API Key 说明"
+  },
+  "optModel": {
+    "message": "模型 ID",
+    "description": "设置标签"
+  },
+  "optModelHint": {
+    "message": "将发送给 SiliconFlow。例如 deepseek-ai/DeepSeek-V4-Flash",
+    "description": "模型 ID 说明"
+  },
+  "optQuickModel": {
+    "message": "快速模型",
+    "description": "快速模型标签"
+  },
+  "optQuickModelHint": {
+    "message": "选择推荐模型，或选「自定义」手动输入模型 ID。",
+    "description": "快速模型说明"
+  },
+  "quickModelCustom": {
+    "message": "自定义",
+    "description": "自定义模型选项"
+  },
+  "optLanguage": {
+    "message": "界面语言",
+    "description": "设置标签"
+  },
+  "optLanguageHint": {
+    "message": "控制扩展的界面语言。回复语言在下方单独设置。",
+    "description": "语言设置说明"
+  },
+  "optTone": {
+    "message": "回复语气",
+    "description": "设置标签"
+  },
+  "optPreferences": {
+    "message": "偏好设置",
+    "description": "偏好设置分组标题"
+  },
+  "optSave": {
+    "message": "保存",
+    "description": "设置保存按钮"
+  },
+  "optSaved": {
+    "message": "设置已保存。",
+    "description": "设置保存提示"
+  },
+  "optNeedReload": {
+    "message": "请刷新 Gmail 标签页以应用语言更改。",
+    "description": "设置重载提示"
+  },
+  "toneProfessional": {
+    "message": "专业",
+    "description": "语气选项"
+  },
+  "toneFriendly": {
+    "message": "友好",
+    "description": "语气选项"
+  },
+  "toneShort": {
+    "message": "简洁",
+    "description": "语气选项"
+  },
+  "toneLuxury": {
+    "message": "高级品牌",
+    "description": "语气选项"
+  },
+  "optReplyLanguage": {
+    "message": "回复语言",
+    "description": "回复语言设置标签"
+  },
+  "optReplyLanguageHint": {
+    "message": "控制 AI 生成回复的语言，与界面语言相互独立。",
+    "description": "回复语言说明"
+  },
+  "replyLanguageAuto": {
+    "message": "自动（跟随客户邮件）",
+    "description": "回复语言选项"
+  },
+  "replyLanguageChinese": {
+    "message": "中文",
+    "description": "回复语言选项"
+  },
+  "replyLanguageEnglish": {
+    "message": "英文",
+    "description": "回复语言选项"
+  },
+  "optionTitle": {
+    "message": "选择一个方案",
+    "description": "方案列表标题"
+  },
+  "optionPositive": {
+    "message": "积极支持",
+    "description": "方案名称"
+  },
+  "optionNeutral": {
+    "message": "客观中性",
+    "description": "方案名称"
+  },
+  "optionDecline": {
+    "message": "委婉拒绝",
+    "description": "方案名称"
+  },
+  "selectThisOption": {
+    "message": "选择此方案",
+    "description": "选择方案按钮"
+  },
+  "replyStrategy": {
+    "message": "回复策略",
+    "description": "策略选择器标签"
+  },
+  "strategyAuto": {
+    "message": "自动",
+    "description": "自动策略"
+  },
+  "strategyPositive": {
+    "message": "积极",
+    "description": "积极策略"
+  },
+  "strategyNeutral": {
+    "message": "中性",
+    "description": "中性策略"
+  },
+  "strategyDecline": {
+    "message": "婉拒",
+    "description": "婉拒策略"
+  },
+  "strategyApologize": {
+    "message": "道歉",
+    "description": "道歉策略"
+  },
+  "strategyEscalate": {
+    "message": "升级",
+    "description": "升级策略"
+  },
+  "langEnglish": {
+    "message": "English",
+    "description": "语言选项"
+  },
+  "langChinese": {
+    "message": "简体中文",
+    "description": "语言选项"
+  },
+  "newEmail": {
+    "message": "新邮件",
+    "description": "新邮件/清空按钮"
+  },
+  "optProviderCurrent": {
+    "message": "当前服务商",
+    "description": "服务商字段标签"
+  },
+  "optAiMemoryContent": {
+    "message": "记忆内容",
+    "description": "AI 记忆内容字段标签"
+  },
+  "optAiMemory": {
+    "message": "AI 记忆",
+    "description": "AI 记忆设置标签"
+  },
+  "optAiMemoryHint": {
+    "message": "填写公司名称、常用回复、个人风格等，AI 生成回复时会自动参考。",
+    "description": "AI 记忆说明"
+  },
+  "optAiMemoryPlaceholder": {
+    "message": "例如：我们店铺叫「星光小铺」，主营宠物用品，48 小时内发货，支持 7 天无理由退货……",
+    "description": "AI 记忆输入框占位符"
+  }
+}

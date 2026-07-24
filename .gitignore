@@ -1,0 +1,7 @@
+dist/
+replypilot-privacy/
+logo-preview/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

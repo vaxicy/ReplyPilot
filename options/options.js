@@ -225,11 +225,9 @@
       btn.disabled = true;
       showTestStatus(status, 'loading', RP.i18n.t('statusGenerating'));
 
-      // Use a short timeout (8s) for test connection — just verify the endpoint responds
-      RP.siliconflow.chat({
+      // Use GET /v1/models to validate API key + network — instant, no model inference needed
+      RP.siliconflow.testConnection({
         apiKey: apiKey,
-        model: model,
-        messages: [{ role: 'user', content: 'Hi' }],
         endpoint: endpoint,
         timeout: 8000
       }).then(function () {

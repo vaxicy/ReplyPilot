@@ -70,7 +70,7 @@ window.RP = window.RP || {};
           model: model,
           messages: messages,
           temperature: 0.7,
-          max_tokens: 1500,
+          max_tokens: opts.max_tokens || 1500,
           stream: false
         }),
         signal: signal
@@ -111,8 +111,64 @@ window.RP = window.RP || {};
     });
   }
 
+  // Quick connectivity test — uses GET /v1/models to validate API key + network instantly.
+  // No model inference needed; returns in <2s on normal connections.
+  function testConnection(opts) {
+    opts = opts || {};
+    var apiKey = opts.apiKey;
+    var endpoint = opts.endpoint || ENDPOINT;
+    var timeout = opts.timeout || 8000;
+
+    return new Promise(function (resolve, reject) {
+      if (!apiKey) {
+        reject(makeError('API_KEY_MISSING', 'API key missing'));
+        return;
+      }
+
+      // Derive base URL from chat completions endpoint: replace /chat/completions with /models
+      var baseUrl = endpoint.replace(/\/chat\/completions\/?$/, '') + '/models';
+
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function () {
+        controller.abort(new Error('TIMEOUT'));
+      }, timeout);
+
+      function cleanup() { clearTimeout(timeoutId); }
+
+      fetch(baseUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + apiKey
+        },
+        signal: controller.signal
+      })
+        .then(function (res) {
+          cleanup();
+          if (res.status === 401) {
+            reject(makeError('API_KEY_INVALID', 'API key invalid (401)'));
+            return;
+          }
+          if (!res.ok) {
+            reject(makeError('HTTP_' + res.status, 'HTTP error ' + res.status));
+            return;
+          }
+          resolve({ status: res.status, ok: true });
+        })
+        .catch(function (err) {
+          cleanup();
+          if (err && err.code) { reject(err); return; }
+          if (isAbortError(err)) {
+            reject(makeError('TIMEOUT', 'Request timed out'));
+          } else {
+            reject(makeError('NETWORK_ERROR', 'Network error'));
+          }
+        });
+    });
+  }
+
   RP.siliconflow = {
     ENDPOINT: ENDPOINT,
-    chat: chat
+    chat: chat,
+    testConnection: testConnection
   };
 })(window.RP);

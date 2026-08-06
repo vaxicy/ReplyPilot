@@ -176,8 +176,18 @@ window.RP = window.RP || {};
       var collapsed = refs.card.classList.toggle('rp-card-collapsed');
       refs.collapseBtn.textContent = collapsed ? '+' : '–';
       refs.collapseBtn.title = collapsed ? 'Expand' : 'Collapse';
-      // Also hide status badge in collapsed mode (belt-and-suspenders with CSS rule)
-      refs.status.style.display = collapsed ? 'none' : '';
+      // Remove status badge from DOM when collapsed; re-insert on expand.
+      // This is more reliable than display:none which can fail in content-script CSS
+      if (collapsed) {
+        if (refs.status.parentNode) {
+          refs.status.parentNode.removeChild(refs.status);
+        }
+      } else {
+        var headRight = refs.collapseBtn.parentNode;
+        if (headRight && !refs.status.parentNode) {
+          headRight.insertBefore(refs.status, refs.collapseBtn);
+        }
+      }
     });
 
     // Dragging

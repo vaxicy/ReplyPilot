@@ -97,6 +97,8 @@
 
     bindTutorialModal();
     bindDonateModal();
+    bindAiMemoryCounter();
+    bindTestConnection();
 
     var form = document.getElementById('optionsForm');
     if (form) {
@@ -186,6 +188,66 @@
     RP.storage.setMany(obj).then(function () {
       showStatus(RP.i18n.t('optSaved'));
     });
+  }
+
+  function bindAiMemoryCounter() {
+    var ta = document.getElementById('aiMemory');
+    var count = document.getElementById('aiMemoryCount');
+    if (!ta || !count) return;
+    var update = function () { count.textContent = ta.value.length; };
+    ta.addEventListener('input', update);
+    update();
+  }
+
+  function bindTestConnection() {
+    var btn = document.getElementById('test-conn-btn');
+    var status = document.getElementById('test-conn-status');
+    if (!btn || !status) return;
+
+    btn.addEventListener('click', function () {
+      var endpoint = document.getElementById('apiEndpoint').value.trim();
+      var apiKey = document.getElementById('apiKey').value.trim();
+      var model = document.getElementById('model').value.trim();
+
+      if (!endpoint) {
+        showTestStatus(status, 'error', RP.i18n.t('errModelMissing'));
+        return;
+      }
+      if (!apiKey) {
+        showTestStatus(status, 'error', RP.i18n.t('errNoApiKey'));
+        return;
+      }
+      if (!model) {
+        showTestStatus(status, 'error', RP.i18n.t('errModelMissing'));
+        return;
+      }
+
+      btn.disabled = true;
+      showTestStatus(status, 'loading', RP.i18n.t('statusGenerating'));
+
+      var client = new RP.SiliconFlowClient({ endpoint: endpoint, apiKey: apiKey, model: model });
+      var payload = {
+        model: model,
+        messages: [{ role: 'user', content: 'Hi' }],
+        max_tokens: 16,
+        stream: false
+      };
+
+      client.chat(payload).then(function () {
+        showTestStatus(status, 'success', RP.i18n.t('testConnSuccess'));
+      }).catch(function (err) {
+        var msg = err && err.message ? err.message : RP.i18n.t('errUnknown');
+        showTestStatus(status, 'error', RP.i18n.t('testConnFailed') + ': ' + msg);
+      }).then(function () {
+        btn.disabled = false;
+      });
+    });
+  }
+
+  function showTestStatus(el, type, text) {
+    el.hidden = false;
+    el.textContent = text;
+    el.className = 'rp-test-status rp-test-status-' + type;
   }
 
   function showStatus(text) {

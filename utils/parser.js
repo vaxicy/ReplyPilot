@@ -58,13 +58,19 @@ window.RP = window.RP || {};
     prompt += buildLanguageRule(ctx.replyLanguage);
     prompt += buildMemoryRule(ctx.aiMemory);
 
+    // Truncate extremely long email body to keep within model token limits
+    var MAX_BODY = 6000;
+    var truncatedBody = emailBody.length > MAX_BODY
+      ? emailBody.substring(0, MAX_BODY) + '\n[...内容已截断...]'
+      : emailBody;
+
     prompt += [
       '',
       '客户邮件：',
       '主题：' + subject,
       '',
       '正文：',
-      emailBody,
+      truncatedBody,
       '',
       '生成规则：',
       '1. 回复必须像真实客服人员，而不是AI。',
@@ -104,8 +110,13 @@ window.RP = window.RP || {};
   // Inject user-supplied background info (AI memory) as reference context.
   function buildMemoryRule(aiMemory) {
     if (!aiMemory || !aiMemory.trim()) return '';
+    var mem = aiMemory.trim();
+    var MAX_MEMORY = 800;
+    if (mem.length > MAX_MEMORY) {
+      mem = mem.substring(0, MAX_MEMORY) + '\n[...记忆已截断...]';
+    }
     return '\n用户背景信息（请作为参考上下文，自然地融入回复，不要生硬照搬）：\n'
-      + aiMemory.trim() + '\n';
+      + mem + '\n';
   }
 
   // Build the prompt that asks the model to return multiple reply options.
@@ -127,13 +138,19 @@ window.RP = window.RP || {};
     prompt += buildLanguageRule(ctx.replyLanguage);
     prompt += buildMemoryRule(ctx.aiMemory);
 
+    // Truncate extremely long email body to keep within model token limits
+    var MAX_BODY = 6000;
+    var truncatedBody = emailBody.length > MAX_BODY
+      ? emailBody.substring(0, MAX_BODY) + '\n[...内容已截断...]'
+      : emailBody;
+
     prompt += [
       '',
       '客户邮件：',
       '主题：' + subject,
       '',
       '正文：',
-      emailBody,
+      truncatedBody,
       '',
       '三个方案要求：',
       '1. 积极支持（Positive）：支持客户、提供解决方案、表达愿意帮忙。',

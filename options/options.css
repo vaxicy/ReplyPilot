@@ -468,3 +468,54 @@ body {
   text-decoration: none;
 }
 
+/* Test connection button + status */
+.rp-test-conn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.rp-test-conn .rp-btn-secondary {
+  background: #f3f4f8;
+  border-color: #e2e5ee;
+  color: #2b2f3a;
+  font-weight: 600;
+}
+
+.rp-test-conn .rp-btn-secondary:hover {
+  background: #eceef5;
+  border-color: #d3d7e3;
+}
+
+.rp-test-conn .rp-btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rp-test-status {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.rp-test-status-success {
+  color: #1a8a4f;
+}
+
+.rp-test-status-error {
+  color: #d6453d;
+}
+
+.rp-test-status-loading {
+  color: #6366f1;
+}
+
+/* AI Memory char counter */
+.rp-char-count {
+  font-size: 11px;
+  color: #9aa0ac;
+  text-align: right;
+  margin-top: 4px;
+}
+

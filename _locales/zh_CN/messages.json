@@ -414,5 +414,17 @@
   "donatePayPalBtn": {
     "message": "通过 PayPal 打赏",
     "description": "PayPal 打赏按钮"
+  },
+  "optTestConnection": {
+    "message": "测试连接",
+    "description": "Test connection button"
+  },
+  "testConnSuccess": {
+    "message": "连接成功 ✓",
+    "description": "Test connection success"
+  },
+  "testConnFailed": {
+    "message": "连接失败",
+    "description": "Test connection failed"
   }
 }

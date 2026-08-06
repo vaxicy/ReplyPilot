@@ -414,5 +414,17 @@
   "donatePayPalBtn": {
     "message": "Donate via PayPal",
     "description": "PayPal donate button"
+  },
+  "optTestConnection": {
+    "message": "Test Connection",
+    "description": "Test connection button"
+  },
+  "testConnSuccess": {
+    "message": "Connection successful ✓",
+    "description": "Test connection success"
+  },
+  "testConnFailed": {
+    "message": "Connection failed",
+    "description": "Test connection failed"
   }
 }

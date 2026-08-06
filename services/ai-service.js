@@ -124,7 +124,8 @@ window.RP = window.RP || {};
         apiKey: s.rp_apiKey,
         model: s.rp_model,
         endpoint: s.rp_apiEndpoint,
-        messages: messages
+        messages: messages,
+        max_tokens: 2048
       }).then(function (data) {
         var reply = parseReply(extractContent(data));
         if (!reply) {
@@ -167,7 +168,8 @@ window.RP = window.RP || {};
         apiKey: s.rp_apiKey,
         model: s.rp_model,
         endpoint: s.rp_apiEndpoint,
-        messages: messages
+        messages: messages,
+        max_tokens: 2048
       }).then(function (data) {
         var options = parseOptions(extractContent(data));
         if (!options.length) {

@@ -8,7 +8,7 @@ window.RP = window.RP || {};
   'use strict';
 
   var ENDPOINT = 'https://api.siliconflow.cn/v1/chat/completions';
-  var DEFAULT_TIMEOUT = 30000; // 30s client-side ceiling
+  var DEFAULT_TIMEOUT = 45000; // 45s client-side ceiling
 
   function makeError(code, message) {
     var e = new Error(message || code);
@@ -69,8 +69,8 @@ window.RP = window.RP || {};
         body: JSON.stringify({
           model: model,
           messages: messages,
-          temperature: 0.7,
-          max_tokens: opts.max_tokens || 1500,
+          temperature: 0.5,
+          max_tokens: opts.max_tokens || 2048,
           stream: false
         }),
         signal: signal

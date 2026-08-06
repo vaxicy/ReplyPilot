@@ -49,11 +49,6 @@
           <input type="text" id="model" name="model" data-i18n-placeholder="optModel" />
           <p class="rp-hint" data-i18n="optModelHint">The model ID is sent to the API. e.g. deepseek-ai/DeepSeek-V4-Flash</p>
         </div>
-
-        <div class="rp-field rp-test-conn">
-          <button type="button" id="test-conn-btn" class="rp-btn rp-btn-secondary" data-i18n="optTestConnection">Test Connection</button>
-          <span id="test-conn-status" class="rp-test-status" hidden></span>
-        </div>
       </section>
 
       <section class="rp-section">
@@ -92,9 +87,9 @@
         <h2 class="rp-section-title" data-i18n="optAiMemory">AI Memory</h2>
         <div class="rp-field">
           <label for="aiMemory" data-i18n="optAiMemoryContent">Memory Content</label>
-          <textarea id="aiMemory" name="aiMemory" rows="4" maxlength="800"
+          <textarea id="aiMemory" name="aiMemory" rows="3" maxlength="500"
                     data-i18n-placeholder="optAiMemoryPlaceholder"></textarea>
-          <div class="rp-char-count"><span id="aiMemoryCount">0</span> / 800</div>
+          <div class="rp-char-count"><span id="aiMemoryCount">0</span> / 500</div>
           <p class="rp-hint" data-i18n="optAiMemoryHint">Add your store name, common replies, personal style, etc. The AI will automatically use this context when generating replies.</p>
         </div>
       </section>

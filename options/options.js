@@ -98,7 +98,6 @@
     bindTutorialModal();
     bindDonateModal();
     bindAiMemoryCounter();
-    bindTestConnection();
 
     var form = document.getElementById('optionsForm');
     if (form) {
@@ -197,58 +196,6 @@
     var update = function () { count.textContent = ta.value.length; };
     ta.addEventListener('input', update);
     update();
-  }
-
-  function bindTestConnection() {
-    var btn = document.getElementById('test-conn-btn');
-    var status = document.getElementById('test-conn-status');
-    if (!btn || !status) return;
-
-    btn.addEventListener('click', function () {
-      var endpoint = document.getElementById('apiEndpoint').value.trim();
-      var apiKey = document.getElementById('apiKey').value.trim();
-      var model = document.getElementById('model').value.trim();
-
-      if (!endpoint) {
-        showTestStatus(status, 'error', RP.i18n.t('errModelMissing'));
-        return;
-      }
-      if (!apiKey) {
-        showTestStatus(status, 'error', RP.i18n.t('errNoApiKey'));
-        return;
-      }
-      if (!model) {
-        showTestStatus(status, 'error', RP.i18n.t('errModelMissing'));
-        return;
-      }
-
-      btn.disabled = true;
-      showTestStatus(status, 'loading', RP.i18n.t('statusGenerating'));
-
-      // Use GET /v1/models to validate API key + network — instant, no model inference needed
-      RP.siliconflow.testConnection({
-        apiKey: apiKey,
-        endpoint: endpoint,
-        timeout: 8000
-      }).then(function () {
-        showTestStatus(status, 'success', RP.i18n.t('testConnSuccess'));
-      }).catch(function (err) {
-        var msg = err && err.message ? err.message : RP.i18n.t('errUnknown');
-        // Shorten timeout error message
-        if (msg.indexOf('timeout') !== -1 || msg.indexOf('Timeout') !== -1) {
-          msg = RP.i18n.t('testConnTimeout');
-        }
-        showTestStatus(status, 'error', RP.i18n.t('testConnFailed') + ': ' + msg);
-      }).then(function () {
-        btn.disabled = false;
-      });
-    });
-  }
-
-  function showTestStatus(el, type, text) {
-    el.hidden = false;
-    el.textContent = text;
-    el.className = 'rp-test-status rp-test-status-' + type;
   }
 
   function showStatus(text) {

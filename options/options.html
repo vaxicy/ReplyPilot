@@ -84,13 +84,27 @@
       </section>
 
       <section class="rp-section">
-        <h2 class="rp-section-title" data-i18n="optAiMemory">AI Memory</h2>
+        <h2 class="rp-section-title" data-i18n="optStoreInfo">Store Info</h2>
         <div class="rp-field">
-          <label for="aiMemory" data-i18n="optAiMemoryContent">Memory Content</label>
-          <textarea id="aiMemory" name="aiMemory" rows="3" maxlength="500"
-                    data-i18n-placeholder="optAiMemoryPlaceholder"></textarea>
-          <div class="rp-char-count"><span id="aiMemoryCount">0</span> / 500</div>
-          <p class="rp-hint" data-i18n="optAiMemoryHint">Add your store name, common replies, personal style, etc. The AI will automatically use this context when generating replies.</p>
+          <label for="storeName" data-i18n="optStoreName">Store Name</label>
+          <input type="text" id="storeName" name="storeName" maxlength="30"
+                 data-i18n-placeholder="optStoreNamePlaceholder" />
+        </div>
+        <div class="rp-field">
+          <label for="storeCategory" data-i18n="optStoreCategory">Main Category</label>
+          <input type="text" id="storeCategory" name="storeCategory" maxlength="50"
+                 data-i18n-placeholder="optStoreCategoryPlaceholder" />
+        </div>
+        <div class="rp-field">
+          <label for="shippingInfo" data-i18n="optShippingInfo">Shipping Info</label>
+          <input type="text" id="shippingInfo" name="shippingInfo" maxlength="30"
+                 data-i18n-placeholder="optShippingInfoPlaceholder" />
+        </div>
+        <div class="rp-field">
+          <label for="returnPolicy" data-i18n="optReturnPolicy">Return Policy</label>
+          <input type="text" id="returnPolicy" name="returnPolicy" maxlength="40"
+                 data-i18n-placeholder="optReturnPolicyPlaceholder" />
+          <p class="rp-hint" data-i18n="optStoreInfoHint">Fill in your store details so the AI can use them when generating replies. Keep each field short.</p>
         </div>
       </section>
 

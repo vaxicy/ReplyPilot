@@ -367,21 +367,45 @@
     "message": "当前服务商",
     "description": "服务商字段标签"
   },
-  "optAiMemoryContent": {
-    "message": "记忆内容",
-    "description": "AI 记忆内容字段标签"
+  "optStoreInfo": {
+    "message": "店铺信息",
+    "description": "店铺信息设置标签"
   },
-  "optAiMemory": {
-    "message": "AI 记忆",
-    "description": "AI 记忆设置标签"
+  "optStoreName": {
+    "message": "店铺名称",
+    "description": "店铺名称字段标签"
   },
-  "optAiMemoryHint": {
-    "message": "填写公司名称、常用回复、个人风格等，AI 生成回复时会自动参考。",
-    "description": "AI 记忆说明"
+  "optStoreNamePlaceholder": {
+    "message": "如：星光小铺",
+    "description": "店铺名称输入框占位符"
   },
-  "optAiMemoryPlaceholder": {
-    "message": "例如：我们店铺叫「星光小铺」，主营宠物用品，48 小时内发货，支持 7 天无理由退货……",
-    "description": "AI 记忆输入框占位符"
+  "optStoreCategory": {
+    "message": "主营品类",
+    "description": "主营品类字段标签"
+  },
+  "optStoreCategoryPlaceholder": {
+    "message": "如：宠物用品、数码配件",
+    "description": "主营品类输入框占位符"
+  },
+  "optShippingInfo": {
+    "message": "发货说明",
+    "description": "发货说明字段标签"
+  },
+  "optShippingInfoPlaceholder": {
+    "message": "如：48 小时内发货",
+    "description": "发货说明输入框占位符"
+  },
+  "optReturnPolicy": {
+    "message": "售后政策",
+    "description": "售后政策字段标签"
+  },
+  "optReturnPolicyPlaceholder": {
+    "message": "如：支持 7 天无理由退货",
+    "description": "售后政策输入框占位符"
+  },
+  "optStoreInfoHint": {
+    "message": "填写店铺信息，AI 生成回复时会自动参考。每个字段请简短填写。",
+    "description": "店铺信息说明"
   },
   "donateTitle": {
     "message": "支持作者",

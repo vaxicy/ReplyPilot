@@ -105,7 +105,10 @@ window.RP = window.RP || {};
       var prompt = RP.parser.buildPrompt({
         tone: s.rp_tone,
         replyLanguage: s.rp_replyLanguage || 'auto',
-        aiMemory: s.rp_aiMemory || '',
+        storeName: s.rp_storeName || '',
+        storeCategory: s.rp_storeCategory || '',
+        shippingInfo: s.rp_shippingInfo || '',
+        returnPolicy: s.rp_returnPolicy || '',
         subject: context.subject,
         emailBody: context.emailBody
       });
@@ -148,7 +151,10 @@ window.RP = window.RP || {};
       var prompt = RP.parser.buildOptionsPrompt({
         tone: s.rp_tone,
         replyLanguage: s.rp_replyLanguage || 'auto',
-        aiMemory: s.rp_aiMemory || '',
+        storeName: s.rp_storeName || '',
+        storeCategory: s.rp_storeCategory || '',
+        shippingInfo: s.rp_shippingInfo || '',
+        returnPolicy: s.rp_returnPolicy || '',
         subject: context.subject,
         emailBody: context.emailBody
       });

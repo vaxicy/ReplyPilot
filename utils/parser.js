@@ -37,13 +37,24 @@ window.RP = window.RP || {};
 
   // Cap sizes to keep prompts short and response fast
   var MAX_BODY = 3000;        // ~750 tokens
-  var MAX_MEMORY = 500;       // ~125 tokens
 
   function clampText(text, max, label) {
     if (!text) return '';
     var t = String(text).trim();
     if (t.length <= max) return t;
     return t.substring(0, max) + '\n[...' + label + ' truncated...]';
+  }
+
+  // Build a compact one-line store context from structured fields.
+  // Keeps the prompt short (~80 chars) to avoid timeouts / truncation.
+  function buildStoreContext(ctx) {
+    ctx = ctx || {};
+    var parts = [];
+    if (ctx.storeName) parts.push('Store: ' + ctx.storeName.trim());
+    if (ctx.storeCategory) parts.push('Category: ' + ctx.storeCategory.trim());
+    if (ctx.shippingInfo) parts.push('Shipping: ' + ctx.shippingInfo.trim());
+    if (ctx.returnPolicy) parts.push('Returns: ' + ctx.returnPolicy.trim());
+    return parts.length ? parts.join('. ') + '.' : '';
   }
 
   // Build the prompt for generating a single reply (kept for compatibility).
@@ -53,7 +64,7 @@ window.RP = window.RP || {};
     var lang = replyLanguageLabel(ctx.replyLanguage);
     var subject = ctx.subject || '';
     var body = clampText(ctx.emailBody, MAX_BODY, 'content');
-    var mem = clampText(ctx.aiMemory, MAX_MEMORY, 'memory');
+    var mem = buildStoreContext(ctx);
 
     // Compact prompt: ~250 tokens of template + customer content
     var lines = [
@@ -74,7 +85,7 @@ window.RP = window.RP || {};
     var lang = replyLanguageLabel(ctx.replyLanguage);
     var subject = ctx.subject || '';
     var body = clampText(ctx.emailBody, MAX_BODY, 'content');
-    var mem = clampText(ctx.aiMemory, MAX_MEMORY, 'memory');
+    var mem = buildStoreContext(ctx);
 
     // Compact prompt: ~250 tokens of template + customer content
     var lines = [

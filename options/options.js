@@ -5,7 +5,8 @@
   'use strict';
 
   var ids = ['provider', 'apiEndpoint', 'apiKey', 'model',
-             'language', 'tone', 'replyLanguage', 'aiMemory'];
+             'language', 'tone', 'replyLanguage',
+             'storeName', 'storeCategory', 'shippingInfo', 'returnPolicy'];
 
   // Per-provider defaults. Custom has no preset models/endpoint.
   var PROVIDER_PRESETS = {
@@ -97,7 +98,6 @@
 
     bindTutorialModal();
     bindDonateModal();
-    bindAiMemoryCounter();
 
     var form = document.getElementById('optionsForm');
     if (form) {
@@ -189,13 +189,8 @@
     });
   }
 
-  function bindAiMemoryCounter() {
-    var ta = document.getElementById('aiMemory');
-    var count = document.getElementById('aiMemoryCount');
-    if (!ta || !count) return;
-    var update = function () { count.textContent = ta.value.length; };
-    ta.addEventListener('input', update);
-    update();
+  function bindStoreInfo() {
+    // No-op placeholder kept for future store-info interactions if needed.
   }
 
   function showStatus(text) {

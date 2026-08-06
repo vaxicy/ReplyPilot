@@ -468,11 +468,4 @@ body {
   text-decoration: none;
 }
 
-/* AI Memory char counter */
-.rp-char-count {
-  font-size: 11px;
-  color: #9aa0ac;
-  text-align: right;
-  margin-top: 4px;
-}
 

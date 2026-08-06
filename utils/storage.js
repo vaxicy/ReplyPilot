@@ -15,7 +15,10 @@ window.RP = window.RP || {};
     rp_model: 'deepseek-ai/DeepSeek-V4-Flash',
     rp_tone: 'professional',      // professional | friendly | short | luxury
     rp_replyLanguage: 'auto',     // auto | zh | en
-    rp_aiMemory: ''               // user background info injected into prompts
+    rp_storeName: '',             // store name injected into prompts
+    rp_storeCategory: '',         // main category injected into prompts
+    rp_shippingInfo: '',          // shipping info injected into prompts
+    rp_returnPolicy: ''           // return policy injected into prompts
   };
 
   function get(key) {

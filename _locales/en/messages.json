@@ -367,21 +367,45 @@
     "message": "Current Provider",
     "description": "Provider field label"
   },
-  "optAiMemoryContent": {
-    "message": "Memory Content",
-    "description": "AI memory content field label"
+  "optStoreInfo": {
+    "message": "Store Info",
+    "description": "Store info setting label"
   },
-  "optAiMemory": {
-    "message": "AI Memory",
-    "description": "AI memory setting label"
+  "optStoreName": {
+    "message": "Store Name",
+    "description": "Store name field label"
   },
-  "optAiMemoryHint": {
-    "message": "Add your store name, common replies, personal style, etc. The AI will automatically use this context when generating replies.",
-    "description": "AI memory hint"
+  "optStoreNamePlaceholder": {
+    "message": "e.g. Starlight Shop",
+    "description": "Store name input placeholder"
   },
-  "optAiMemoryPlaceholder": {
-    "message": "e.g. Our store is \"Starlight Shop\", we sell pet supplies, ship within 48h, 7-day free returns...",
-    "description": "AI memory textarea placeholder"
+  "optStoreCategory": {
+    "message": "Main Category",
+    "description": "Main category field label"
+  },
+  "optStoreCategoryPlaceholder": {
+    "message": "e.g. pet supplies, electronics",
+    "description": "Main category input placeholder"
+  },
+  "optShippingInfo": {
+    "message": "Shipping Info",
+    "description": "Shipping info field label"
+  },
+  "optShippingInfoPlaceholder": {
+    "message": "e.g. ships within 48h",
+    "description": "Shipping info input placeholder"
+  },
+  "optReturnPolicy": {
+    "message": "Return Policy",
+    "description": "Return policy field label"
+  },
+  "optReturnPolicyPlaceholder": {
+    "message": "e.g. 7-day free returns",
+    "description": "Return policy input placeholder"
+  },
+  "optStoreInfoHint": {
+    "message": "Fill in your store details so the AI can use them when generating replies. Keep each field short.",
+    "description": "Store info hint"
   },
   "donateTitle": {
     "message": "Support the Author",

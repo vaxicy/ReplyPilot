@@ -14,14 +14,17 @@ body {
 
 .rp-popup {
   width: 280px;
+  height: 280px;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .rp-popup-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .rp-popup-logo {
@@ -39,8 +42,8 @@ body {
   background: #fbfbfd;
   border: 1px solid #eef0f5;
   border-radius: 10px;
-  padding: 10px 12px;
-  margin-bottom: 14px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
 }
 
 .rp-status-row {
@@ -78,6 +81,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: auto;
 }
 
 .rp-btn {
@@ -108,11 +112,4 @@ body {
 .rp-btn-primary:hover {
   background: #5457e6;
   border-color: #5457e6;
-}
-
-.rp-popup-footer {
-  margin-top: 14px;
-  text-align: center;
-  font-size: 11px;
-  color: #9aa0ac;
 }

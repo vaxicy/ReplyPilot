@@ -184,6 +184,45 @@
   flex: 1 1 100%;
 }
 
+/* Collapse toggle button in the header */
+.rp-card-collapse {
+  appearance: none;
+  border: none;
+  background: #f1f2f7;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.rp-card-collapse:hover {
+  background: #e3e6f0;
+  color: #2b2f3a;
+}
+
+/* Collapsed state: hide body + actions, keep only the header bar */
+.rp-card.rp-card-collapsed {
+  max-height: none;
+  overflow: visible;
+}
+
+.rp-card.rp-card-collapsed .rp-card-body,
+.rp-card.rp-card-collapsed .rp-card-actions {
+  display: none;
+}
+
+.rp-card.rp-card-collapsed .rp-card-head {
+  margin-bottom: 0;
+}
+
 .rp-btn {
   appearance: none;
   border: 1px solid #e2e5ee;

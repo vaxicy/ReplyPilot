@@ -391,6 +391,7 @@ body {
   color: #6366f1;
   cursor: pointer;
   border-radius: 6px;
+  text-decoration: none;
   transition: background 0.12s ease, text-decoration 0.12s ease;
 }
 

@@ -68,9 +68,17 @@ window.RP = window.RP || {};
     var status = document.createElement('span');
     status.className = 'rp-card-status';
 
+    var collapseBtn = document.createElement('button');
+    collapseBtn.type = 'button';
+    collapseBtn.className = 'rp-card-collapse';
+    collapseBtn.textContent = '–';
+    collapseBtn.title = 'Collapse';
+    collapseBtn.setAttribute('aria-label', 'Collapse');
+
     var headRight = document.createElement('div');
     headRight.className = 'rp-card-head-right';
     headRight.appendChild(status);
+    headRight.appendChild(collapseBtn);
 
     head.appendChild(dragIcon);
     head.appendChild(title);
@@ -140,6 +148,7 @@ window.RP = window.RP || {};
       ins: ins,
       copy: copy,
       clear: clear,
+      collapseBtn: collapseBtn,
       optionsPanel: optionsPanel,
       optionsTitle: optionsTitle,
       optionsList: optionsList
@@ -160,6 +169,14 @@ window.RP = window.RP || {};
     refs.ins.addEventListener('click', function () { onInsert(); });
     refs.copy.addEventListener('click', function () { onCopy(); });
     refs.clear.addEventListener('click', function () { onClear(); });
+
+    // Collapse / expand the card body+actions, leaving only the header.
+    refs.collapseBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var collapsed = refs.card.classList.toggle('rp-card-collapsed');
+      refs.collapseBtn.textContent = collapsed ? '+' : '–';
+      refs.collapseBtn.title = collapsed ? 'Expand' : 'Collapse';
+    });
 
     // Dragging
     var isDragging = false;

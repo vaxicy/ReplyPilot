@@ -47,18 +47,23 @@ window.RP = window.RP || {};
       document.addEventListener('focusin', debouncedScan, true);
 
       // Re-translate the floating card when the user changes language in Options.
-      chrome.storage.onChanged.addListener(function (changes, area) {
-        if (area === 'local' && changes.rp_language) {
-          var newLang = changes.rp_language.newValue;
-          if (RP.i18n.getLanguage() !== newLang) {
-            RP.i18n.setLanguage(newLang).then(function () {
+      try {
+        chrome.storage.onChanged.addListener(function (changes, area) {
+          if (area === 'local' && changes.rp_language) {
+            var newLang = changes.rp_language.newValue;
+            if (RP.i18n.getLanguage() !== newLang) {
+              RP.i18n.setLanguage(newLang).then(function () {
+                RP.ui.refreshAll();
+              });
+            } else {
               RP.ui.refreshAll();
-            });
-          } else {
-            RP.ui.refreshAll();
+            }
           }
-        }
-      });
+        });
+      } catch (e) {
+        // Extension context invalidated (extension reloaded while Gmail tab open)
+        // — ignore silently; user will need to refresh the Gmail tab.
+      }
 
       // Messages from the popup ("Refresh Assistant").
       chrome.runtime.onMessage.addListener(function (msg) {

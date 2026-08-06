@@ -249,28 +249,32 @@ window.RP = window.RP || {};
     showOptions(false);
     setStatus(RP.i18n.t('statusGenerating'), 'generating');
 
+    // Safety net: ensure setBusy(false) always runs even if everything else fails
+    function done() { setBusy(false); }
+
     var ctx = RP.dom.getConversation();
     if (!ctx.emailBody) {
       setStatus(RP.i18n.t('errNoEmail'), 'error');
-      setBusy(false);
+      done();
       return;
     }
 
-    RP.ai.generateOptions(ctx)
-      .then(function (options) {
-        if (!options || !options.length) {
-          setStatus(RP.i18n.t('statusError', { reason: RP.i18n.t('errModel') }), 'error');
-          return;
-        }
-        renderOptions(options);
-        setStatus(RP.i18n.t('statusDone'), 'done');
-      })
-      .catch(function (e) {
-        setStatus(RP.i18n.t('statusError', { reason: friendlyError(e) }), 'error');
-      })
-      .then(function () {
-        setBusy(false);
-      });
+    var p = RP.ai.generateOptions(ctx);
+    // Attach a noop catch so the chain always has a .then to clean up
+    p.then(function (options) {
+      if (!options || !options.length) {
+        setStatus(RP.i18n.t('statusError', { reason: RP.i18n.t('errModel') }), 'error');
+        return;
+      }
+      renderOptions(options);
+      setStatus(RP.i18n.t('statusDone'), 'done');
+    }).catch(function (e) {
+      var msg = friendlyError(e);
+      setStatus(RP.i18n.t('statusError', { reason: msg }), 'error');
+    });
+
+    // Always restore the button state after the request settles (success or error)
+    Promise.resolve(p).then(done, done);
   }
 
   function renderOptions(options) {

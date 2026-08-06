@@ -226,16 +226,7 @@
       showTestStatus(status, 'loading', RP.i18n.t('statusGenerating'));
 
       // Use a short timeout (8s) for test connection — just verify the endpoint responds
-      var client = new RP.SiliconFlowClient({ endpoint: endpoint, apiKey: apiKey, model: model });
-      var payload = {
-        model: model,
-        messages: [{ role: 'user', content: 'Hi' }],
-        max_tokens: 4,
-        stream: false
-      };
-
-      // Override timeout to 8s for quick testing
-      client.chat({
+      RP.siliconflow.chat({
         apiKey: apiKey,
         model: model,
         messages: [{ role: 'user', content: 'Hi' }],

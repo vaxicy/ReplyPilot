@@ -398,6 +398,12 @@ body {
   text-decoration: underline;
 }
 
+.rp-entry-sep {
+  color: #c2c6d4;
+  font-weight: 400;
+  margin: 0 8px;
+}
+
 /* Donate modal: wider to fit the QR */
 .rp-donate-modal .rp-modal {
   max-width: 520px;

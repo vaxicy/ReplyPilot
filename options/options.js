@@ -98,6 +98,7 @@
 
     bindTutorialModal();
     bindDonateModal();
+    bindFeedbackLink();
 
     var form = document.getElementById('optionsForm');
     if (form) {
@@ -172,6 +173,18 @@
     });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && !modal.hidden) close();
+    });
+  }
+
+  function bindFeedbackLink() {
+    var link = document.getElementById('feedbackLink');
+    if (!link) return;
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      var mailto = 'mailto:huangzero2004@gmail.com?subject=' +
+        encodeURIComponent('ReplyPilot 问题反馈') +
+        '&body=' + encodeURIComponent('Hi, I would like to report a problem / give feedback:\n\n');
+      window.open(mailto, '_blank');
     });
   }
 

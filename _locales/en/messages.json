@@ -423,6 +423,10 @@
     "message": "Support the author — your encouragement means the world to me!",
     "description": "Donate entry text at the bottom of options"
   },
+  "feedbackEntryText": {
+    "message": "Feedback",
+    "description": "Feedback entry text next to donate, opens mail client"
+  },
   "donateTabWeChat": {
     "message": "WeChat Tip",
     "description": "Donate tab: WeChat"

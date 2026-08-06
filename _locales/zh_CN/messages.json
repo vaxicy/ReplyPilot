@@ -423,6 +423,10 @@
     "message": "点击支持作者，你的鼓励是我最大的动力！",
     "description": "设置页底部打赏入口文字"
   },
+  "feedbackEntryText": {
+    "message": "问题反馈",
+    "description": "设置页底部打赏旁的反馈入口文字，点击打开邮件"
+  },
   "donateTabWeChat": {
     "message": "微信打赏",
     "description": "打赏 tab：微信"

@@ -18,7 +18,8 @@ window.RP = window.RP || {};
     rp_storeName: '',             // store name injected into prompts
     rp_storeCategory: '',         // main category injected into prompts
     rp_shippingInfo: '',          // shipping info injected into prompts
-    rp_returnPolicy: ''           // return policy injected into prompts
+    rp_returnPolicy: '',          // return policy injected into prompts
+    rp_shippingRegions: ''        // shipping regions injected into prompts
   };
 
   function get(key) {

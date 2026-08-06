@@ -109,6 +109,7 @@ window.RP = window.RP || {};
         storeCategory: s.rp_storeCategory || '',
         shippingInfo: s.rp_shippingInfo || '',
         returnPolicy: s.rp_returnPolicy || '',
+        shippingRegions: s.rp_shippingRegions || '',
         subject: context.subject,
         emailBody: context.emailBody
       });
@@ -155,6 +156,7 @@ window.RP = window.RP || {};
         storeCategory: s.rp_storeCategory || '',
         shippingInfo: s.rp_shippingInfo || '',
         returnPolicy: s.rp_returnPolicy || '',
+        shippingRegions: s.rp_shippingRegions || '',
         subject: context.subject,
         emailBody: context.emailBody
       });

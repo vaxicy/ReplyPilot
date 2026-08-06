@@ -54,6 +54,7 @@ window.RP = window.RP || {};
     if (ctx.storeCategory) parts.push('Category: ' + ctx.storeCategory.trim());
     if (ctx.shippingInfo) parts.push('Shipping: ' + ctx.shippingInfo.trim());
     if (ctx.returnPolicy) parts.push('Returns: ' + ctx.returnPolicy.trim());
+    if (ctx.shippingRegions) parts.push('Ships to: ' + ctx.shippingRegions.trim());
     return parts.length ? parts.join('. ') + '.' : '';
   }
 

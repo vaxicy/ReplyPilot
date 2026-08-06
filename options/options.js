@@ -6,7 +6,7 @@
 
   var ids = ['provider', 'apiEndpoint', 'apiKey', 'model',
              'language', 'tone', 'replyLanguage',
-             'storeName', 'storeCategory', 'shippingInfo', 'returnPolicy'];
+             'storeName', 'storeCategory', 'shippingInfo', 'returnPolicy', 'shippingRegions'];
 
   // Per-provider defaults. Custom has no preset models/endpoint.
   var PROVIDER_PRESETS = {

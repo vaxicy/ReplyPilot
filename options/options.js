@@ -225,18 +225,30 @@
       btn.disabled = true;
       showTestStatus(status, 'loading', RP.i18n.t('statusGenerating'));
 
+      // Use a short timeout (8s) for test connection — just verify the endpoint responds
       var client = new RP.SiliconFlowClient({ endpoint: endpoint, apiKey: apiKey, model: model });
       var payload = {
         model: model,
         messages: [{ role: 'user', content: 'Hi' }],
-        max_tokens: 16,
+        max_tokens: 4,
         stream: false
       };
 
-      client.chat(payload).then(function () {
+      // Override timeout to 8s for quick testing
+      client.chat({
+        apiKey: apiKey,
+        model: model,
+        messages: [{ role: 'user', content: 'Hi' }],
+        endpoint: endpoint,
+        timeout: 8000
+      }).then(function () {
         showTestStatus(status, 'success', RP.i18n.t('testConnSuccess'));
       }).catch(function (err) {
         var msg = err && err.message ? err.message : RP.i18n.t('errUnknown');
+        // Shorten timeout error message
+        if (msg.indexOf('timeout') !== -1 || msg.indexOf('Timeout') !== -1) {
+          msg = RP.i18n.t('testConnTimeout');
+        }
         showTestStatus(status, 'error', RP.i18n.t('testConnFailed') + ': ' + msg);
       }).then(function () {
         btn.disabled = false;

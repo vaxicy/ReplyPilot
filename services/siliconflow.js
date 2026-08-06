@@ -31,6 +31,7 @@ window.RP = window.RP || {};
       var messages = opts.messages || [];
       var endpoint = opts.endpoint || ENDPOINT; // OpenAI-compatible URL
       var signal = opts.signal; // optional AbortSignal for timeout
+      var timeout = opts.timeout || DEFAULT_TIMEOUT;
 
     return new Promise(function (resolve, reject) {
       if (!apiKey) {
@@ -49,7 +50,7 @@ window.RP = window.RP || {};
         signal = controller.signal;
         timeoutId = setTimeout(function () {
           controller.abort(new Error('TIMEOUT'));
-        }, DEFAULT_TIMEOUT);
+        }, timeout);
       }
 
       function cleanup() {

@@ -426,5 +426,9 @@
   "testConnFailed": {
     "message": "连接失败",
     "description": "Test connection failed"
+  },
+  "testConnTimeout": {
+    "message": "请求超时（8秒内无响应）",
+    "description": "Test connection timeout message"
   }
 }

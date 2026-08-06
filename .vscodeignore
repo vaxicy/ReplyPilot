@@ -1,0 +1,12 @@
+# 本地/敏感文件不进包
+.codebuddy/**
+node_modules/**
+
+# 调试/临时脚本不进包
+scripts/**
+*.py
+*.bak
+*.tmp
+
+# 素材源脚本（已生成的 PNG 保留进包）
+logo-preview/*.py

@@ -19,26 +19,6 @@
     "message": "Regenerate",
     "description": "Regenerate reply button"
   },
-  "feedbackToggle": {
-    "message": "Edit feedback",
-    "description": "Button that reveals the feedback input"
-  },
-  "feedbackPlaceholder": {
-    "message": "Not happy with the reply? Enter edit instructions, e.g. be more polite / add refund details / keep it under 50 words",
-    "description": "Feedback input placeholder"
-  },
-  "regenerateWithFeedback": {
-    "message": "Regenerate with feedback",
-    "description": "Regenerate button with feedback"
-  },
-  "feedbackNoReply": {
-    "message": "Generate a reply first, then add your edit instructions.",
-    "description": "Prompt shown when no reply exists yet"
-  },
-  "statusRefining": {
-    "message": "Refining by feedback…",
-    "description": "Status: refining by feedback"
-  },
   "insertReply": {
     "message": "Insert Reply",
     "description": "Insert reply button"

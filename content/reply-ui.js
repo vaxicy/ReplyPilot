@@ -118,33 +118,9 @@ window.RP = window.RP || {};
     optionsPanel.appendChild(optionsTitle);
     optionsPanel.appendChild(optionsList);
 
-    // Feedback panel: refine the current reply using user edit instructions.
-    var feedbackPanel = document.createElement('div');
-    feedbackPanel.className = 'rp-card-feedback';
-    feedbackPanel.style.display = 'none';
-
-    var feedbackToggleBtn = makeButton('rp-btn rp-btn-link', 'feedbackToggle');
-    feedbackToggleBtn.setAttribute('data-rp-feedback-toggle', '1');
-
-    var feedbackInput = document.createElement('textarea');
-    feedbackInput.className = 'rp-card-feedback-input';
-    feedbackInput.rows = 2;
-    feedbackInput.setAttribute('data-i18n-placeholder', 'feedbackPlaceholder');
-
-    var feedbackErr = document.createElement('div');
-    feedbackErr.className = 'rp-card-feedback-err';
-    feedbackErr.style.display = 'none';
-
-    var feedbackRegen = makeButton('rp-btn rp-btn-primary', 'regenerateWithFeedback');
-
-    feedbackPanel.appendChild(feedbackInput);
-    feedbackPanel.appendChild(feedbackRegen);
-    feedbackPanel.appendChild(feedbackErr);
-
     body.appendChild(errorBanner);
     body.appendChild(text);
     body.appendChild(optionsPanel);
-    body.appendChild(feedbackPanel);
 
     // Actions
     var actions = document.createElement('div');
@@ -166,7 +142,6 @@ window.RP = window.RP || {};
     actions.appendChild(ins);
     actions.appendChild(copy);
     actions.appendChild(clear);
-    actions.appendChild(feedbackToggleBtn);
 
     card.appendChild(head);
     card.appendChild(body);
@@ -188,12 +163,7 @@ window.RP = window.RP || {};
       collapseBtn: collapseBtn,
       optionsPanel: optionsPanel,
       optionsTitle: optionsTitle,
-      optionsList: optionsList,
-      feedbackPanel: feedbackPanel,
-      feedbackToggle: feedbackToggleBtn,
-      feedbackInput: feedbackInput,
-      feedbackRegen: feedbackRegen,
-      feedbackErr: feedbackErr
+      optionsList: optionsList
     };
   }
 
@@ -245,15 +215,6 @@ window.RP = window.RP || {};
     refs.ins.addEventListener('click', function () { onInsert(); });
     refs.copy.addEventListener('click', function () { onCopy(); });
     refs.clear.addEventListener('click', function () { onClear(); });
-
-    // Feedback-based refinement: toggle the panel, then refine on button click.
-    refs.feedbackToggle.addEventListener('click', function () {
-      var open = refs.feedbackPanel.style.display !== 'none';
-      refs.feedbackPanel.style.display = open ? 'none' : 'block';
-      refs.feedbackToggle.classList.toggle('rp-active', !open);
-      if (!open) refs.feedbackInput.focus();
-    });
-    refs.feedbackRegen.addEventListener('click', function () { onRefine(); });
 
     // Collapse / expand the card body+actions, leaving only the header.
     refs.collapseBtn.addEventListener('click', function (e) {
@@ -318,21 +279,6 @@ window.RP = window.RP || {};
     }
     activeBox = box || activeBox;
     ensureCard().card.style.display = 'block';
-  }
-
-  // Record the context of the latest generation so we can refine it later.
-  function rememberContext(ctx, reply) {
-    lastContext = {
-      subject: ctx.subject || '',
-      sender: ctx.sender || '',
-      emailBody: ctx.emailBody || ''
-    };
-    currentReply = reply || '';
-  }
-
-  function clearContext() {
-    lastContext = null;
-    currentReply = '';
   }
 
   function setStatus(text, kind) {
@@ -413,8 +359,6 @@ window.RP = window.RP || {};
         return;
       }
       renderOptions(options);
-      // Default the current reply to the first option for later refinement.
-      rememberContext(ctx, options[0] && options[0].reply ? options[0].reply : '');
       setStatus(RP.i18n.t('statusDone'), 'done');
     }).catch(function (e) {
       var msg = friendlyError(e);
@@ -463,7 +407,6 @@ window.RP = window.RP || {};
       choose.textContent = RP.i18n.t('selectThisOption');
       choose.addEventListener('click', function () {
         refs.text.value = opt.reply;
-        currentReply = opt.reply;
         showOptions(false);
         setActionsEnabled(true);
         setStatus(RP.i18n.t('statusDone'), 'done');
@@ -478,46 +421,10 @@ window.RP = window.RP || {};
     showOptions(true);
   }
 
-  function onRefine() {
-    var refs = ensureCard();
-    if (!lastContext || !lastContext.emailBody) {
-      // Nothing to refine yet.
-      refs.feedbackErr.textContent = RP.i18n.t('feedbackNoReply');
-      refs.feedbackErr.style.display = 'block';
-      return;
-    }
-    var replyText = refs.text.value;
-    if (replyText) currentReply = replyText; // use whatever is in the box right now
-    var feedback = refs.feedbackInput.value.trim();
-
-    refs.feedbackErr.style.display = 'none';
-    setBusy(true);
-    setStatus(RP.i18n.t('statusRefining'), 'generating');
-
-    function done() { setBusy(false); }
-
-    RP.ai.refineReply({
-      subject: lastContext.subject,
-      sender: lastContext.sender,
-      emailBody: lastContext.emailBody,
-      currentReply: currentReply,
-      feedback: feedback
-    }).then(function (reply) {
-      refilledReply(reply);
-      setStatus(RP.i18n.t('statusDone'), 'done');
-    }).catch(function (e) {
-      var msg = friendlyError(e);
-      setStatus(RP.i18n.t('statusError', { reason: msg }), 'error');
-      refs.feedbackErr.textContent = msg;
-      refs.feedbackErr.style.display = 'block';
-    }).then(done, done);
-  }
-
   // Replace the reply textarea with a new reply and keep it selected/ready.
   function refilledReply(reply) {
     var refs = ensureCard();
     refs.text.value = reply;
-    currentReply = reply;
     showOptions(false);
     setActionsEnabled(true);
     refs.clear.disabled = false;
@@ -549,11 +456,6 @@ window.RP = window.RP || {};
     showOptions(false);
     setActionsEnabled(false);
     refs.clear.disabled = true;
-    clearContext();
-    refs.feedbackPanel.style.display = 'none';
-    refs.feedbackToggle.classList.remove('rp-active');
-    refs.feedbackInput.value = '';
-    refs.feedbackErr.style.display = 'none';
     setStatus(RP.i18n.t('statusReady'), 'ready');
   }
 
@@ -592,12 +494,11 @@ window.RP = window.RP || {};
 
   function refreshTexts() {
     if (!cardRefs) return;
-    [cardRefs.gen, cardRefs.regen, cardRefs.ins, cardRefs.copy, cardRefs.clear,
-      cardRefs.feedbackToggle, cardRefs.feedbackRegen].forEach(function (b) {
+    [cardRefs.gen, cardRefs.regen, cardRefs.ins, cardRefs.copy, cardRefs.clear
+      ].forEach(function (b) {
       b.textContent = RP.i18n.t(b._i18nKey);
     });
     cardRefs.text.setAttribute('placeholder', RP.i18n.t('statusReady'));
-    cardRefs.feedbackInput.setAttribute('placeholder', RP.i18n.t('feedbackPlaceholder'));
     cardRefs.optionsTitle.textContent = RP.i18n.t('optionTitle');
     var chooseBtns = cardRefs.optionsList.querySelectorAll('button[data-i18n="selectThisOption"]');
     for (var i = 0; i < chooseBtns.length; i++) {

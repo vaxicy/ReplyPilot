@@ -188,7 +188,7 @@
 
 .rp-option-tooltip {
   position: fixed;
-  z-index: 2147483600;
+  z-index: 2147483646;
   max-width: 320px;
   max-height: 220px;
   overflow-y: auto;

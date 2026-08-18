@@ -93,9 +93,19 @@
         var oldModel = (PROVIDER_PRESETS[currentProvider] || {}).model;
         applyProviderPreset(provider.value, { oldModel: oldModel });
         currentProvider = provider.value;
+        scheduleAutoSave();
       });
     }
 
+    // Auto-save on any input/change across all fields (debounced 500ms).
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', scheduleAutoSave);
+      el.addEventListener('change', scheduleAutoSave);
+    });
+
+    bindTestConnection();
     bindTutorialModal();
     bindDonateModal();
     bindFeedbackLink();
@@ -106,6 +116,92 @@
         e.preventDefault();
         saveSettings();
       });
+    }
+  }
+
+  // --- Auto-save (debounced) ---
+  var autoSaveTimer = null;
+  function scheduleAutoSave() {
+    if (autoSaveTimer) clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(function () {
+      autoSaveTimer = null;
+      saveSettings(true);
+    }, 500);
+  }
+
+  // --- Test connection ---
+  function bindTestConnection() {
+    var btn = document.getElementById('testConnection');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      runConnectionTest(btn);
+    });
+  }
+
+  function runConnectionTest(btn) {
+    var apiKey = document.getElementById('apiKey').value.trim();
+    var endpoint = document.getElementById('apiEndpoint').value.trim();
+
+    if (!apiKey) {
+      setTestStatus('API_KEY_MISSING', false);
+      return;
+    }
+    if (!endpoint) {
+      setTestStatus('ENDPOINT_MISSING', false);
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = RP.i18n.t('optTesting');
+    setTestStatus('', null);
+
+    // Derive the models endpoint from the chat completions endpoint so it
+    // works for SiliconFlow, OpenAI and any custom OpenAI-compatible host.
+    var baseUrl = endpoint.replace(/\/chat\/completions\/?$/, '') + '/models';
+
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function () { controller.abort(new Error('TIMEOUT')); }, 8000);
+
+    fetch(baseUrl, {
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + apiKey },
+      signal: controller.signal
+    })
+      .then(function (res) {
+        clearTimeout(timeoutId);
+        if (res.status === 401) { setTestStatus('API_KEY_INVALID', false); return; }
+        if (!res.ok) { setTestStatus('HTTP_' + res.status, false); return; }
+        setTestStatus('OK', true);
+      })
+      .catch(function (err) {
+        clearTimeout(timeoutId);
+        var msg = String(err && err.message || '').toLowerCase();
+        if (msg.indexOf('abort') !== -1) { setTestStatus('TIMEOUT', false); return; }
+        setTestStatus('NETWORK_ERROR', false);
+      })
+      .then(function () {
+        btn.disabled = false;
+        btn.textContent = RP.i18n.t('optTestConnection');
+      });
+  }
+
+  function setTestStatus(code, ok) {
+    var el = document.getElementById('testStatus');
+    if (!el) return;
+    if (!code) { el.textContent = ''; el.className = 'rp-test-status'; return; }
+    el.textContent = RP.i18n.t(testCodeKey(code));
+    el.className = 'rp-test-status ' + (ok ? 'rp-test-ok' : 'rp-test-fail');
+  }
+
+  function testCodeKey(code) {
+    switch (code) {
+      case 'OK': return 'optConnectionSuccess';
+      case 'API_KEY_INVALID': return 'optApiKeyInvalid';
+      case 'API_KEY_MISSING': return 'optApiKeyMissing';
+      case 'ENDPOINT_MISSING': return 'optEndpointMissing';
+      case 'TIMEOUT': return 'optTimeout';
+      case 'NETWORK_ERROR': return 'optNetwork';
+      default: return 'optConnectionFailed';
     }
   }
 
@@ -188,7 +284,7 @@
     });
   }
 
-  function saveSettings() {
+  function saveSettings(silent) {
     var obj = {};
     ids.forEach(function (id) {
       var el = document.getElementById(id);
@@ -198,7 +294,10 @@
     });
 
     RP.storage.setMany(obj).then(function () {
-      showStatus(RP.i18n.t('optSaved'));
+      showStatus(RP.i18n.t(silent ? 'optAutoSaved' : 'optSaved'));
+    }).catch(function (e) {
+      console.error('Save failed', e);
+      showStatus(RP.i18n.t('optSaveFailed'));
     });
   }
 

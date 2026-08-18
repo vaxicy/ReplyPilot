@@ -203,6 +203,50 @@
     "message": "设置已保存。",
     "description": "设置保存提示"
   },
+  "optAutoSaved": {
+    "message": "已自动保存。",
+    "description": "自动保存提示"
+  },
+  "optSaveFailed": {
+    "message": "保存失败，请重试。",
+    "description": "保存失败提示"
+  },
+  "optTestConnection": {
+    "message": "测试连接",
+    "description": "测试连接按钮"
+  },
+  "optTesting": {
+    "message": "测试中…",
+    "description": "测试连接中"
+  },
+  "optConnectionSuccess": {
+    "message": "连接成功",
+    "description": "测试连接成功"
+  },
+  "optConnectionFailed": {
+    "message": "连接失败：{{code}}",
+    "description": "测试连接失败，含 HTTP 状态码"
+  },
+  "optApiKeyInvalid": {
+    "message": "API Key 无效 (401)",
+    "description": "API Key 无效"
+  },
+  "optApiKeyMissing": {
+    "message": "请先填写 API Key",
+    "description": "缺少 API Key"
+  },
+  "optEndpointMissing": {
+    "message": "请先填写 API 接口地址",
+    "description": "缺少接口地址"
+  },
+  "optTimeout": {
+    "message": "连接超时",
+    "description": "连接超时"
+  },
+  "optNetwork": {
+    "message": "网络错误，请检查接口地址",
+    "description": "网络错误"
+  },
   "optNeedReload": {
     "message": "请刷新 Gmail 标签页以应用语言更改。",
     "description": "设置重载提示"

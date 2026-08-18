@@ -188,6 +188,26 @@ body {
   transform: translateY(0);
 }
 
+.rp-field-test {
+  margin-top: 4px;
+}
+
+.rp-test-status {
+  display: inline-block;
+  margin-left: 12px;
+  font-size: 13px;
+  line-height: 32px;
+  vertical-align: middle;
+}
+
+.rp-test-status.rp-test-ok {
+  color: #1a7f37;
+}
+
+.rp-test-status.rp-test-fail {
+  color: #cf222e;
+}
+
 @media (max-width: 520px) {
   .rp-options {
     padding: 20px 16px 40px;

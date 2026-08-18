@@ -203,6 +203,50 @@
     "message": "Settings saved.",
     "description": "Options saved message"
   },
+  "optAutoSaved": {
+    "message": "Auto-saved.",
+    "description": "Auto-save notification"
+  },
+  "optSaveFailed": {
+    "message": "Save failed, please retry.",
+    "description": "Save failed notification"
+  },
+  "optTestConnection": {
+    "message": "Test Connection",
+    "description": "Test connection button"
+  },
+  "optTesting": {
+    "message": "Testing…",
+    "description": "Testing connection"
+  },
+  "optConnectionSuccess": {
+    "message": "Connection successful",
+    "description": "Test connection success"
+  },
+  "optConnectionFailed": {
+    "message": "Connection failed: {{code}}",
+    "description": "Test connection failed, with HTTP status code"
+  },
+  "optApiKeyInvalid": {
+    "message": "API Key invalid (401)",
+    "description": "API Key invalid"
+  },
+  "optApiKeyMissing": {
+    "message": "Please enter an API Key first",
+    "description": "Missing API Key"
+  },
+  "optEndpointMissing": {
+    "message": "Please enter an API endpoint first",
+    "description": "Missing endpoint"
+  },
+  "optTimeout": {
+    "message": "Connection timed out",
+    "description": "Connection timeout"
+  },
+  "optNetwork": {
+    "message": "Network error, check the endpoint",
+    "description": "Network error"
+  },
   "optNeedReload": {
     "message": "Reload the Gmail tab to apply language changes.",
     "description": "Options reload hint"

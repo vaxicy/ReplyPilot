@@ -415,6 +415,26 @@
     "message": "Clear Reply",
     "description": "Clear reply button"
   },
+  "reviseReply": {
+    "message": "Revise by feedback",
+    "description": "Revise reply by feedback button"
+  },
+  "revisePlaceholder": {
+    "message": "e.g. more formal / shorten to two sentences / add an apology",
+    "description": "Revise input placeholder"
+  },
+  "statusRevising": {
+    "message": "Revising...",
+    "description": "Status: revising by feedback"
+  },
+  "statusRevised": {
+    "message": "Revised by feedback",
+    "description": "Status: revised by feedback"
+  },
+  "errNoInstruction": {
+    "message": "Please enter your revision note.",
+    "description": "Prompt when instruction is empty"
+  },
   "optProviderCurrent": {
     "message": "Current Provider",
     "description": "Provider field label"

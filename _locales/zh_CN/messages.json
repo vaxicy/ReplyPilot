@@ -415,6 +415,26 @@
     "message": "清空回复",
     "description": "清空回复按钮"
   },
+  "reviseReply": {
+    "message": "按意见重新生成",
+    "description": "按意见重新生成回复按钮"
+  },
+  "revisePlaceholder": {
+    "message": "例如：更正式一点 / 缩短到两句话 / 加一句道歉",
+    "description": "意见输入框占位符"
+  },
+  "statusRevising": {
+    "message": "重新生成中...",
+    "description": "状态：按意见重新生成中"
+  },
+  "statusRevised": {
+    "message": "已按意见重新生成",
+    "description": "状态：已按意见重新生成"
+  },
+  "errNoInstruction": {
+    "message": "请输入修改意见。",
+    "description": "意见为空时提示"
+  },
   "optProviderCurrent": {
     "message": "当前服务商",
     "description": "服务商字段标签"

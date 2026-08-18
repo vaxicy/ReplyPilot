@@ -30,6 +30,9 @@ window.RP = window.RP || {};
 
   var cardRefs = null;
   var activeBox = null;
+  // Remembered conversation + last generated reply so we can revise it.
+  var lastContext = null;
+  var lastReply = '';
 
   function friendlyError(e) {
     var code = e && e.code;
@@ -118,8 +121,26 @@ window.RP = window.RP || {};
     optionsPanel.appendChild(optionsTitle);
     optionsPanel.appendChild(optionsList);
 
+    // Revise-by-feedback row: appears once a reply exists so the user can
+    // ask for a tweak without losing the draft they already have.
+    var reviseRow = document.createElement('div');
+    reviseRow.className = 'rp-card-revise';
+    reviseRow.style.display = 'none';
+
+    var reviseInput = document.createElement('input');
+    reviseInput.type = 'text';
+    reviseInput.className = 'rp-card-revise-input';
+    reviseInput.setAttribute('data-i18n-placeholder', 'revisePlaceholder');
+    reviseInput.placeholder = 'Tell how to adjust the reply...';
+
+    var reviseBtn = makeButton('rp-btn rp-btn-secondary', 'reviseReply');
+
+    reviseRow.appendChild(reviseInput);
+    reviseRow.appendChild(reviseBtn);
+
     body.appendChild(errorBanner);
     body.appendChild(text);
+    body.appendChild(reviseRow);
     body.appendChild(optionsPanel);
 
     // Actions
@@ -163,7 +184,10 @@ window.RP = window.RP || {};
       collapseBtn: collapseBtn,
       optionsPanel: optionsPanel,
       optionsTitle: optionsTitle,
-      optionsList: optionsList
+      optionsList: optionsList,
+      reviseRow: reviseRow,
+      reviseInput: reviseInput,
+      reviseBtn: reviseBtn
     };
   }
 
@@ -215,6 +239,13 @@ window.RP = window.RP || {};
     refs.ins.addEventListener('click', function () { onInsert(); });
     refs.copy.addEventListener('click', function () { onCopy(); });
     refs.clear.addEventListener('click', function () { onClear(); });
+    refs.reviseBtn.addEventListener('click', function () { onRevise(); });
+    refs.reviseInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        onRevise();
+      }
+    });
 
     // Collapse / expand the card body+actions, leaving only the header.
     refs.collapseBtn.addEventListener('click', function (e) {
@@ -301,6 +332,7 @@ window.RP = window.RP || {};
     var refs = ensureCard();
     refs.gen.disabled = busy;
     refs.regen.disabled = busy;
+    refs.reviseBtn.disabled = busy;
   }
 
   function setActionsEnabled(enabled) {
@@ -350,6 +382,8 @@ window.RP = window.RP || {};
       done();
       return;
     }
+    lastContext = ctx;
+    lastReply = '';
 
     var p = RP.ai.generateOptions(ctx);
     // Attach a noop catch so the chain always has a .then to clean up
@@ -358,7 +392,7 @@ window.RP = window.RP || {};
         setStatus(RP.i18n.t('statusError', { reason: RP.i18n.t('errModel') }), 'error');
         return;
       }
-      renderOptions(options);
+      renderOptions(options, ctx);
       setStatus(RP.i18n.t('statusDone'), 'done');
     }).catch(function (e) {
       var msg = friendlyError(e);
@@ -378,7 +412,7 @@ window.RP = window.RP || {};
     Promise.resolve(p).then(settle, settle);
   }
 
-  function renderOptions(options) {
+  function renderOptions(options, ctx) {
     var refs = ensureCard();
     refs.optionsList.innerHTML = '';
 
@@ -406,9 +440,7 @@ window.RP = window.RP || {};
       choose.setAttribute('data-i18n', 'selectThisOption');
       choose.textContent = RP.i18n.t('selectThisOption');
       choose.addEventListener('click', function () {
-        refs.text.value = opt.reply;
-        showOptions(false);
-        setActionsEnabled(true);
+        refilledReply(opt.reply, ctx);
         setStatus(RP.i18n.t('statusDone'), 'done');
       });
 
@@ -422,12 +454,17 @@ window.RP = window.RP || {};
   }
 
   // Replace the reply textarea with a new reply and keep it selected/ready.
-  function refilledReply(reply) {
+  function refilledReply(reply, ctx) {
     var refs = ensureCard();
+    lastReply = reply || '';
+    if (ctx) lastContext = ctx;
     refs.text.value = reply;
     showOptions(false);
     setActionsEnabled(true);
     refs.clear.disabled = false;
+    // Once a reply exists, show the "revise by feedback" row.
+    refs.reviseRow.style.display = 'flex';
+    refs.reviseInput.value = '';
   }
 
   function onInsert() {
@@ -481,6 +518,75 @@ window.RP = window.RP || {};
     } catch (e) { /* ignore */ }
   }
 
+  // Revise the current reply based on the user's written feedback. The draft
+  // in the textarea is sent back to the model together with the original email
+  // and the user's instruction, then replaced with the revised version.
+  function onRevise() {
+    if (Date.now() < cooldownUntil) return;
+    var refs = ensureCard();
+    var instruction = refs.reviseInput.value.trim();
+    var currentReply = refs.text.value.trim();
+
+    if (!instruction) {
+      setStatus(RP.i18n.t('errNoInstruction'), 'error');
+      return;
+    }
+    if (!currentReply) {
+      setStatus(RP.i18n.t('errNoEmail'), 'error');
+      return;
+    }
+    if (!lastContext) {
+      setStatus(RP.i18n.t('errContextInvalidated'), 'error');
+      return;
+    }
+
+    refs.reviseInput.disabled = true;
+    refs.reviseBtn.disabled = true;
+    refs.reviseBtn.textContent = RP.i18n.t('statusRevising');
+    setBusy(true);
+    setStatus(RP.i18n.t('statusRevising'), 'generating');
+
+    function done() {
+      setBusy(false);
+      refs.reviseInput.disabled = false;
+      refs.reviseBtn.disabled = false;
+      refs.reviseBtn.textContent = RP.i18n.t('reviseReply');
+    }
+
+    var ctx = {
+      subject: lastContext.subject,
+      emailBody: lastContext.emailBody,
+      tone: lastContext.tone,
+      replyLanguage: lastContext.replyLanguage,
+      storeName: lastContext.storeName,
+      storeCategory: lastContext.storeCategory,
+      shippingInfo: lastContext.shippingInfo,
+      returnPolicy: lastContext.returnPolicy,
+      shippingRegions: lastContext.shippingRegions,
+      currentReply: currentReply,
+      instruction: instruction
+    };
+
+    var p = RP.ai.reviseReply(ctx);
+
+    p.then(function (reply) {
+      refilledReply(reply, ctx);
+      setStatus(RP.i18n.t('statusRevised'), 'done');
+    }).catch(function (e) {
+      var msg = friendlyError(e);
+      setStatus(RP.i18n.t('statusError', { reason: msg }), 'error');
+    });
+
+    function settle() {
+      done();
+      cooldownUntil = Date.now() + COOLDOWN_MS;
+      setTimeout(function () {
+        if (Date.now() >= cooldownUntil) cooldownUntil = 0;
+      }, COOLDOWN_MS);
+    }
+    Promise.resolve(p).then(settle, settle);
+  }
+
   function attachTo(box) {
     if (!box) return;
     ensureCard();
@@ -494,11 +600,13 @@ window.RP = window.RP || {};
 
   function refreshTexts() {
     if (!cardRefs) return;
-    [cardRefs.gen, cardRefs.regen, cardRefs.ins, cardRefs.copy, cardRefs.clear
+    [cardRefs.gen, cardRefs.regen, cardRefs.ins, cardRefs.copy, cardRefs.clear,
+      cardRefs.reviseBtn
       ].forEach(function (b) {
       b.textContent = RP.i18n.t(b._i18nKey);
     });
     cardRefs.text.setAttribute('placeholder', RP.i18n.t('statusReady'));
+    cardRefs.reviseInput.setAttribute('placeholder', RP.i18n.t('revisePlaceholder'));
     cardRefs.optionsTitle.textContent = RP.i18n.t('optionTitle');
     var chooseBtns = cardRefs.optionsList.querySelectorAll('button[data-i18n="selectThisOption"]');
     for (var i = 0; i < chooseBtns.length; i++) {
@@ -516,6 +624,13 @@ window.RP = window.RP || {};
       showOptions(false);
       setActionsEnabled(false);
       cardRefs.clear.disabled = true;
+      cardRefs.reviseRow.style.display = 'none';
+      cardRefs.reviseInput.value = '';
+      cardRefs.reviseInput.disabled = false;
+      cardRefs.reviseBtn.disabled = false;
+      cardRefs.reviseBtn.textContent = RP.i18n.t('reviseReply');
+      lastContext = null;
+      lastReply = '';
       setStatus(RP.i18n.t('statusReady'), 'ready');
     }
   }

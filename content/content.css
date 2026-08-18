@@ -134,6 +134,37 @@
   background: #ffffff;
 }
 
+.rp-card-revise {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.rp-card-revise-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 7px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #1f2937;
+  background: #f9fafb;
+  outline: none;
+}
+
+.rp-card-revise-input:focus {
+  border-color: #8b8ef5;
+  box-shadow: 0 0 0 3px rgba(123, 127, 245, 0.15);
+  background: #ffffff;
+}
+
+.rp-card-revise .rp-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 .rp-card-options {
   width: 100%;
   min-height: 120px;

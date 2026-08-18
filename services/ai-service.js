@@ -204,9 +204,67 @@ window.RP = window.RP || {};
     });
   }
 
+  // ctx: { subject, emailBody, tone, replyLanguage, store info...,
+  //        currentReply, instruction }
+  // settings: full settings object (optional; fetched if omitted)
+  function reviseReply(ctx, settings) {
+    ctx = ctx || {};
+    if (!ctx.instruction || !ctx.instruction.trim()) {
+      return Promise.reject(makeError('No revision instruction', 'EMPTY_INSTRUCTION'));
+    }
+    if (!ctx.currentReply || !ctx.currentReply.trim()) {
+      return Promise.reject(makeError('No current reply to revise', 'EMPTY_REPLY'));
+    }
+    var settingsPromise = settings ? Promise.resolve(settings) : RP.storage.getAll();
+
+    return settingsPromise.then(function (s) {
+      checkApiKey(s);
+      var cfg = resolveProviderConfig(s);
+
+      var prompt = RP.parser.buildRevisePrompt({
+        tone: s.rp_tone,
+        replyLanguage: s.rp_replyLanguage || 'auto',
+        storeName: s.rp_storeName || '',
+        storeCategory: s.rp_storeCategory || '',
+        shippingInfo: s.rp_shippingInfo || '',
+        returnPolicy: s.rp_returnPolicy || '',
+        shippingRegions: s.rp_shippingRegions || '',
+        subject: ctx.subject,
+        emailBody: ctx.emailBody,
+        currentReply: ctx.currentReply,
+        instruction: ctx.instruction
+      });
+
+      var messages = [
+        {
+          role: 'system',
+          content: 'You are a helpful e-commerce customer service assistant. ' +
+            'Always respond with valid JSON in the exact format {"reply": "..."}. ' +
+            'Do not wrap it in markdown code fences.'
+        },
+        { role: 'user', content: prompt }
+      ];
+
+      return RP.siliconflow.chat({
+        apiKey: cfg.apiKey,
+        model: cfg.model,
+        endpoint: cfg.endpoint,
+        messages: messages,
+        max_tokens: 2048
+      }).then(function (data) {
+        var reply = parseReply(extractContent(data));
+        if (!reply) {
+          throw makeError('Could not parse model reply', 'PARSE_FAILED');
+        }
+        return reply;
+      });
+    });
+  }
+
   RP.ai = {
     generateReply: generateReply,
     generateOptions: generateOptions,
+    reviseReply: reviseReply,
     parseReply: parseReply,
     parseOptions: parseOptions
   };

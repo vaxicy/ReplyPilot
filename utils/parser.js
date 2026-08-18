@@ -103,11 +103,52 @@ window.RP = window.RP || {};
     return lines.join('\n');
   }
 
+  // Build the prompt that revises an already generated reply based on user
+  // feedback. We pass the original email, the current reply and the user's
+  // instruction, and ask the model to ONLY apply the requested change without
+  // inventing new order/tracking/refund facts.
+  function buildRevisePrompt(ctx) {
+    ctx = ctx || {};
+    var tone = toneLabel(ctx.tone);
+    var lang = replyLanguageLabel(ctx.replyLanguage);
+    var subject = ctx.subject || '';
+    var body = clampText(ctx.emailBody, MAX_BODY, 'content');
+    var mem = buildStoreContext(ctx);
+    var currentReply = (ctx.currentReply || '').trim();
+    var instruction = (ctx.instruction || '').trim();
+
+    var lines = [
+      'You are an e-commerce customer service assistant.',
+      'Tone: ' + tone + '. Reply language: ' + lang + '.',
+      'Rules: respond like a real human agent. Do NOT fabricate order/tracking/refund info. Ask politely if unknown.',
+      ''
+    ];
+    if (mem) lines.push('Store context: ' + mem, '');
+    lines.push(
+      'Customer email:',
+      'Subject: ' + subject,
+      '',
+      body,
+      '',
+      'Current reply (draft):',
+      currentReply,
+      '',
+      'User feedback / revision instruction:',
+      instruction,
+      '',
+      'Instructions: revise the "Current reply" so it follows the feedback above. ' +
+        'Keep what is good, change only what the feedback asks for. Do not add new facts. ' +
+        'Return JSON: {"reply": "your revised reply"}'
+    );
+    return lines.join('\n');
+  }
+
   RP.parser = {
     detectLanguage: detectLanguage,
     toneLabel: toneLabel,
     replyLanguageLabel: replyLanguageLabel,
     buildPrompt: buildPrompt,
-    buildOptionsPrompt: buildOptionsPrompt
+    buildOptionsPrompt: buildOptionsPrompt,
+    buildRevisePrompt: buildRevisePrompt
   };
 })(window.RP);

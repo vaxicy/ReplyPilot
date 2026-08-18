@@ -101,7 +101,34 @@ window.RP = window.RP || {};
   }
 
   function getEmailBody() {
-    // Prefer the most recent message in the thread.
+    // Strategy 1: identify the most recent visible conversation message and
+    // read its body. Gmail represents each email in the thread as a listitem
+    // inside a list; the reply/compose box lives outside that list, so this
+    // also avoids accidentally reading the user's own draft.
+    try {
+      var messages = document.querySelectorAll('[role="listitem"]');
+      for (var i = messages.length - 1; i >= 0; i--) {
+        var msg = messages[i];
+        if (!isVisible(msg)) continue;
+        // Confirm it's actually an email message, not a sidebar/chat item.
+        var hasMessageMeta = msg.querySelector('.gD, [data-message-id], [data-legacy-message-id], .a3s') !== null;
+        if (!hasMessageMeta) continue;
+
+        var bodySelectors = ['.a3s.aiL', '.a3s', '.ii.gt .a3s', '[class*="a3s"]', '.ii.gt'];
+        for (var b = 0; b < bodySelectors.length; b++) {
+          try {
+            var bodyEl = msg.querySelector(bodySelectors[b]);
+            if (bodyEl) {
+              var text = htmlToText(bodyEl);
+              if (text) return { ok: true, value: text };
+            }
+          } catch (e) { /* continue */ }
+        }
+      }
+    } catch (e) { /* fall through */ }
+
+    // Strategy 2: legacy flat selector fallback. Walk backwards so the most
+    // recent message body wins, and skip empty/placeholder results.
     var candidates = [];
     for (var i = 0; i < GMAIL_SELECTORS.body.length; i++) {
       try {
@@ -112,8 +139,11 @@ window.RP = window.RP || {};
     if (!candidates.length) {
       return { ok: false, error: 'BODY_NOT_FOUND', value: '' };
     }
-    var last = candidates[candidates.length - 1];
-    return { ok: true, value: htmlToText(last) };
+    for (var k = candidates.length - 1; k >= 0; k--) {
+      var text = htmlToText(candidates[k]);
+      if (text) return { ok: true, value: text };
+    }
+    return { ok: false, error: 'BODY_EMPTY', value: '' };
   }
 
   function htmlToText(el) {

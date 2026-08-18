@@ -136,7 +136,9 @@
           settings.rp_provider = provider.value;
           applyProviderSlot(provider.value, settings);
           currentProvider = provider.value;
-          saveSettings(true);
+          // Pass the in-memory settings so saveSettings merges against the
+          // updated slots (preserving the previous provider's unsaved values).
+          saveSettings(true, settings);
         });
       });
     }
@@ -328,37 +330,45 @@
     });
   }
 
-  function saveSettings(silent) {
-    var obj = {};
-    // Persist everything except the provider api fields (those live in slots).
-    ['language', 'tone', 'replyLanguage', 'storeName', 'storeCategory',
-     'shippingInfo', 'returnPolicy', 'shippingRegions', 'provider'].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      obj['rp_' + id] = el.value;
-    });
+  function saveSettings(silent, baseSettings) {
+    // Read existing provider configs so we don't accidentally wipe the slots of
+    // other providers. If baseSettings was passed (e.g. during provider switch),
+    // use it directly because it already contains the freshly-merged slots.
+    var existingPromise = baseSettings ? Promise.resolve(baseSettings) : RP.storage.getAll();
 
-    // Save the active provider's key/endpoint/model into its own slot.
-    var endpoint = (document.getElementById('apiEndpoint') || {}).value || '';
-    var apiKey = (document.getElementById('apiKey') || {}).value || '';
-    var model = (document.getElementById('model') || {}).value || '';
-    obj.rp_provider = currentProvider;
-    obj.rp_providerConfigs = {};
-    obj.rp_providerConfigs[currentProvider] = {
-      apiEndpoint: endpoint,
-      apiKey: apiKey,
-      model: model
-    };
-    // Keep legacy flat fields in sync with the active provider for compatibility.
-    obj.rp_apiEndpoint = endpoint;
-    obj.rp_apiKey = apiKey;
-    obj.rp_model = model;
+    existingPromise.then(function (existing) {
+      var obj = {};
+      // Persist everything except the provider api fields (those live in slots).
+      ['language', 'tone', 'replyLanguage', 'storeName', 'storeCategory',
+       'shippingInfo', 'returnPolicy', 'shippingRegions', 'provider'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        obj['rp_' + id] = el.value;
+      });
 
-    RP.storage.setMany(obj).then(function () {
-      showStatus(RP.i18n.t(silent ? 'optAutoSaved' : 'optSaved'));
-    }).catch(function (e) {
-      console.error('Save failed', e);
-      showStatus(RP.i18n.t('optSaveFailed'));
+      // Save the active provider's key/endpoint/model into its own slot,
+      // merging into the existing providerConfigs instead of replacing them.
+      var endpoint = (document.getElementById('apiEndpoint') || {}).value || '';
+      var apiKey = (document.getElementById('apiKey') || {}).value || '';
+      var model = (document.getElementById('model') || {}).value || '';
+      obj.rp_provider = currentProvider;
+      obj.rp_providerConfigs = existing.rp_providerConfigs || {};
+      obj.rp_providerConfigs[currentProvider] = {
+        apiEndpoint: endpoint,
+        apiKey: apiKey,
+        model: model
+      };
+      // Keep legacy flat fields in sync with the active provider for compatibility.
+      obj.rp_apiEndpoint = endpoint;
+      obj.rp_apiKey = apiKey;
+      obj.rp_model = model;
+
+      return RP.storage.setMany(obj).then(function () {
+        showStatus(RP.i18n.t(silent ? 'optAutoSaved' : 'optSaved'));
+      }).catch(function (e) {
+        console.error('Save failed', e);
+        showStatus(RP.i18n.t('optSaveFailed'));
+      });
     });
   }
 

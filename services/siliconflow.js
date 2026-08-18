@@ -90,7 +90,13 @@ window.RP = window.RP || {};
               return;
             }
             if (status === 429) {
-              reject(makeError('RATE_LIMITED', 'Rate limited (429)'));
+              var retryAfter = res && res.retryAfter;
+              var e = makeError('RATE_LIMITED', 'Rate limited (429)');
+              if (retryAfter) {
+                var secs = parseInt(retryAfter, 10);
+                if (!isNaN(secs)) e.retryAfter = secs;
+              }
+              reject(e);
               return;
             }
             if (status) {

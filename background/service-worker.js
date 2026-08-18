@@ -81,7 +81,8 @@ function relayChatRequest(payload) {
         return res.text().then(function (text) {
           var json = null;
           try { json = text ? JSON.parse(text) : null; } catch (e) { json = null; }
-          resolve({ ok: res.ok, status: res.status, body: json, raw: text });
+          resolve({ ok: res.ok, status: res.status, body: json, raw: text,
+            retryAfter: res.headers.get('Retry-After') || null });
         });
       })
       .catch(function (err) {

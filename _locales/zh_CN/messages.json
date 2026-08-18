@@ -95,6 +95,10 @@
     "message": "请求过多 (429)，请稍后再试。",
     "description": "错误 429"
   },
+  "errRateLimitedWait": {
+    "message": "约需等待 {{secs}} 秒。",
+    "description": "429 限流后的等待时间提示"
+  },
   "errNetwork": {
     "message": "网络错误，请检查连接或接口地址。",
     "description": "网络错误"

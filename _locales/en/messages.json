@@ -95,6 +95,10 @@
     "message": "Too many requests (429). Please wait and try again.",
     "description": "Error 429"
   },
+  "errRateLimitedWait": {
+    "message": "Please wait about {{secs}} seconds.",
+    "description": "Retry-After hint shown after a 429 rate limit"
+  },
   "errNetwork": {
     "message": "Network error. Check your connection or the API endpoint.",
     "description": "Network error"

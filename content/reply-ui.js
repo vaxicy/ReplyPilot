@@ -33,7 +33,13 @@ window.RP = window.RP || {};
 
   function friendlyError(e) {
     var code = e && e.code;
-    if (code && ERROR_KEYS[code]) return RP.i18n.t(ERROR_KEYS[code]);
+    if (code && ERROR_KEYS[code]) {
+      var base = RP.i18n.t(ERROR_KEYS[code]);
+      if (code === 'RATE_LIMITED' && e.retryAfter) {
+        return base + ' ' + RP.i18n.t('errRateLimitedWait', { secs: e.retryAfter });
+      }
+      return base;
+    }
     return (e && e.message) ? e.message : RP.i18n.t('errUnknown');
   }
 
@@ -373,7 +379,14 @@ window.RP = window.RP || {};
     refs.optionsPanel.style.display = show ? 'block' : 'none';
   }
 
+  // Hard cooldown so a fast double-click (or a click right after a request
+  // settles) can't fire a second API call within COOLDOWN_MS. NVIDIA's free
+  // tier is only 40 rpm, so even two accidental requests in a row burn quota.
+  var COOLDOWN_MS = 1500;
+  var cooldownUntil = 0;
+
   function onGenerate() {
+    if (Date.now() < cooldownUntil) return;
     var refs = ensureCard();
     refs.text.value = '';
     refs.clear.disabled = false;
@@ -408,8 +421,17 @@ window.RP = window.RP || {};
       setStatus(RP.i18n.t('statusError', { reason: msg }), 'error');
     });
 
-    // Always restore the button state after the request settles (success or error)
-    Promise.resolve(p).then(done, done);
+    // Always restore the button state after the request settles (success or error),
+    // then keep the buttons disabled for COOLDOWN_MS to prevent rapid re-clicks.
+    function settle() {
+      done();
+      cooldownUntil = Date.now() + COOLDOWN_MS;
+      setTimeout(function () {
+        // Only clear the cooldown if no newer request has started it again.
+        if (Date.now() >= cooldownUntil) cooldownUntil = 0;
+      }, COOLDOWN_MS);
+    }
+    Promise.resolve(p).then(settle, settle);
   }
 
   function renderOptions(options) {

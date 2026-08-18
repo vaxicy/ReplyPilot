@@ -160,15 +160,15 @@
     "description": "Model ID hint"
   },
   "optApiEndpoint": {
-    "message": "API Endpoint",
+    "message": "API Base URL",
     "description": "API endpoint field label"
   },
   "optApiEndpointPlaceholder": {
-    "message": "https://.../v1/chat/completions",
+    "message": "https://.../v1",
     "description": "Endpoint placeholder"
   },
   "optApiEndpointHint": {
-    "message": "OpenAI-compatible /chat/completions URL. Auto-filled by provider; edit for proxies.",
+    "message": "OpenAI-compatible Base URL (e.g. https://api.siliconflow.cn/v1). /chat/completions is appended automatically. Auto-filled by provider; edit for proxies.",
     "description": "Endpoint hint"
   },
   "providerSiliconFlow": {
@@ -240,7 +240,7 @@
     "description": "Missing API Key"
   },
   "optEndpointMissing": {
-    "message": "Please enter an API endpoint first",
+    "message": "Please enter an API Base URL first",
     "description": "Missing endpoint"
   },
   "optTimeout": {
@@ -276,11 +276,11 @@
     "description": "Tutorial step 1 description"
   },
   "optTutorialStep2Title": {
-    "message": "API endpoint",
+    "message": "API Base URL",
     "description": "Tutorial step 2 title"
   },
   "optTutorialStep2": {
-    "message": "The API endpoint is auto-filled by the provider. Edit it only if you use a proxy.",
+    "message": "The API Base URL is auto-filled by the provider (e.g. https://api.siliconflow.cn/v1). Edit it only if you use a proxy.",
     "description": "Tutorial step 2 description"
   },
   "optTutorialStep3Title": {

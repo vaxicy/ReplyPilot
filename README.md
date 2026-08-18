@@ -91,7 +91,7 @@
 
 3. **填写配置**
    - **AI Provider**：选择 SiliconFlow / OpenAI / Custom
-   - **API Endpoint**：根据提供商自动填充，Custom 模式可填入任意 OpenAI 兼容端点
+   - **API Base URL**：根据提供商自动填充（如 https://api.siliconflow.cn/v1），Custom 模式可填入任意 OpenAI 兼容端点
    - **API Key**：输入你的密钥（安全存储在 `chrome.storage.local`）
    - **Model ID**：如 `deepseek-ai/DeepSeek-V4-Flash`、`gpt-4o-mini` 等
    - **界面语言**：中文 / English

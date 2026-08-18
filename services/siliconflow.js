@@ -7,7 +7,7 @@ window.RP = window.RP || {};
 (function (RP) {
   'use strict';
 
-  var ENDPOINT = 'https://api.siliconflow.cn/v1/chat/completions';
+  var ENDPOINT = 'https://api.siliconflow.cn/v1';
   var DEFAULT_TIMEOUT = 45000; // 45s client-side ceiling
 
   // Accept either a full OpenAI-compatible completions URL or just the base URL.

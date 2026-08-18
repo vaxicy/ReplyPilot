@@ -160,15 +160,15 @@
     "description": "模型 ID 说明"
   },
   "optApiEndpoint": {
-    "message": "API 接口地址",
+    "message": "API 基础地址",
     "description": "API 接口字段标签"
   },
   "optApiEndpointPlaceholder": {
-    "message": "https://.../v1/chat/completions",
+    "message": "https://.../v1",
     "description": "接口地址占位符"
   },
   "optApiEndpointHint": {
-    "message": "OpenAI 兼容的 /chat/completions 地址。选择服务商后自动填充，可改为代理地址。",
+    "message": "OpenAI 兼容的 Base URL（如 https://api.siliconflow.cn/v1）。/chat/completions 会自动拼接。选择服务商后自动填充，可改为代理地址。",
     "description": "接口地址说明"
   },
   "providerSiliconFlow": {
@@ -240,7 +240,7 @@
     "description": "缺少 API Key"
   },
   "optEndpointMissing": {
-    "message": "请先填写 API 接口地址",
+    "message": "请先填写 API 基础地址",
     "description": "缺少接口地址"
   },
   "optTimeout": {
@@ -276,11 +276,11 @@
     "description": "教程步骤1说明"
   },
   "optTutorialStep2Title": {
-    "message": "API 接口地址",
+    "message": "API 基础地址",
     "description": "教程步骤2标题"
   },
   "optTutorialStep2": {
-    "message": "接口地址默认随服务商自动填充，使用代理时再手动修改。",
+    "message": "API 基础地址默认随服务商自动填充（如 https://api.siliconflow.cn/v1），使用代理时再手动修改。",
     "description": "教程步骤2说明"
   },
   "optTutorialStep3Title": {

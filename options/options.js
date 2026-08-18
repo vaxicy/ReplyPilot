@@ -11,11 +11,11 @@
   // Per-provider defaults. Custom has no preset models/endpoint.
   var PROVIDER_PRESETS = {
     siliconflow: {
-      endpoint: 'https://api.siliconflow.cn/v1/chat/completions',
+      endpoint: 'https://api.siliconflow.cn/v1',
       model: 'deepseek-ai/DeepSeek-V4-Flash'
     },
     openai: {
-      endpoint: 'https://api.openai.com/v1/chat/completions',
+      endpoint: 'https://api.openai.com/v1',
       model: 'gpt-4o-mini'
     },
     custom: {

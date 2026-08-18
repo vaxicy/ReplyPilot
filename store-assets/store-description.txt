@@ -1,0 +1,35 @@
+=== 中文详细说明 ===
+
+ReplyPilot 是一款专为 Gmail 电商卖家打造的 AI 邮件回复助手。打开任意 Gmail 邮件，点击 ReplyPilot 浮窗中的「生成回复」，AI 会自动阅读邮件上下文并生成三套回复方案（积极支持 / 客观中性 / 委婉拒绝）供你选择，一键插入或复制到回复框。
+
+核心功能：
+
+- 三方案智能生成：在 Gmail 邮件页面选中客户来信，ReplyPilot 自动理解上下文，同时生成三种不同立场的回复草稿（积极支持、客观中性、委婉拒绝），预览后选中最合适的一套使用。
+- 多场景语气：支持专业、友好、简洁、高级品牌四种语气风格，适配售前咨询、售后安抚、退款协商、差评回复等不同场景。
+- 灵活回复策略：可设为自动判断，也可手动指定积极 / 中性 / 婉拒 / 道歉 / 升级处理等策略方向。
+- 中文优化：针对国内电商卖家的表达习惯优化，回复自然不生硬；支持自动跟随客户邮件语言（中/英），也可锁定为指定语言输出。
+- 店铺信息注入：可在设置中填写店铺名称、主营品类、发货说明、售后政策、配送范围等信息，AI 生成回复时自动参考这些上下文，让回复更贴合你的业务实际。
+- 隐私安全：你的邮件内容仅用于生成回复，通过你自己的 API Key 发送至你配置的 AI 服务商（支持 SiliconFlow、OpenAI 及任何 OpenAI 兼容接口）。API Key 存储在本地 chrome.storage.local，不会上传至任何第三方服务器或用于模型训练。
+- 浮窗交互：在 Gmail 页面内以可拖拽浮窗形式呈现，支持生成、重新生成、插入回复框、复制到剪贴板、清空等操作，无需离开邮箱页面。
+
+安装后，打开任意 Gmail 邮件，点击右侧 ReplyPilot 图标即可开始使用。首次使用需在设置页配置 AI 服务商和 API Key。
+
+你的反馈是我们持续改进的动力，欢迎在设置页反馈问题！
+
+=== English Detailed Description ===
+
+ReplyPilot is an AI-powered email reply assistant built for e-commerce sellers who use Gmail. Open any email, click "Generate Reply" in the ReplyPilot floating card, and the AI reads the conversation context to produce three reply options (Positive Support, Neutral, Decline) for you to preview, choose, and insert or copy with one click.
+
+Key Features:
+
+- Three-Option Smart Generation: While viewing a customer email in Gmail, ReplyPilot automatically analyzes the context and generates three draft replies with different stances (positive support, neutral, decline). Preview each option and pick the best fit.
+- Multiple Tone Styles: Choose from Professional, Friendly, Concise, and Luxury Brand tones — suited for pre-sale inquiries, post-purchase reassurance, refund negotiations, negative review responses, and more.
+- Flexible Reply Strategies: Set to auto-detect, or manually specify strategy direction: Positive, Neutral, Decline, Apologize, or Escalate.
+- Chinese-Optimized: Replies are naturally phrased for Chinese e-commerce contexts (no machine-translation feel). Supports auto-detecting the customer's language (Chinese/English) or locking to a specific output language.
+- Store Context Injection: Fill in your store name, main category, shipping info, return policy, and shipping regions in Settings. The AI automatically incorporates these details into generated replies so they match your actual business.
+- Privacy & Security: Email content is used solely for generating replies, sent via your own API key to your configured AI provider (supports SiliconFlow, OpenAI, and any OpenAI-compatible endpoint). Your API key is stored locally in chrome.storage.local — never uploaded to third-party servers or used for model training.
+- Floating Card UI: Interacts directly within the Gmail page via a draggable floating card. Generate, regenerate, insert into the reply box, copy to clipboard, and clear — all without leaving your inbox.
+
+After installation, open any Gmail email and click the ReplyPilot icon to get started. First-time users need to configure an AI provider and API Key in the Settings page.
+
+Your feedback drives our improvement — please share your thoughts via the Settings page!

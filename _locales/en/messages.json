@@ -43,6 +43,10 @@
     "message": "Error: {{reason}}",
     "description": "Status: error with reason placeholder"
   },
+  "statusErrorShort": {
+    "message": "Error",
+    "description": "Short status label shown in header when a detailed error banner is visible"
+  },
   "errNoApiKey": {
     "message": "API key not configured. Open Settings to add it.",
     "description": "Error when API key missing"

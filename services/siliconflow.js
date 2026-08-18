@@ -10,6 +10,18 @@ window.RP = window.RP || {};
   var ENDPOINT = 'https://api.siliconflow.cn/v1/chat/completions';
   var DEFAULT_TIMEOUT = 45000; // 45s client-side ceiling
 
+  // Accept either a full OpenAI-compatible completions URL or just the base URL.
+  // Users often paste only https://host/v1, so we append /chat/completions when
+  // it is missing. This keeps both "test connection" and real chat calls working.
+  function normalizeChatEndpoint(endpoint) {
+    endpoint = (endpoint || '').trim();
+    if (!endpoint) return ENDPOINT;
+    // Remove trailing slash(es) for consistent comparison.
+    endpoint = endpoint.replace(/\/+$/, '');
+    if (/\/chat\/completions$/i.test(endpoint)) return endpoint;
+    return endpoint + '/chat/completions';
+  }
+
   function makeError(code, message) {
     var e = new Error(message || code);
     e.code = code;
@@ -29,7 +41,7 @@ window.RP = window.RP || {};
       var apiKey = opts.apiKey;
       var model = opts.model;
       var messages = opts.messages || [];
-      var endpoint = opts.endpoint || ENDPOINT; // OpenAI-compatible URL
+      var endpoint = normalizeChatEndpoint(opts.endpoint); // OpenAI-compatible URL
       var signal = opts.signal; // optional AbortSignal for timeout
       var timeout = opts.timeout || DEFAULT_TIMEOUT;
 
@@ -43,71 +55,54 @@ window.RP = window.RP || {};
         return;
       }
 
-      var controller = null;
-      var timeoutId = null;
-      if (!signal) {
-        controller = new AbortController();
-        signal = controller.signal;
-        timeoutId = setTimeout(function () {
-          controller.abort(new Error('TIMEOUT'));
-        }, timeout);
-      }
-
-      function cleanup() {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-          timeoutId = null;
-        }
-      }
-
-      fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + apiKey,
-          'Content-Type': 'application/json'
+      // Forward the request through the background service worker. Content
+      // scripts running on mail.google.com are blocked by the page CSP from
+      // fetching external APIs directly, so the relay avoids the "Network
+      // error" we used to see inside Gmail. The background worker's origin is
+      // chrome-extension:// and is not subject to that CSP.
+      chrome.runtime.sendMessage(
+        {
+          type: 'RP_FETCH_CHAT',
+          payload: {
+            endpoint: endpoint,
+            apiKey: apiKey,
+            model: model,
+            messages: messages,
+            temperature: 0.5,
+            max_tokens: opts.max_tokens || 2048,
+            timeout: timeout
+          }
         },
-        body: JSON.stringify({
-          model: model,
-          messages: messages,
-          temperature: 0.5,
-          max_tokens: opts.max_tokens || 2048,
-          stream: false
-        }),
-        signal: signal
-      })
-        .then(function (res) {
-          cleanup();
-          if (res.status === 401) {
-            throw makeError('API_KEY_INVALID', 'API key invalid (401)');
-          }
-          if (res.status === 404) {
-            throw makeError('MODEL_NOT_FOUND', 'Model not found (404)');
-          }
-          if (res.status === 429) {
-            throw makeError('RATE_LIMITED', 'Rate limited (429)');
-          }
-          if (!res.ok) {
-            throw makeError('HTTP_' + res.status, 'HTTP error ' + res.status);
-          }
-          return res.json();
-        })
-        .then(function (data) {
-          cleanup();
-          resolve(data);
-        })
-        .catch(function (err) {
-          cleanup();
-          if (err && err.code) {
-            reject(err);
+        function (res) {
+          if (chrome.runtime.lastError) {
+            // Channel-level failure (e.g. SW not reachable) — surface clearly.
+            reject(makeError('NETWORK_ERROR', chrome.runtime.lastError.message || 'Network error'));
             return;
           }
-          // fetch-level failure: network error / timeout / CORS
-          if (isAbortError(err)) {
-            reject(makeError('TIMEOUT', 'Request timed out'));
-          } else {
-            reject(makeError('NETWORK_ERROR', 'Network error'));
+          if (!res || !res.ok) {
+            var status = res && res.status;
+            if (status === 401) {
+              reject(makeError('API_KEY_INVALID', 'API key invalid (401)'));
+              return;
+            }
+            if (status === 404) {
+              reject(makeError('MODEL_NOT_FOUND', 'Model not found (404)'));
+              return;
+            }
+            if (status === 429) {
+              reject(makeError('RATE_LIMITED', 'Rate limited (429)'));
+              return;
+            }
+            if (status) {
+              reject(makeError('HTTP_' + status, 'HTTP error ' + status));
+              return;
+            }
+            reject(makeError('NETWORK_ERROR', (res && res.error) || 'Network error'));
+            return;
           }
-        });
+          resolve(res.body);
+        }
+      );
     });
   }
 
@@ -116,7 +111,7 @@ window.RP = window.RP || {};
   function testConnection(opts) {
     opts = opts || {};
     var apiKey = opts.apiKey;
-    var endpoint = opts.endpoint || ENDPOINT;
+    var endpoint = normalizeChatEndpoint(opts.endpoint);
     var timeout = opts.timeout || 8000;
 
     return new Promise(function (resolve, reject) {

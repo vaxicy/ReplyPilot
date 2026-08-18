@@ -84,9 +84,13 @@ window.RP = window.RP || {};
     head.appendChild(title);
     head.appendChild(headRight);
 
-    // Body: textarea + options panel
+    // Body: error banner + textarea + options panel
     var body = document.createElement('div');
     body.className = 'rp-card-body';
+
+    var errorBanner = document.createElement('div');
+    errorBanner.className = 'rp-error-banner';
+    errorBanner.style.display = 'none';
 
     var text = document.createElement('textarea');
     text.className = 'rp-card-text';
@@ -108,6 +112,7 @@ window.RP = window.RP || {};
     optionsPanel.appendChild(optionsTitle);
     optionsPanel.appendChild(optionsList);
 
+    body.appendChild(errorBanner);
     body.appendChild(text);
     body.appendChild(optionsPanel);
 
@@ -142,6 +147,7 @@ window.RP = window.RP || {};
       card: card,
       head: head,
       status: status,
+      errorBanner: errorBanner,
       text: text,
       gen: gen,
       regen: regen,
@@ -237,8 +243,18 @@ window.RP = window.RP || {};
 
   function setStatus(text, kind) {
     var refs = ensureCard();
-    refs.status.textContent = text;
-    refs.status.className = 'rp-card-status' + (kind ? ' rp-status-' + kind : '');
+    if (kind === 'error') {
+      // Long error messages live in a body banner so the header stays compact.
+      refs.status.textContent = RP.i18n.t('statusErrorShort');
+      refs.status.className = 'rp-card-status rp-status-error';
+      refs.errorBanner.textContent = text;
+      refs.errorBanner.style.display = 'block';
+    } else {
+      refs.status.textContent = text;
+      refs.status.className = 'rp-card-status' + (kind ? ' rp-status-' + kind : '');
+      refs.errorBanner.style.display = 'none';
+      refs.errorBanner.textContent = '';
+    }
   }
 
   function setBusy(busy) {

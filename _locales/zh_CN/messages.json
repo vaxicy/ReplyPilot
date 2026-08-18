@@ -43,6 +43,10 @@
     "message": "错误：{{reason}}",
     "description": "状态：错误，含原因占位符"
   },
+  "statusErrorShort": {
+    "message": "错误",
+    "description": "显示详细错误横幅时，header 中的短状态标签"
+  },
   "errNoApiKey": {
     "message": "未配置 API Key，请打开设置添加。",
     "description": "缺少 API Key 时提示"

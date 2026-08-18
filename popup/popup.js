@@ -8,10 +8,10 @@
   var settings = await RP.storage.getAll();
   var aiStatus = document.getElementById('aiStatus');
 
-  // Resolve the active provider's own key (per-provider slots take priority).
+  // Resolve the active provider's own key from its slot.
   var provider = settings.rp_provider || 'siliconflow';
-  var slot = (settings.rp_providerConfigs && settings.rp_providerConfigs[provider]) || null;
-  var activeKey = (slot && slot.apiKey) ? slot.apiKey : (settings.rp_apiKey || '');
+  var slot = (settings.rp_providerConfigs && settings.rp_providerConfigs[provider]) || {};
+  var activeKey = (slot && slot.apiKey) ? slot.apiKey : '';
 
   if (activeKey && activeKey.trim()) {
     aiStatus.textContent = RP.i18n.t('statusConfigured');

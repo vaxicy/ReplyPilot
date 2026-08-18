@@ -76,21 +76,22 @@ window.RP = window.RP || {};
   }
 
   function checkApiKey(s) {
-    if (!s.rp_apiKey || !s.rp_apiKey.trim()) {
+    var cfg = resolveProviderConfig(s);
+    if (!cfg.apiKey || !cfg.apiKey.trim()) {
       throw makeError('API key missing', 'API_KEY_MISSING');
     }
   }
 
   // Resolve the effective apiKey/endpoint/model for the active provider.
-  // Each provider keeps its own saved slot in rp_providerConfigs; fall back to
-  // the legacy flat fields for old data or if a slot is missing.
+  // Each provider keeps its own slot in rp_providerConfigs; the slot is already
+  // seeded from presets by storage, so there is no shared fallback here.
   function resolveProviderConfig(s) {
     var provider = s.rp_provider || 'siliconflow';
-    var slot = (s.rp_providerConfigs && s.rp_providerConfigs[provider]) || null;
+    var slot = (s.rp_providerConfigs && s.rp_providerConfigs[provider]) || {};
     return {
-      apiKey: (slot && slot.apiKey != null && slot.apiKey !== '') ? slot.apiKey : (s.rp_apiKey || ''),
-      endpoint: (slot && slot.apiEndpoint != null && slot.apiEndpoint !== '') ? slot.apiEndpoint : (s.rp_apiEndpoint || ''),
-      model: (slot && slot.model != null && slot.model !== '') ? slot.model : (s.rp_model || '')
+      apiKey: (slot.apiKey != null) ? slot.apiKey : '',
+      endpoint: (slot.apiEndpoint != null && slot.apiEndpoint !== '') ? slot.apiEndpoint : '',
+      model: (slot.model != null && slot.model !== '') ? slot.model : ''
     };
   }
 

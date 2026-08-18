@@ -10,9 +10,6 @@ window.RP = window.RP || {};
   var DEFAULTS = {
     rp_language: '',            // '' => follow browser locale
     rp_provider: 'siliconflow', // siliconflow | openai | custom
-    rp_apiEndpoint: 'https://api.siliconflow.cn/v1',
-    rp_apiKey: '',
-    rp_model: 'deepseek-ai/DeepSeek-V4-Flash',
     rp_providerConfigs: {},     // { [provider]: { apiEndpoint, apiKey, model } }
     rp_tone: 'professional',      // professional | friendly | short | luxury
     rp_replyLanguage: 'auto',     // auto | zh | en
@@ -23,22 +20,37 @@ window.RP = window.RP || {};
     rp_shippingRegions: ''        // shipping regions injected into prompts
   };
 
-  // Migrate flat apiEndpoint/apiKey/model into per-provider config slots so
-  // that each engine keeps its own credentials. Runs once on first getAll
-  // after the upgrade; safe to run repeatedly (idempotent).
-  function migrateProviderConfigs(res) {
+  // Ensure every known provider has its own slot in rp_providerConfigs,
+  // seeding empty slots from the built-in presets so the UI and runtime never
+  // fall back to a shared global credential. Legacy flat fields (rp_apiKey /
+  // rp_apiEndpoint / rp_model) are intentionally ignored — each provider must
+  // be configured independently.
+  var PRESET_ENDPOINTS = {
+    siliconflow: 'https://api.siliconflow.cn/v1',
+    openai: 'https://api.openai.com/v1',
+    custom: ''
+  };
+  var PRESET_MODELS = {
+    siliconflow: 'deepseek-ai/DeepSeek-V4-Flash',
+    openai: 'gpt-4o-mini',
+    custom: ''
+  };
+
+  function normalizeProviderConfigs(res) {
     if (!res || typeof res !== 'object') return res;
-    if (res.rp_providerConfigs && typeof res.rp_providerConfigs === 'object' &&
-        Object.keys(res.rp_providerConfigs).length) {
-      return res; // already migrated
-    }
-    var provider = res.rp_provider || 'siliconflow';
-    var configs = {};
-    configs[provider] = {
-      apiEndpoint: res.rp_apiEndpoint || DEFAULTS.rp_apiEndpoint,
-      apiKey: res.rp_apiKey || '',
-      model: res.rp_model || DEFAULTS.rp_model
-    };
+    var configs = (res.rp_providerConfigs && typeof res.rp_providerConfigs === 'object')
+      ? res.rp_providerConfigs : {};
+    ['siliconflow', 'openai', 'custom'].forEach(function (p) {
+      var slot = configs[p];
+      if (!slot || typeof slot !== 'object') slot = {};
+      configs[p] = {
+        apiEndpoint: (slot.apiEndpoint != null && slot.apiEndpoint !== '')
+          ? slot.apiEndpoint : (PRESET_ENDPOINTS[p] || ''),
+        apiKey: (slot.apiKey != null) ? slot.apiKey : '',
+        model: (slot.model != null && slot.model !== '')
+          ? slot.model : (PRESET_MODELS[p] || '')
+      };
+    });
     res.rp_providerConfigs = configs;
     return res;
   }
@@ -65,7 +77,7 @@ window.RP = window.RP || {};
     return new Promise(function (resolve, reject) {
       try {
         chrome.storage.local.get(DEFAULTS, function (res) {
-          resolve(migrateProviderConfigs(res || {}));
+          resolve(normalizeProviderConfigs(res || {}));
         });
       } catch (e) {
         if (isContextInvalidatedError(e)) {

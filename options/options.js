@@ -35,20 +35,14 @@
   }
 
   // Read the per-provider config slot (endpoint/key/model) for `provider`.
-  // Falls back to the legacy flat fields for old data.
+  // Returns the slot directly (already seeded from presets by storage). Never
+  // falls back to a shared legacy field, so each provider stays independent.
   function readProviderSlot(settings, provider) {
-    var slot = (settings.rp_providerConfigs && settings.rp_providerConfigs[provider]) || null;
-    if (slot) {
-      return {
-        apiEndpoint: slot.apiEndpoint != null ? slot.apiEndpoint : (settings.rp_apiEndpoint || ''),
-        apiKey: slot.apiKey != null ? slot.apiKey : (settings.rp_apiKey || ''),
-        model: slot.model != null ? slot.model : (settings.rp_model || '')
-      };
-    }
+    var slot = (settings.rp_providerConfigs && settings.rp_providerConfigs[provider]) || {};
     return {
-      apiEndpoint: settings.rp_apiEndpoint || '',
-      apiKey: settings.rp_apiKey || '',
-      model: settings.rp_model || ''
+      apiEndpoint: (slot.apiEndpoint != null && slot.apiEndpoint !== '') ? slot.apiEndpoint : (PROVIDER_PRESETS[provider] || PROVIDER_PRESETS.custom).endpoint,
+      apiKey: (slot.apiKey != null) ? slot.apiKey : '',
+      model: (slot.model != null && slot.model !== '') ? slot.model : (PROVIDER_PRESETS[provider] || PROVIDER_PRESETS.custom).model
     };
   }
 
@@ -96,22 +90,14 @@
     return settings;
   }
 
-  // Apply a provider slot when switching. If the target provider has a saved
-  // slot, load it verbatim (preserving the user's own key/endpoint/model).
-  // Otherwise, fall back to the provider's built-in preset defaults.
+  // Apply a provider slot when switching. Each provider's slot is fully
+  // self-contained (seeded from its preset by storage), so switching always
+  // loads that provider's own endpoint/key/model verbatim.
   function applyProviderSlot(provider, settings) {
     var slot = readProviderSlot(settings, provider);
-    var hasSlot = settings.rp_providerConfigs && settings.rp_providerConfigs[provider];
-    if (hasSlot) {
-      setField('apiKey', slot.apiKey);
-      setField('apiEndpoint', slot.apiEndpoint);
-      setField('model', slot.model);
-    } else {
-      var preset = PROVIDER_PRESETS[provider] || PROVIDER_PRESETS.custom;
-      setField('apiEndpoint', preset.endpoint);
-      setField('apiKey', slot.apiKey); // legacy fallback only
-      setField('model', preset.model);
-    }
+    setField('apiKey', slot.apiKey);
+    setField('apiEndpoint', slot.apiEndpoint);
+    setField('model', slot.model);
   }
 
   function bindEvents() {
@@ -348,6 +334,7 @@
 
       // Save the active provider's key/endpoint/model into its own slot,
       // merging into the existing providerConfigs instead of replacing them.
+      // Each provider keeps an independent slot; no shared flat fields.
       var endpoint = (document.getElementById('apiEndpoint') || {}).value || '';
       var apiKey = (document.getElementById('apiKey') || {}).value || '';
       var model = (document.getElementById('model') || {}).value || '';
@@ -358,10 +345,6 @@
         apiKey: apiKey,
         model: model
       };
-      // Keep legacy flat fields in sync with the active provider for compatibility.
-      obj.rp_apiEndpoint = endpoint;
-      obj.rp_apiKey = apiKey;
-      obj.rp_model = model;
 
       return RP.storage.setMany(obj).then(function () {
         showStatus(RP.i18n.t(silent ? 'optAutoSaved' : 'optSaved'));

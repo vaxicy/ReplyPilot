@@ -8,7 +8,12 @@
   var settings = await RP.storage.getAll();
   var aiStatus = document.getElementById('aiStatus');
 
-  if (settings.rp_apiKey && settings.rp_apiKey.trim()) {
+  // Resolve the active provider's own key (per-provider slots take priority).
+  var provider = settings.rp_provider || 'siliconflow';
+  var slot = (settings.rp_providerConfigs && settings.rp_providerConfigs[provider]) || null;
+  var activeKey = (slot && slot.apiKey) ? slot.apiKey : (settings.rp_apiKey || '');
+
+  if (activeKey && activeKey.trim()) {
     aiStatus.textContent = RP.i18n.t('statusConfigured');
     aiStatus.className = 'rp-badge rp-badge-ok';
   } else {

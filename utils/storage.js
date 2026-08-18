@@ -13,6 +13,7 @@ window.RP = window.RP || {};
     rp_apiEndpoint: 'https://api.siliconflow.cn/v1',
     rp_apiKey: '',
     rp_model: 'deepseek-ai/DeepSeek-V4-Flash',
+    rp_providerConfigs: {},     // { [provider]: { apiEndpoint, apiKey, model } }
     rp_tone: 'professional',      // professional | friendly | short | luxury
     rp_replyLanguage: 'auto',     // auto | zh | en
     rp_storeName: '',             // store name injected into prompts
@@ -21,6 +22,26 @@ window.RP = window.RP || {};
     rp_returnPolicy: '',          // return policy injected into prompts
     rp_shippingRegions: ''        // shipping regions injected into prompts
   };
+
+  // Migrate flat apiEndpoint/apiKey/model into per-provider config slots so
+  // that each engine keeps its own credentials. Runs once on first getAll
+  // after the upgrade; safe to run repeatedly (idempotent).
+  function migrateProviderConfigs(res) {
+    if (!res || typeof res !== 'object') return res;
+    if (res.rp_providerConfigs && typeof res.rp_providerConfigs === 'object' &&
+        Object.keys(res.rp_providerConfigs).length) {
+      return res; // already migrated
+    }
+    var provider = res.rp_provider || 'siliconflow';
+    var configs = {};
+    configs[provider] = {
+      apiEndpoint: res.rp_apiEndpoint || DEFAULTS.rp_apiEndpoint,
+      apiKey: res.rp_apiKey || '',
+      model: res.rp_model || DEFAULTS.rp_model
+    };
+    res.rp_providerConfigs = configs;
+    return res;
+  }
 
   function get(key) {
     return new Promise(function (resolve) {
@@ -44,7 +65,7 @@ window.RP = window.RP || {};
     return new Promise(function (resolve, reject) {
       try {
         chrome.storage.local.get(DEFAULTS, function (res) {
-          resolve(res || {});
+          resolve(migrateProviderConfigs(res || {}));
         });
       } catch (e) {
         if (isContextInvalidatedError(e)) {

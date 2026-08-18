@@ -34,13 +34,32 @@
     });
   }
 
+  // Read the per-provider config slot (endpoint/key/model) for `provider`.
+  // Falls back to the legacy flat fields for old data.
+  function readProviderSlot(settings, provider) {
+    var slot = (settings.rp_providerConfigs && settings.rp_providerConfigs[provider]) || null;
+    if (slot) {
+      return {
+        apiEndpoint: slot.apiEndpoint != null ? slot.apiEndpoint : (settings.rp_apiEndpoint || ''),
+        apiKey: slot.apiKey != null ? slot.apiKey : (settings.rp_apiKey || ''),
+        model: slot.model != null ? slot.model : (settings.rp_model || '')
+      };
+    }
+    return {
+      apiEndpoint: settings.rp_apiEndpoint || '',
+      apiKey: settings.rp_apiKey || '',
+      model: settings.rp_model || ''
+    };
+  }
+
   function loadSettings() {
     RP.storage.getAll().then(function (settings) {
-      ids.forEach(function (id) {
+      // Non-provider fields (language, tone, store info, etc.)
+      ['language', 'tone', 'replyLanguage', 'storeName', 'storeCategory',
+       'shippingInfo', 'returnPolicy', 'shippingRegions'].forEach(function (id) {
         var el = document.getElementById(id);
         if (!el) return;
-        var key = 'rp_' + id;
-        var value = settings[key];
+        var value = settings['rp_' + id];
         if (el.type === 'checkbox') {
           el.checked = !!value;
         } else {
@@ -48,31 +67,50 @@
         }
       });
 
-      // Remember the saved provider so provider-change can detect the old preset.
-      var provider = document.getElementById('provider');
-      currentProvider = provider ? provider.value : 'siliconflow';
+      var provider = settings.rp_provider || 'siliconflow';
+      currentProvider = provider;
+      var providerEl = document.getElementById('provider');
+      if (providerEl) providerEl.value = provider;
+
+      // Fill the api key/endpoint/model from this provider's own slot.
+      var slot = readProviderSlot(settings, provider);
+      setField('apiKey', slot.apiKey);
+      setField('apiEndpoint', slot.apiEndpoint);
+      setField('model', slot.model);
     });
   }
 
-  // Apply a provider preset. On a user-initiated change we overwrite the
-  // endpoint and swap the model to the new provider's default (unless the
-  // user had typed a custom model ID that belongs to neither provider).
-  function applyProviderPreset(provider, opts) {
-    opts = opts || {};
-    var preset = PROVIDER_PRESETS[provider] || PROVIDER_PRESETS.custom;
-    var endpointInput = document.getElementById('apiEndpoint');
-    var modelInput = document.getElementById('model');
+  function setField(id, value) {
+    var el = document.getElementById(id);
+    if (el) el.value = value || '';
+  }
 
-    if (endpointInput && !opts.skipEndpoint) {
-      endpointInput.value = preset.endpoint;
-    }
+  // Persist the current input values into the active provider's own slot.
+  function writeCurrentSlot(settings) {
+    settings.rp_providerConfigs = settings.rp_providerConfigs || {};
+    settings.rp_providerConfigs[currentProvider] = {
+      apiEndpoint: (document.getElementById('apiEndpoint') || {}).value || '',
+      apiKey: (document.getElementById('apiKey') || {}).value || '',
+      model: (document.getElementById('model') || {}).value || ''
+    };
+    return settings;
+  }
 
-    if (modelInput) {
-      var current = modelInput.value.trim();
-      var wasPreset = opts.oldModel && opts.oldModel === current;
-      if (!current || wasPreset) {
-        modelInput.value = preset.model;
-      }
+  // Apply a provider slot when switching. If the target provider has a saved
+  // slot, load it verbatim (preserving the user's own key/endpoint/model).
+  // Otherwise, fall back to the provider's built-in preset defaults.
+  function applyProviderSlot(provider, settings) {
+    var slot = readProviderSlot(settings, provider);
+    var hasSlot = settings.rp_providerConfigs && settings.rp_providerConfigs[provider];
+    if (hasSlot) {
+      setField('apiKey', slot.apiKey);
+      setField('apiEndpoint', slot.apiEndpoint);
+      setField('model', slot.model);
+    } else {
+      var preset = PROVIDER_PRESETS[provider] || PROVIDER_PRESETS.custom;
+      setField('apiEndpoint', preset.endpoint);
+      setField('apiKey', slot.apiKey); // legacy fallback only
+      setField('model', preset.model);
     }
   }
 
@@ -90,10 +128,16 @@
     var provider = document.getElementById('provider');
     if (provider) {
       provider.addEventListener('change', function () {
-        var oldModel = (PROVIDER_PRESETS[currentProvider] || {}).model;
-        applyProviderPreset(provider.value, { oldModel: oldModel });
-        currentProvider = provider.value;
-        scheduleAutoSave();
+        // Save the current provider's input values into its own slot first,
+        // then load the newly selected provider's slot (or its preset).
+        RP.storage.getAll().then(function (settings) {
+          settings.rp_provider = currentProvider;
+          writeCurrentSlot(settings);
+          settings.rp_provider = provider.value;
+          applyProviderSlot(provider.value, settings);
+          currentProvider = provider.value;
+          saveSettings(true);
+        });
       });
     }
 
@@ -286,12 +330,29 @@
 
   function saveSettings(silent) {
     var obj = {};
-    ids.forEach(function (id) {
+    // Persist everything except the provider api fields (those live in slots).
+    ['language', 'tone', 'replyLanguage', 'storeName', 'storeCategory',
+     'shippingInfo', 'returnPolicy', 'shippingRegions', 'provider'].forEach(function (id) {
       var el = document.getElementById(id);
       if (!el) return;
-      var key = 'rp_' + id;
-      obj[key] = el.value;
+      obj['rp_' + id] = el.value;
     });
+
+    // Save the active provider's key/endpoint/model into its own slot.
+    var endpoint = (document.getElementById('apiEndpoint') || {}).value || '';
+    var apiKey = (document.getElementById('apiKey') || {}).value || '';
+    var model = (document.getElementById('model') || {}).value || '';
+    obj.rp_provider = currentProvider;
+    obj.rp_providerConfigs = {};
+    obj.rp_providerConfigs[currentProvider] = {
+      apiEndpoint: endpoint,
+      apiKey: apiKey,
+      model: model
+    };
+    // Keep legacy flat fields in sync with the active provider for compatibility.
+    obj.rp_apiEndpoint = endpoint;
+    obj.rp_apiKey = apiKey;
+    obj.rp_model = model;
 
     RP.storage.setMany(obj).then(function () {
       showStatus(RP.i18n.t(silent ? 'optAutoSaved' : 'optSaved'));

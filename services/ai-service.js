@@ -81,6 +81,19 @@ window.RP = window.RP || {};
     }
   }
 
+  // Resolve the effective apiKey/endpoint/model for the active provider.
+  // Each provider keeps its own saved slot in rp_providerConfigs; fall back to
+  // the legacy flat fields for old data or if a slot is missing.
+  function resolveProviderConfig(s) {
+    var provider = s.rp_provider || 'siliconflow';
+    var slot = (s.rp_providerConfigs && s.rp_providerConfigs[provider]) || null;
+    return {
+      apiKey: (slot && slot.apiKey != null && slot.apiKey !== '') ? slot.apiKey : (s.rp_apiKey || ''),
+      endpoint: (slot && slot.apiEndpoint != null && slot.apiEndpoint !== '') ? slot.apiEndpoint : (s.rp_apiEndpoint || ''),
+      model: (slot && slot.model != null && slot.model !== '') ? slot.model : (s.rp_model || '')
+    };
+  }
+
   function extractContent(data) {
     var content = data &&
       data.choices &&
@@ -101,6 +114,7 @@ window.RP = window.RP || {};
 
     return settingsPromise.then(function (s) {
       checkApiKey(s);
+      var cfg = resolveProviderConfig(s);
 
       var prompt = RP.parser.buildPrompt({
         tone: s.rp_tone,
@@ -125,9 +139,9 @@ window.RP = window.RP || {};
       ];
 
       return RP.siliconflow.chat({
-        apiKey: s.rp_apiKey,
-        model: s.rp_model,
-        endpoint: s.rp_apiEndpoint,
+        apiKey: cfg.apiKey,
+        model: cfg.model,
+        endpoint: cfg.endpoint,
         messages: messages,
         max_tokens: 2048
       }).then(function (data) {
@@ -148,6 +162,7 @@ window.RP = window.RP || {};
 
     return settingsPromise.then(function (s) {
       checkApiKey(s);
+      var cfg = resolveProviderConfig(s);
 
       var prompt = RP.parser.buildOptionsPrompt({
         tone: s.rp_tone,
@@ -173,9 +188,9 @@ window.RP = window.RP || {};
       ];
 
       return RP.siliconflow.chat({
-        apiKey: s.rp_apiKey,
-        model: s.rp_model,
-        endpoint: s.rp_apiEndpoint,
+        apiKey: cfg.apiKey,
+        model: cfg.model,
+        endpoint: cfg.endpoint,
         messages: messages,
         max_tokens: 2048
       }).then(function (data) {
@@ -197,6 +212,7 @@ window.RP = window.RP || {};
 
     return settingsPromise.then(function (s) {
       checkApiKey(s);
+      var cfg = resolveProviderConfig(s);
 
       var prompt = RP.parser.buildRefinementPrompt({
         tone: s.rp_tone,
@@ -223,9 +239,9 @@ window.RP = window.RP || {};
       ];
 
       return RP.siliconflow.chat({
-        apiKey: s.rp_apiKey,
-        model: s.rp_model,
-        endpoint: s.rp_apiEndpoint,
+        apiKey: cfg.apiKey,
+        model: cfg.model,
+        endpoint: cfg.endpoint,
         messages: messages,
         max_tokens: 2048
       }).then(function (data) {

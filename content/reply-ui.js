@@ -169,6 +169,40 @@ window.RP = window.RP || {};
     return cardRefs;
   }
 
+  // --- Hover tooltip for full reply text -------------------------------
+  var optionTooltip = null;
+
+  function getOptionTooltip() {
+    if (optionTooltip) return optionTooltip;
+    optionTooltip = document.createElement('div');
+    optionTooltip.className = 'rp-option-tooltip';
+    optionTooltip.setAttribute('role', 'tooltip');
+    optionTooltip.style.display = 'none';
+    document.body.appendChild(optionTooltip);
+    return optionTooltip;
+  }
+
+  function showOptionTooltip(reply, anchor) {
+    var tip = getOptionTooltip();
+    tip.textContent = reply.replace(/\s+/g, ' ').trim();
+    tip.style.display = 'block';
+
+    var rect = anchor.getBoundingClientRect();
+    var tipRect = tip.getBoundingClientRect();
+    var top = rect.top - tipRect.height - 8;
+    if (top < 8) top = rect.bottom + 8; // flip below if no room above
+    var left = rect.left;
+    var maxLeft = window.innerWidth - tipRect.width - 8;
+    if (left > maxLeft) left = maxLeft;
+    if (left < 8) left = 8;
+    tip.style.top = top + 'px';
+    tip.style.left = left + 'px';
+  }
+
+  function hideOptionTooltip() {
+    if (optionTooltip) optionTooltip.style.display = 'none';
+  }
+
   function bindCardEvents(refs) {
     refs.gen.addEventListener('click', function () { onGenerate(); });
     refs.regen.addEventListener('click', function () { onGenerate(); });
@@ -338,6 +372,11 @@ window.RP = window.RP || {};
       preview.className = 'rp-option-preview';
       var snippet = opt.reply.replace(/\s+/g, ' ').trim();
       preview.textContent = snippet.length > 80 ? snippet.slice(0, 80) + '…' : snippet;
+
+      item.addEventListener('mouseenter', function (e) {
+        showOptionTooltip(opt.reply, e.currentTarget);
+      });
+      item.addEventListener('mouseleave', hideOptionTooltip);
 
       var choose = document.createElement('button');
       choose.type = 'button';

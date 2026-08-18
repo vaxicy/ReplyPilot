@@ -19,6 +19,26 @@
     "message": "重新生成",
     "description": "重新生成按钮"
   },
+  "feedbackToggle": {
+    "message": "修改意见",
+    "description": "展开反馈输入框的按钮"
+  },
+  "feedbackPlaceholder": {
+    "message": "对当前回复不满意？输入修改意见，如：再礼貌一点 / 加上退款说明 / 简短到 50 词",
+    "description": "反馈输入框占位符"
+  },
+  "regenerateWithFeedback": {
+    "message": "按意见重新生成",
+    "description": "按修改意见重新生成按钮"
+  },
+  "feedbackNoReply": {
+    "message": "请先生成回复，再给修改意见。",
+    "description": "尚无回复时的提示"
+  },
+  "statusRefining": {
+    "message": "按意见改写中…",
+    "description": "状态：按意见改写中"
+  },
   "insertReply": {
     "message": "插入回复",
     "description": "插入回复按钮"

@@ -103,11 +103,51 @@ window.RP = window.RP || {};
     return lines.join('\n');
   }
 
+  // Build the prompt for refining an existing reply based on user feedback.
+  // Passes the original email, the current reply, and the user's edit instructions
+  // to the model and asks for a single revised reply.
+  function buildRefinementPrompt(ctx) {
+  ctx = ctx || {};
+  var tone = toneLabel(ctx.tone);
+  var lang = replyLanguageLabel(ctx.replyLanguage);
+  var subject = ctx.subject || '';
+  var body = clampText(ctx.emailBody, MAX_BODY, 'content');
+  var currentReply = ctx.currentReply || '';
+  var feedback = ctx.feedback || '';
+  var mem = buildStoreContext(ctx);
+
+  var lines = [
+    'You are an e-commerce customer service assistant.',
+    'Tone: ' + tone + '. Reply language: ' + lang + '.',
+    'Rules: respond like a real human agent. Do NOT fabricate order/tracking/refund info. Ask politely if unknown. No apologies unless warranted.',
+    '',
+    'The user is NOT satisfied with the existing reply and gave edit instructions. Rewrite the reply to follow those instructions while keeping it natural and consistent with the email.'
+  ];
+  if (mem) lines.push('Store context: ' + mem);
+  lines.push(
+    '',
+    'Customer email:',
+    'Subject: ' + subject,
+    '',
+    body,
+    '',
+    'Existing reply (to be revised):',
+    currentReply,
+    '',
+    'Edit instructions from the user:',
+    feedback,
+    '',
+    'Return JSON: {"reply": "your revised reply"}'
+  );
+  return lines.join('\n');
+}
+
   RP.parser = {
     detectLanguage: detectLanguage,
     toneLabel: toneLabel,
     replyLanguageLabel: replyLanguageLabel,
     buildPrompt: buildPrompt,
-    buildOptionsPrompt: buildOptionsPrompt
+    buildOptionsPrompt: buildOptionsPrompt,
+    buildRefinementPrompt: buildRefinementPrompt
   };
 })(window.RP);

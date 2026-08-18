@@ -188,9 +188,60 @@ window.RP = window.RP || {};
     });
   }
 
+  // Refine an existing reply using the user's edit instructions.
+  // context: { subject, sender, emailBody, currentReply, feedback }
+  // settings: full settings object (optional; fetched if omitted)
+  function refineReply(context, settings) {
+    context = context || {};
+    var settingsPromise = settings ? Promise.resolve(settings) : RP.storage.getAll();
+
+    return settingsPromise.then(function (s) {
+      checkApiKey(s);
+
+      var prompt = RP.parser.buildRefinementPrompt({
+        tone: s.rp_tone,
+        replyLanguage: s.rp_replyLanguage || 'auto',
+        storeName: s.rp_storeName || '',
+        storeCategory: s.rp_storeCategory || '',
+        shippingInfo: s.rp_shippingInfo || '',
+        returnPolicy: s.rp_returnPolicy || '',
+        shippingRegions: s.rp_shippingRegions || '',
+        subject: context.subject,
+        emailBody: context.emailBody,
+        currentReply: context.currentReply || '',
+        feedback: context.feedback || ''
+      });
+
+      var messages = [
+        {
+          role: 'system',
+          content: 'You are a helpful e-commerce customer service assistant. ' +
+            'Always respond with valid JSON in the exact format {"reply": "..."}. ' +
+            'Do not wrap it in markdown code fences.'
+        },
+        { role: 'user', content: prompt }
+      ];
+
+      return RP.siliconflow.chat({
+        apiKey: s.rp_apiKey,
+        model: s.rp_model,
+        endpoint: s.rp_apiEndpoint,
+        messages: messages,
+        max_tokens: 2048
+      }).then(function (data) {
+        var reply = parseReply(extractContent(data));
+        if (!reply) {
+          throw makeError('Could not parse model reply', 'PARSE_FAILED');
+        }
+        return reply;
+      });
+    });
+  }
+
   RP.ai = {
     generateReply: generateReply,
     generateOptions: generateOptions,
+    refineReply: refineReply,
     parseReply: parseReply,
     parseOptions: parseOptions
   };

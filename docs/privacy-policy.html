@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReplyPilot 隐私政策 / Privacy Policy</title>
+  <style>
+    :root {
+      --primary: #6d5efc;
+      --primary-grad: linear-gradient(135deg, #7c6bff, #5b8def);
+      --text: #1f2330;
+      --sub: #5b6172;
+      --bg: #f6f7fb;
+      --surface: #ffffff;
+      --border: #e6e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 48px 20px 64px;
+    }
+    .hero {
+      background: var(--primary-grad);
+      border-radius: 18px;
+      padding: 28px 28px;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(109, 94, 252, 0.25);
+    }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hero h1 { margin: 0; font-size: 24px; }
+    .hero p {
+      margin: 10px 0 0;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .lang-tabs { display: flex; gap: 6px; }
+    .tab {
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      background: transparent;
+      color: #fff;
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .tab:hover { background: rgba(255, 255, 255, 0.15); }
+    .tab.active { background: #fff; color: var(--primary); }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 26px;
+      margin-top: 18px;
+    }
+    h2 {
+      font-size: 17px;
+      margin: 0 0 10px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h2 .en { color: var(--sub); font-weight: 500; font-size: 13px; }
+    p { margin: 8px 0; color: var(--sub); font-size: 15px; }
+    ul { margin: 8px 0; padding-left: 20px; color: var(--sub); font-size: 15px; }
+    li { margin: 6px 0; }
+    .tag {
+      display: inline-block;
+      background: #f0eeff;
+      color: var(--primary);
+      border-radius: 8px;
+      padding: 2px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-right: 6px;
+    }
+    .foot {
+      text-align: center;
+      color: var(--sub);
+      font-size: 13px;
+      margin-top: 28px;
+    }
+    a { color: var(--primary); }
+    /* 语言切换：默认显示中文（body 自带 lang-zh），JS 失效也不会空白 */
+    body.lang-en .lang-zh { display: none; }
+    body.lang-zh .lang-en { display: none; }
+    @media (max-width: 480px) {
+      .hero-top { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body class="lang-zh">
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-top">
+        <h1 class="lang-zh">ReplyPilot 隐私政策</h1>
+        <h1 class="lang-en">ReplyPilot Privacy Policy</h1>
+        <div class="lang-tabs">
+          <button class="tab active" data-lang="zh" type="button">中文</button>
+          <button class="tab" data-lang="en" type="button">English</button>
+        </div>
+      </div>
+      <p class="lang-zh">最后更新：2026-07-18</p>
+      <p class="lang-en">Last updated: 2026-07-18</p>
+    </div>
+
+    <div class="card">
+      <h2 class="lang-zh">概述</h2>
+      <h2 class="lang-en">Overview</h2>
+      <p class="lang-zh">
+        ReplyPilot 是一款 Gmail 邮件回复助手浏览器扩展。我们高度重视你的隐私。
+        本扩展<strong>不会</strong>将任何用户数据收集、存储或传输到开发者的服务器。
+      </p>
+      <p class="lang-en">
+        ReplyPilot is a Gmail reply-assistant browser extension. We take your privacy
+        seriously. This extension does <strong>not</strong> collect, store, or transmit
+        any user data to the developer's servers.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2 class="lang-zh">我们收集的数据</h2>
+      <h2 class="lang-en">Data We Handle</h2>
+      <p class="lang-zh">当你点击「生成回复」时，扩展会读取当前 Gmail 邮件的以下内容，并仅用于生成回复：</p>
+      <p class="lang-en">When you click "Generate", the extension reads the following from the current Gmail email, used only to produce a reply:</p>
+      <ul class="lang-zh">
+        <li><span class="tag">邮件主题</span> 当前邮件的标题</li>
+        <li><span class="tag">邮件正文</span> 当前邮件的内容</li>
+        <li><span class="tag">发件人信息</span> 发件人姓名与邮箱地址（作为上下文）</li>
+      </ul>
+      <ul class="lang-en">
+        <li><span class="tag">Subject</span> the email subject</li>
+        <li><span class="tag">Body</span> the email content</li>
+        <li><span class="tag">Sender</span> sender name &amp; email (as context)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2 class="lang-zh">数据如何处理</h2>
+      <h2 class="lang-en">How Data Is Processed</h2>
+      <p class="lang-zh">
+        上述邮件内容<strong>仅在你主动点击生成时</strong>，通过<strong>你自己的 API 密钥</strong>，
+        发送到<strong>你自行配置的第三方 AI 服务</strong>（SiliconFlow / OpenAI / 自定义 OpenAI 兼容端点），
+        以获取回复建议。该过程完全由你控制，开发者无法访问。
+      </p>
+      <p class="lang-en">
+        The email content above is sent <strong>only when you click generate</strong>,
+        using <strong>your own API key</strong>, to the <strong>third-party AI service you
+        configure</strong> (SiliconFlow / OpenAI / custom OpenAI-compatible endpoint) to
+        obtain reply suggestions. This is fully under your control; the developer cannot
+        access it.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2 class="lang-zh">本地存储</h2>
+      <h2 class="lang-en">Local Storage</h2>
+      <p class="lang-zh">
+        你的设置（AI 服务商、API 端点、API 密钥、模型、回复语气、界面语言、AI 记忆）
+        全部保存在你浏览器本地的 <code>chrome.storage.local</code> 中，不会上传到开发者服务器。
+      </p>
+      <p class="lang-en">
+        Your settings (AI provider, API endpoint, API key, model, reply tone, UI language,
+        AI memory) are stored locally in your browser's <code>chrome.storage.local</code>
+        and are never uploaded to the developer's servers.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2 class="lang-zh">我们不会</h2>
+      <h2 class="lang-en">What We Do NOT Do</h2>
+      <ul class="lang-zh">
+        <li>不会出售、共享或出租你的任何数据</li>
+        <li>不会保留你的邮件内容或 AI 生成的回复</li>
+        <li>不会追踪你的浏览行为或浏览记录</li>
+        <li>不会将你的数据用于广告或分析</li>
+      </ul>
+      <ul class="lang-en">
+        <li>We do not sell, share, or rent any of your data.</li>
+        <li>We do not retain your emails or AI-generated replies.</li>
+        <li>We do not track your browsing behavior or history.</li>
+        <li>We do not use your data for advertising or analytics.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2 class="lang-zh">第三方服务</h2>
+      <h2 class="lang-en">Third-Party Services</h2>
+      <p class="lang-zh">
+        当你使用 AI 生成功能时，数据会按你的配置发送到第三方 AI 服务商。
+        请参考你所选用服务商的隐私政策（如 SiliconFlow、OpenAI）。
+      </p>
+      <p class="lang-en">
+        When you use the AI generation feature, data is sent to the third-party AI provider
+        you configure. Please refer to that provider's privacy policy (e.g., SiliconFlow,
+        OpenAI).
+      </p>
+    </div>
+
+    <div class="card">
+      <h2 class="lang-zh">联系我们</h2>
+      <h2 class="lang-en">Contact</h2>
+      <p class="lang-zh">如有疑问，请发送邮件至：<a href="mailto:huangzero2004@gmail.com">huangzero2004@gmail.com</a></p>
+      <p class="lang-en">If you have any questions, please email us at: <a href="mailto:huangzero2004@gmail.com">huangzero2004@gmail.com</a></p>
+    </div>
+
+    <div class="foot">© 2026 ReplyPilot</div>
+  </div>
+
+  <script>
+    (function () {
+      var body = document.body;
+      var tabs = document.querySelectorAll('.tab');
+      function setLang(lang) {
+        if (lang !== 'zh' && lang !== 'en') return;
+        body.classList.remove('lang-zh', 'lang-en');
+        body.classList.add('lang-' + lang);
+        tabs.forEach(function (t) {
+          t.classList.toggle('active', t.getAttribute('data-lang') === lang);
+        });
+        try { localStorage.setItem('rp-privacy-lang', lang); } catch (e) {}
+      }
+      tabs.forEach(function (t) {
+        t.addEventListener('click', function () { setLang(t.getAttribute('data-lang')); });
+      });
+      // 恢复上次的语种选择（JS 失效时默认仍为中文，不会出现空白页）
+      try {
+        var saved = localStorage.getItem('rp-privacy-lang');
+        if (saved === 'en' || saved === 'zh') setLang(saved);
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>

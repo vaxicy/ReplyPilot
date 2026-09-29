@@ -70,9 +70,9 @@ window.RP = window.RP || {};
     return content;
   }
 
-  // ctx: { subject, emailBody, tone, instruction }
-  // Generates a single reply guided by the selected tone + optional user
-  // instruction. settings: full settings object (optional; fetched if omitted)
+  // ctx: { subject, emailBody, instruction }
+  // Generates a single reply guided by the user's free-text instruction.
+  // settings: full settings object (optional; fetched if omitted)
   function generateGuided(ctx, settings) {
     ctx = ctx || {};
     var settingsPromise = settings ? Promise.resolve(settings) : RP.storage.getAll();
@@ -82,7 +82,6 @@ window.RP = window.RP || {};
       var cfg = resolveProviderConfig(s);
 
       var prompt = RP.parser.buildGuidedPrompt({
-        tone: ctx.tone || s.rp_tone || 'professional',
         replyLanguage: s.rp_replyLanguage || 'auto',
         myContext: s.rp_myContext || '',
         subject: ctx.subject,
@@ -116,7 +115,7 @@ window.RP = window.RP || {};
     });
   }
 
-  // ctx: { subject, emailBody, tone, replyLanguage, myContext,
+  // ctx: { subject, emailBody, replyLanguage, myContext,
   //        currentReply, instruction }
   // settings: full settings object (optional; fetched if omitted)
   function reviseReply(ctx, settings) {
@@ -134,7 +133,6 @@ window.RP = window.RP || {};
       var cfg = resolveProviderConfig(s);
 
       var prompt = RP.parser.buildRevisePrompt({
-        tone: ctx.tone || s.rp_tone || 'professional',
         replyLanguage: s.rp_replyLanguage || 'auto',
         myContext: s.rp_myContext || '',
         subject: ctx.subject,

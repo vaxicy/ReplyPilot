@@ -375,10 +375,6 @@
     "message": "English",
     "description": "Reply language option"
   },
-  "panelToneLabel": {
-    "message": "Tone",
-    "description": "Panel: tone selector label"
-  },
   "guidingLabel": {
     "message": "Guide the AI",
     "description": "Panel: instruction input label"
@@ -402,22 +398,6 @@
   "removeQuickPrompt": {
     "message": "Remove",
     "description": "Panel: remove quick phrase"
-  },
-  "qpPolitelyDecline": {
-    "message": "politely decline",
-    "description": "Default quick phrase"
-  },
-  "qpDeclineDirect": {
-    "message": "decline directly",
-    "description": "Default quick phrase"
-  },
-  "qpShorten": {
-    "message": "keep it short",
-    "description": "Default quick phrase"
-  },
-  "qpWarmAgree": {
-    "message": "warmly agree",
-    "description": "Default quick phrase"
   },
   "qpAskMore": {
     "message": "ask for more info",

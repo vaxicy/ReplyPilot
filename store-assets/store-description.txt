@@ -1,12 +1,11 @@
 === 中文详细说明 ===
 
-ReplyPilot 是一款为 Gmail 打造的 AI 智能邮件回复助手。打开任意 Gmail 邮件，在 ReplyPilot 浮窗里选好语气、写一句指导（例如「帮我委婉拒绝，简洁即可」），AI 就会阅读邮件上下文并直接生成对应的回复草稿，一键插入 Gmail 回复框或复制到剪贴板。
+ReplyPilot 是一款为 Gmail 打造的 AI 智能邮件回复助手。打开任意 Gmail 邮件，在 ReplyPilot 浮窗里写一句指导（例如「帮我委婉拒绝，简洁即可」），或点一下关键词快速填入，AI 就会阅读邮件上下文并直接生成对应的回复草稿，一键插入 Gmail 回复框或复制到剪贴板。
 
 核心功能：
 
-- 语气 + 指导生成：在浮窗里选择语气，并可写一句要求引导 AI；点「生成回复」即可得到贴合要求的草稿，不再是千篇一律的模板。
-- 10 种语气：专业、友好、轻松、简洁、温暖、正式、直接、热情，以及「委婉拒绝」「直接拒绝」——拒绝也能挑语气，从容又得体。
-- 自定义快捷词：把常用说法（如「委婉拒绝」「简洁一点」）存成快捷词，一键插入指导框；浮窗内可随时增删，越用越顺手。
+- 指导式生成：用一句话告诉 AI 你想怎么回，点「生成回复」即可得到贴合要求的草稿，不再是千篇一律的模板。
+- 关键词一键填入：内置常用关键词（专业、友好、轻松、简洁、温暖、正式、直接、热情、委婉拒绝、直接拒绝、询问更多信息、稍后跟进），点一下就填进指导框；浮窗内可随时增删，越用越顺手，拒绝也能从容又得体。
 - 署名设置：可自定义署名内容，并选择是否在每次回复末尾自动带上。
 - 表达自然：回复符合真实人际沟通习惯，不生硬；支持自动跟随来信语言（中/英），也可锁定为指定语言输出。
 - 个人上下文注入：可在设置「关于我」中填写你的身份、与收件人的关系、回复偏好等（AI 记忆），AI 生成回复时自动参考，让回复更贴合你的语气与身份。
@@ -21,13 +20,12 @@ ReplyPilot 是一款为 Gmail 打造的 AI 智能邮件回复助手。打开任�
 
 === English Detailed Description ===
 
-ReplyPilot is an AI-powered smart email reply assistant for Gmail. Open any Gmail message, pick a tone in the ReplyPilot floating card, optionally add a one-line instruction (e.g. "politely decline, keep it short"), and the AI reads the conversation context and drafts the matching reply — ready to insert into Gmail or copy with one click.
+ReplyPilot is an AI-powered smart email reply assistant for Gmail. Open any Gmail message, type a one-line instruction in the ReplyPilot floating card (e.g. "politely decline, keep it short"), or tap a keyword to fill it in, and the AI reads the conversation context and drafts the matching reply — ready to insert into Gmail or copy with one click.
 
 Key Features:
 
-- Tone + Guidance: Choose a tone in the floating card and add a short instruction to steer the AI. One click gives you a draft that matches what you asked for.
-- Ten Tones: Professional, Friendly, Casual, Short, Warm, Formal, Direct, Enthusiastic, plus "Politely decline" and "Decline directly" — you can even decline with the right tone.
-- Custom Quick Phrases: Save the phrases you use often ("politely decline", "keep it short") as one-click chips that fill the instruction box. Add or remove them right in the card.
+- Instruction-Driven: Tell the AI in one sentence how you want to reply and click "Generate Reply" — no more one-size-fits-all templates.
+- One-Tap Keywords: Built-in keywords (Professional, Friendly, Casual, Short, Warm, Formal, Direct, Enthusiastic, politely decline, decline directly, ask for more info, follow up) fill the instruction box in one click. Add or remove them right in the card, so it gets handier the more you use it.
 - Signature Setting: Set your own signature and choose whether to append it to every reply automatically.
 - Natural Phrasing: Replies read like genuine human correspondence (no machine-translation feel). Supports auto-detecting the incoming email's language (Chinese/English) or locking to a specific output language.
 - Personal Context Injection: Fill in your role, relationship with the sender, and preferences in "About You" (AI Memory). The AI automatically incorporates these details so replies match your voice and identity.

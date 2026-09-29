@@ -129,8 +129,10 @@
 }
 
 .rp-card-text {
+  display: block;
   width: 100%;
   min-height: 120px;
+  margin-top: 2px;
   resize: vertical;
   border: 1px solid #e2e5ee;
   border-radius: 10px;
@@ -180,9 +182,9 @@
   white-space: nowrap;
 }
 
-/* --- Panel fields: tone / instruction / quick phrases --- */
+/* --- Panel fields: guidance / keyword chips --- */
 .rp-field-block {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .rp-field-label {
@@ -191,13 +193,13 @@
   color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 
 .rp-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 6px 6px;
   align-items: center;
 }
 

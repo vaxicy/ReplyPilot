@@ -3,10 +3,10 @@
 // top-right corner of the Gmail page, can be dragged by its header, and
 // operates on the currently active reply box.
 //
-// The card is a guided generator: pick a tone, optionally write a short
-// instruction ("politely decline, keep it short"), then generate one reply
-// straight into the output box. Quick phrases can be added to the instruction
-// with one click and are user-customisable.
+// The card is a guided generator with a single input model: write an
+// instruction ("politely decline, keep it short") in the guidance box, or tap
+// a keyword chip (which inserts its text there). Keywords are user-customisable
+// and include the former tone names, so there is no separate tone selector.
 window.RP = window.RP || {};
 
 (function (RP) {
@@ -25,21 +25,13 @@ window.RP = window.RP || {};
     CONTEXT_INVALIDATED: 'errContextInvalidated'
   };
 
-  // i18n key for a tone id, e.g. "professional" -> "toneProfessional".
-  function toneI18nKey(tone) {
-    tone = String(tone || 'professional');
-    return 'tone' + tone.charAt(0).toUpperCase() + tone.slice(1);
-  }
-
   var cardRefs = null;
   var activeBox = null;
-  // Remembered conversation + last used tone so we can revise a reply.
+  // Remembered conversation so we can revise a reply without re-reading Gmail.
   var lastContext = null;
-  var lastTone = 'professional';
 
   // Panel state (loaded from storage).
   var signature = { text: '', enabled: false };
-  var selectedTone = 'professional';
   var quickPrompts = [];
 
   function loadSignature() {
@@ -49,12 +41,21 @@ window.RP = window.RP || {};
     }).catch(function () { /* ignore */ });
   }
 
+  // Default keyword chips. Tone names are folded in here on purpose, so the
+  // user can pick a style and an intent (decline / ask more / follow up) from
+  // one place.
   function defaultQuickPrompts() {
     return [
-      RP.i18n.t('qpPolitelyDecline'),
-      RP.i18n.t('qpDeclineDirect'),
-      RP.i18n.t('qpShorten'),
-      RP.i18n.t('qpWarmAgree'),
+      RP.i18n.t('toneDeclinePolite'),
+      RP.i18n.t('toneDeclineDirect'),
+      RP.i18n.t('toneProfessional'),
+      RP.i18n.t('toneFriendly'),
+      RP.i18n.t('toneCasual'),
+      RP.i18n.t('toneShort'),
+      RP.i18n.t('toneWarm'),
+      RP.i18n.t('toneFormal'),
+      RP.i18n.t('toneDirect'),
+      RP.i18n.t('toneEnthusiastic'),
       RP.i18n.t('qpAskMore'),
       RP.i18n.t('qpFollowUp')
     ];
@@ -64,8 +65,6 @@ window.RP = window.RP || {};
     return RP.storage.getAll().then(function (s) {
       signature.text = s.rp_signature || '';
       signature.enabled = !!s.rp_useSignature;
-      selectedTone = s.rp_tone || 'professional';
-      lastTone = selectedTone;
       if (s.rp_quickPrompts == null) {
         quickPrompts = defaultQuickPrompts();
         RP.storage.set('rp_quickPrompts', quickPrompts);
@@ -162,15 +161,6 @@ window.RP = window.RP || {};
     errorBanner.className = 'rp-error-banner';
     errorBanner.style.display = 'none';
 
-    // Tone selector
-    var toneField = document.createElement('div');
-    toneField.className = 'rp-field-block';
-    var toneLabel = makeFieldLabel('panelToneLabel');
-    var toneChips = document.createElement('div');
-    toneChips.className = 'rp-chips';
-    toneField.appendChild(toneLabel);
-    toneField.appendChild(toneChips);
-
     // Instruction input
     var guideField = document.createElement('div');
     guideField.className = 'rp-field-block';
@@ -183,27 +173,31 @@ window.RP = window.RP || {};
     guideField.appendChild(guideLabel);
     guideField.appendChild(guideInput);
 
-    // Quick phrases
+    // Keyword chips (tones are folded in here). The add controls live inside
+    // the same flex row so they wrap inline with the chips, never on their own.
     var quickField = document.createElement('div');
     quickField.className = 'rp-field-block';
     var quickLabel = makeFieldLabel('quickPromptsLabel');
     var quickChips = document.createElement('div');
     quickChips.className = 'rp-chips';
+
     var quickAddInput = document.createElement('input');
     quickAddInput.type = 'text';
     quickAddInput.className = 'rp-quick-add-input';
     quickAddInput.setAttribute('data-i18n-placeholder', 'quickPromptPlaceholder');
     quickAddInput.placeholder = RP.i18n.t('quickPromptPlaceholder');
+
     var quickAdd = document.createElement('button');
     quickAdd.type = 'button';
     quickAdd.className = 'rp-chip rp-chip-add';
     quickAdd.textContent = '+';
     quickAdd.setAttribute('data-i18n-title', 'addQuickPrompt');
     quickAdd.title = RP.i18n.t('addQuickPrompt');
+
+    quickChips.appendChild(quickAdd);
+    quickChips.appendChild(quickAddInput);
     quickField.appendChild(quickLabel);
     quickField.appendChild(quickChips);
-    quickField.appendChild(quickAddInput);
-    quickField.appendChild(quickAdd);
 
     // Output textarea
     var text = document.createElement('textarea');
@@ -229,7 +223,6 @@ window.RP = window.RP || {};
     reviseRow.appendChild(reviseBtn);
 
     body.appendChild(errorBanner);
-    body.appendChild(toneField);
     body.appendChild(guideField);
     body.appendChild(quickField);
     body.appendChild(text);
@@ -274,8 +267,6 @@ window.RP = window.RP || {};
       copy: copy,
       clear: clear,
       collapseBtn: collapseBtn,
-      toneLabel: toneLabel,
-      toneChips: toneChips,
       guideLabel: guideLabel,
       guideInput: guideInput,
       quickLabel: quickLabel,
@@ -296,35 +287,7 @@ window.RP = window.RP || {};
     return cardRefs;
   }
 
-  // --- Tone chips -------------------------------------------------------
-  function renderToneChips() {
-    var refs = ensureCard();
-    refs.toneChips.innerHTML = '';
-    var tones = RP.parser.TONES || ['professional'];
-    tones.forEach(function (tone) {
-      var chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'rp-chip rp-tone-chip' + (tone === selectedTone ? ' rp-chip-active' : '');
-      chip.setAttribute('data-tone', tone);
-      chip.textContent = RP.i18n.t(toneI18nKey(tone));
-      chip.addEventListener('click', function () { selectTone(tone); });
-      refs.toneChips.appendChild(chip);
-    });
-  }
-
-  function selectTone(tone) {
-    selectedTone = tone;
-    lastTone = tone;
-    var refs = ensureCard();
-    var chips = refs.toneChips.querySelectorAll('.rp-tone-chip');
-    for (var i = 0; i < chips.length; i++) {
-      chips[i].classList.toggle('rp-chip-active',
-        chips[i].getAttribute('data-tone') === tone);
-    }
-    RP.storage.set('rp_tone', tone);
-  }
-
-  // --- Quick phrases ----------------------------------------------------
+  // --- Keyword chips ----------------------------------------------------
   function persistQuickPrompts() {
     RP.storage.set('rp_quickPrompts', quickPrompts);
   }
@@ -348,9 +311,13 @@ window.RP = window.RP || {};
     renderQuickPrompts();
   }
 
+  // Rebuild the chips, keeping the add controls (which live in the same row)
+  // in place so they always flow inline with the chips.
   function renderQuickPrompts() {
     var refs = ensureCard();
-    refs.quickChips.innerHTML = '';
+    var olds = refs.quickChips.querySelectorAll('.rp-quick-chip');
+    for (var i = 0; i < olds.length; i++) olds[i].remove();
+
     quickPrompts.forEach(function (p) {
       var chip = document.createElement('span');
       chip.className = 'rp-chip rp-quick-chip';
@@ -374,7 +341,7 @@ window.RP = window.RP || {};
 
       chip.appendChild(label);
       chip.appendChild(del);
-      refs.quickChips.appendChild(chip);
+      refs.quickChips.insertBefore(chip, refs.quickAdd);
     });
   }
 
@@ -415,7 +382,7 @@ window.RP = window.RP || {};
       }
     });
 
-    // Enter in the instruction box generates right away.
+    // Enter in the guidance box generates right away.
     refs.guideInput.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -423,7 +390,7 @@ window.RP = window.RP || {};
       }
     });
 
-    // Quick-phrase add flow.
+    // Keyword add flow.
     refs.quickAdd.addEventListener('click', function () { showQuickAdd(); });
     refs.quickAddInput.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); commitQuickAdd(); }
@@ -561,7 +528,6 @@ window.RP = window.RP || {};
     lastContext = ctx;
 
     var instruction = refs.guideInput.value.trim();
-    var tone = selectedTone;
 
     // Refresh the signature so the freshly generated reply uses the latest config.
     var p = loadSignature()
@@ -569,7 +535,6 @@ window.RP = window.RP || {};
         return RP.ai.generateGuided({
           subject: ctx.subject,
           emailBody: ctx.emailBody,
-          tone: tone,
           instruction: instruction
         });
       })
@@ -595,10 +560,9 @@ window.RP = window.RP || {};
   }
 
   // Fill the output box with a new reply and keep it ready to insert/copy.
-  function refilledReply(reply, ctx, tone) {
+  function refilledReply(reply, ctx) {
     var refs = ensureCard();
     if (ctx) lastContext = ctx;
-    if (tone) lastTone = tone;
     refs.text.value = applySignature(reply);
     setActionsEnabled(true);
     refs.clear.disabled = false;
@@ -695,7 +659,6 @@ window.RP = window.RP || {};
     var ctx = {
       subject: lastContext.subject,
       emailBody: lastContext.emailBody,
-      tone: lastTone,
       currentReply: currentReply,
       instruction: instruction
     };
@@ -738,7 +701,7 @@ window.RP = window.RP || {};
       ].forEach(function (b) {
       b.textContent = RP.i18n.t(b._i18nKey);
     });
-    [cardRefs.toneLabel, cardRefs.guideLabel, cardRefs.quickLabel].forEach(function (el) {
+    [cardRefs.guideLabel, cardRefs.quickLabel].forEach(function (el) {
       el.textContent = RP.i18n.t(el._i18nKey);
     });
     cardRefs.text.setAttribute('placeholder', RP.i18n.t('statusReady'));
@@ -747,14 +710,12 @@ window.RP = window.RP || {};
     cardRefs.quickAddInput.setAttribute('placeholder', RP.i18n.t('quickPromptPlaceholder'));
     cardRefs.quickAdd.title = RP.i18n.t('addQuickPrompt');
     // Chip labels depend on the language, so rebuild them.
-    renderToneChips();
     renderQuickPrompts();
   }
 
   function refreshAll() {
     refreshTexts();
     loadPanelState().then(function () {
-      renderToneChips();
       renderQuickPrompts();
     });
   }
@@ -779,7 +740,6 @@ window.RP = window.RP || {};
     init: function () {
       ensureCard();
       loadPanelState().then(function () {
-        renderToneChips();
         renderQuickPrompts();
       });
     },

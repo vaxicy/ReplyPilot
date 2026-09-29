@@ -375,10 +375,6 @@
     "message": "英文",
     "description": "回复语言选项"
   },
-  "panelToneLabel": {
-    "message": "语气",
-    "description": "浮窗：语气选择标签"
-  },
   "guidingLabel": {
     "message": "指导 AI 回复",
     "description": "浮窗：指导输入框标签"
@@ -402,22 +398,6 @@
   "removeQuickPrompt": {
     "message": "删除",
     "description": "浮窗：删除快捷词"
-  },
-  "qpPolitelyDecline": {
-    "message": "委婉拒绝",
-    "description": "默认快捷词"
-  },
-  "qpDeclineDirect": {
-    "message": "直接拒绝",
-    "description": "默认快捷词"
-  },
-  "qpShorten": {
-    "message": "简洁一点",
-    "description": "默认快捷词"
-  },
-  "qpWarmAgree": {
-    "message": "热情同意",
-    "description": "默认快捷词"
   },
   "qpAskMore": {
     "message": "询问更多信息",

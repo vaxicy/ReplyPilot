@@ -18,7 +18,7 @@ window.RP = window.RP || {};
     professional: 'Professional (专业、礼貌、商务)',
     friendly: 'Friendly (友好、亲切、轻松)',
     short: 'Short (简洁、直接、要点明确)',
-    luxury: 'Luxury Brand (高级品牌、优雅、克制、尊贵)'
+    warm: 'Warm (温暖、共情、体贴、有人情味)'
   };
 
   var REPLY_LANGUAGE_LABELS = {
@@ -45,16 +45,13 @@ window.RP = window.RP || {};
     return t.substring(0, max) + '\n[...' + label + ' truncated...]';
   }
 
-  // Build a compact one-line store context from structured fields.
+  // Build a compact profile context from the user's own details.
   // Keeps the prompt short (~80 chars) to avoid timeouts / truncation.
-  function buildStoreContext(ctx) {
+  function buildUserContext(ctx) {
     ctx = ctx || {};
     var parts = [];
-    if (ctx.storeName) parts.push('Store: ' + ctx.storeName.trim());
-    if (ctx.storeCategory) parts.push('Category: ' + ctx.storeCategory.trim());
-    if (ctx.shippingInfo) parts.push('Shipping: ' + ctx.shippingInfo.trim());
-    if (ctx.returnPolicy) parts.push('Returns: ' + ctx.returnPolicy.trim());
-    if (ctx.shippingRegions) parts.push('Ships to: ' + ctx.shippingRegions.trim());
+    if (ctx.myName) parts.push('Name to sign as: ' + ctx.myName.trim());
+    if (ctx.myContext) parts.push('Background: ' + ctx.myContext.trim());
     return parts.length ? parts.join('. ') + '.' : '';
   }
 
@@ -65,17 +62,17 @@ window.RP = window.RP || {};
     var lang = replyLanguageLabel(ctx.replyLanguage);
     var subject = ctx.subject || '';
     var body = clampText(ctx.emailBody, MAX_BODY, 'content');
-    var mem = buildStoreContext(ctx);
+    var mem = buildUserContext(ctx);
 
-    // Compact prompt: ~250 tokens of template + customer content
+    // Compact prompt: ~250 tokens of template + the incoming email
     var lines = [
-      'You are an e-commerce customer service assistant.',
+      'You are a smart email reply assistant helping the user draft a reply.',
       'Tone: ' + tone + '. Reply language: ' + lang + '.',
-      'Rules: respond like a real human agent. Do NOT fabricate order/tracking/refund info. Ask politely if unknown. No apologies unless warranted.',
+      'Rules: write like a real person, matching the sender\'s context. Do NOT fabricate facts, dates, names, numbers, or commitments you do not have. Ask politely if something is unknown. No apologies unless warranted.',
       ''
     ];
-    if (mem) lines.push('Store context: ' + mem, '');
-    lines.push('Customer email:', 'Subject: ' + subject, '', body, '', 'Return JSON: {"reply": "your reply"}');
+    if (mem) lines.push('About me: ' + mem, '');
+    lines.push('Incoming email:', 'Subject: ' + subject, '', body, '', 'Return JSON: {"reply": "your reply"}');
     return lines.join('\n');
   }
 
@@ -86,20 +83,20 @@ window.RP = window.RP || {};
     var lang = replyLanguageLabel(ctx.replyLanguage);
     var subject = ctx.subject || '';
     var body = clampText(ctx.emailBody, MAX_BODY, 'content');
-    var mem = buildStoreContext(ctx);
+    var mem = buildUserContext(ctx);
 
-    // Compact prompt: ~250 tokens of template + customer content
+    // Compact prompt: ~250 tokens of template + the incoming email
     var lines = [
-      'You are an e-commerce customer service assistant.',
+      'You are a smart email reply assistant helping the user draft a reply.',
       'Tone: ' + tone + '. Reply language: ' + lang + '.',
-      'Generate 3 reply options: positive (helpful), neutral (factual), decline (polite refusal).',
-      'Rules: respond like a real human agent. Do NOT fabricate order/tracking/refund info. Ask politely if unknown.',
+      'Generate 3 reply options with different stances: positive (supportive, agreeing), neutral (balanced, factual), decline (polite refusal or pushback).',
+      'Rules: write like a real person, matching the sender\'s context. Do NOT fabricate facts, dates, names, numbers, or commitments you do not have. Ask politely if something is unknown.',
       '',
       'Return strict JSON only, no markdown:',
       '{"positive": "...", "neutral": "...", "decline": "..."}'
     ];
-    if (mem) lines.splice(4, 0, 'Store context: ' + mem);
-    lines.push('', 'Customer email:', 'Subject: ' + subject, '', body);
+    if (mem) lines.splice(4, 0, 'About me: ' + mem);
+    lines.push('', 'Incoming email:', 'Subject: ' + subject, '', body);
     return lines.join('\n');
   }
 
@@ -113,19 +110,19 @@ window.RP = window.RP || {};
     var lang = replyLanguageLabel(ctx.replyLanguage);
     var subject = ctx.subject || '';
     var body = clampText(ctx.emailBody, MAX_BODY, 'content');
-    var mem = buildStoreContext(ctx);
+    var mem = buildUserContext(ctx);
     var currentReply = (ctx.currentReply || '').trim();
     var instruction = (ctx.instruction || '').trim();
 
     var lines = [
-      'You are an e-commerce customer service assistant.',
+      'You are a smart email reply assistant helping the user draft a reply.',
       'Tone: ' + tone + '. Reply language: ' + lang + '.',
-      'Rules: respond like a real human agent. Do NOT fabricate order/tracking/refund info. Ask politely if unknown.',
+      'Rules: write like a real person, matching the sender\'s context. Do NOT fabricate facts, dates, names, numbers, or commitments you do not have. Ask politely if something is unknown.',
       ''
     ];
-    if (mem) lines.push('Store context: ' + mem, '');
+    if (mem) lines.push('About me: ' + mem, '');
     lines.push(
-      'Customer email:',
+      'Incoming email:',
       'Subject: ' + subject,
       '',
       body,

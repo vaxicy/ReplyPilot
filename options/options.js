@@ -6,7 +6,7 @@
 
   var ids = ['provider', 'apiEndpoint', 'apiKey', 'model',
              'language', 'tone', 'replyLanguage',
-             'storeName', 'storeCategory', 'shippingInfo', 'returnPolicy', 'shippingRegions'];
+             'myName', 'myContext'];
 
   // Per-provider defaults. Custom has no preset models/endpoint.
   var PROVIDER_PRESETS = {
@@ -49,8 +49,7 @@
   function loadSettings() {
     RP.storage.getAll().then(function (settings) {
       // Non-provider fields (language, tone, store info, etc.)
-      ['language', 'tone', 'replyLanguage', 'storeName', 'storeCategory',
-       'shippingInfo', 'returnPolicy', 'shippingRegions'].forEach(function (id) {
+      ['language', 'tone', 'replyLanguage', 'myName', 'myContext'].forEach(function (id) {
         var el = document.getElementById(id);
         if (!el) return;
         var value = settings['rp_' + id];
@@ -325,8 +324,7 @@
     existingPromise.then(function (existing) {
       var obj = {};
       // Persist everything except the provider api fields (those live in slots).
-      ['language', 'tone', 'replyLanguage', 'storeName', 'storeCategory',
-       'shippingInfo', 'returnPolicy', 'shippingRegions', 'provider'].forEach(function (id) {
+      ['language', 'tone', 'replyLanguage', 'myName', 'myContext', 'provider'].forEach(function (id) {
         var el = document.getElementById(id);
         if (!el) return;
         obj['rp_' + id] = el.value;
@@ -353,10 +351,6 @@
         showStatus(RP.i18n.t('optSaveFailed'));
       });
     });
-  }
-
-  function bindStoreInfo() {
-    // No-op placeholder kept for future store-info interactions if needed.
   }
 
   function showStatus(text) {

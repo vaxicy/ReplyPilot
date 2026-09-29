@@ -120,11 +120,8 @@ window.RP = window.RP || {};
       var prompt = RP.parser.buildPrompt({
         tone: s.rp_tone,
         replyLanguage: s.rp_replyLanguage || 'auto',
-        storeName: s.rp_storeName || '',
-        storeCategory: s.rp_storeCategory || '',
-        shippingInfo: s.rp_shippingInfo || '',
-        returnPolicy: s.rp_returnPolicy || '',
-        shippingRegions: s.rp_shippingRegions || '',
+        myName: s.rp_myName || '',
+        myContext: s.rp_myContext || '',
         subject: context.subject,
         emailBody: context.emailBody
       });
@@ -132,7 +129,7 @@ window.RP = window.RP || {};
       var messages = [
         {
           role: 'system',
-          content: 'You are a helpful e-commerce customer service assistant. ' +
+          content: 'You are a helpful smart email reply assistant. ' +
             'Always respond with valid JSON in the exact format {"reply": "..."}. ' +
             'Do not wrap it in markdown code fences.'
         },
@@ -168,11 +165,8 @@ window.RP = window.RP || {};
       var prompt = RP.parser.buildOptionsPrompt({
         tone: s.rp_tone,
         replyLanguage: s.rp_replyLanguage || 'auto',
-        storeName: s.rp_storeName || '',
-        storeCategory: s.rp_storeCategory || '',
-        shippingInfo: s.rp_shippingInfo || '',
-        returnPolicy: s.rp_returnPolicy || '',
-        shippingRegions: s.rp_shippingRegions || '',
+        myName: s.rp_myName || '',
+        myContext: s.rp_myContext || '',
         subject: context.subject,
         emailBody: context.emailBody
       });
@@ -180,7 +174,7 @@ window.RP = window.RP || {};
       var messages = [
         {
           role: 'system',
-          content: 'You are a helpful e-commerce customer service assistant. ' +
+          content: 'You are a helpful smart email reply assistant. ' +
             'Always respond with valid JSON in the exact format ' +
             '{"positive": "...", "neutral": "...", "decline": "..."}. ' +
             'Do not wrap it in markdown code fences.'
@@ -204,7 +198,7 @@ window.RP = window.RP || {};
     });
   }
 
-  // ctx: { subject, emailBody, tone, replyLanguage, store info...,
+  // ctx: { subject, emailBody, tone, replyLanguage, myName, myContext,
   //        currentReply, instruction }
   // settings: full settings object (optional; fetched if omitted)
   function reviseReply(ctx, settings) {
@@ -224,11 +218,8 @@ window.RP = window.RP || {};
       var prompt = RP.parser.buildRevisePrompt({
         tone: s.rp_tone,
         replyLanguage: s.rp_replyLanguage || 'auto',
-        storeName: s.rp_storeName || '',
-        storeCategory: s.rp_storeCategory || '',
-        shippingInfo: s.rp_shippingInfo || '',
-        returnPolicy: s.rp_returnPolicy || '',
-        shippingRegions: s.rp_shippingRegions || '',
+        myName: s.rp_myName || '',
+        myContext: s.rp_myContext || '',
         subject: ctx.subject,
         emailBody: ctx.emailBody,
         currentReply: ctx.currentReply,
@@ -238,7 +229,7 @@ window.RP = window.RP || {};
       var messages = [
         {
           role: 'system',
-          content: 'You are a helpful e-commerce customer service assistant. ' +
+          content: 'You are a helpful smart email reply assistant. ' +
             'Always respond with valid JSON in the exact format {"reply": "..."}. ' +
             'Do not wrap it in markdown code fences.'
         },

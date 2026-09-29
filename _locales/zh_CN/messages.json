@@ -4,7 +4,7 @@
     "description": "扩展名称"
   },
   "extDescription": {
-    "message": "电商邮箱回复助手 · Gmail 智能邮件回复",
+    "message": "智能邮箱回复助手 · Gmail 邮件回复",
     "description": "扩展描述"
   },
   "assistantTitle": {
@@ -331,8 +331,8 @@
     "message": "简洁",
     "description": "语气选项"
   },
-  "toneLuxury": {
-    "message": "高级品牌",
+  "toneWarm": {
+    "message": "温暖",
     "description": "语气选项"
   },
   "optReplyLanguage": {
@@ -344,7 +344,7 @@
     "description": "回复语言说明"
   },
   "replyLanguageAuto": {
-    "message": "自动（跟随客户邮件）",
+    "message": "自动（跟随来信）",
     "description": "回复语言选项"
   },
   "replyLanguageChinese": {
@@ -360,11 +360,11 @@
     "description": "方案列表标题"
   },
   "optionPositive": {
-    "message": "积极支持",
+    "message": "赞同支持",
     "description": "方案名称"
   },
   "optionNeutral": {
-    "message": "客观中性",
+    "message": "客观中立",
     "description": "方案名称"
   },
   "optionDecline": {
@@ -439,53 +439,29 @@
     "message": "当前服务商",
     "description": "服务商字段标签"
   },
-  "optStoreInfo": {
-    "message": "店铺信息",
-    "description": "店铺信息设置标签"
+  "optAboutYou": {
+    "message": "关于我",
+    "description": "关于我设置标签"
   },
-  "optStoreName": {
-    "message": "店铺名称",
-    "description": "店铺名称字段标签"
+  "optMyName": {
+    "message": "我的名字",
+    "description": "用户名字字段标签"
   },
-  "optStoreNamePlaceholder": {
-    "message": "如：星光小铺",
-    "description": "店铺名称输入框占位符"
+  "optMyNamePlaceholder": {
+    "message": "如：小霖 / 黄丽霖",
+    "description": "用户名字输入框占位符"
   },
-  "optStoreCategory": {
-    "message": "主营品类",
-    "description": "主营品类字段标签"
+  "optMyContext": {
+    "message": "上下文 / AI 记忆",
+    "description": "用户上下文字段标签"
   },
-  "optStoreCategoryPlaceholder": {
-    "message": "如：宠物用品、数码配件",
-    "description": "主营品类输入框占位符"
+  "optMyContextPlaceholder": {
+    "message": "如：我是项目经理；回复习惯简短、友好，落款署名「小霖」。",
+    "description": "用户上下文输入框占位符"
   },
-  "optShippingInfo": {
-    "message": "发货说明",
-    "description": "发货说明字段标签"
-  },
-  "optShippingInfoPlaceholder": {
-    "message": "如：48 小时内发货",
-    "description": "发货说明输入框占位符"
-  },
-  "optReturnPolicy": {
-    "message": "售后政策",
-    "description": "售后政策字段标签"
-  },
-  "optReturnPolicyPlaceholder": {
-    "message": "如：支持 7 天无理由退货",
-    "description": "售后政策输入框占位符"
-  },
-  "optShippingRegions": {
-    "message": "配送范围",
-    "description": "配送范围字段标签"
-  },
-  "optShippingRegionsPlaceholder": {
-    "message": "如：全球 / 仅限中国大陆 / 支持欧美澳",
-    "description": "配送范围输入框占位符"
-  },
-  "optStoreInfoHint": {
-    "message": "填写店铺信息，AI 生成回复时会自动参考。每个字段请简短填写。",
-    "description": "店铺信息说明"
+  "optAboutYouHint": {
+    "message": "填写关于你自己的信息，让 AI 的回复更贴合你的语气：你的身份、与收件人的关系、常用落款，或任何希望它记住的内容。",
+    "description": "关于我说明"
   },
   "donateTitle": {
     "message": "支持作者",

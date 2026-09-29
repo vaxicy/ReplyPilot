@@ -556,13 +556,6 @@ window.RP = window.RP || {};
     var ctx = {
       subject: lastContext.subject,
       emailBody: lastContext.emailBody,
-      tone: lastContext.tone,
-      replyLanguage: lastContext.replyLanguage,
-      storeName: lastContext.storeName,
-      storeCategory: lastContext.storeCategory,
-      shippingInfo: lastContext.shippingInfo,
-      returnPolicy: lastContext.returnPolicy,
-      shippingRegions: lastContext.shippingRegions,
       currentReply: currentReply,
       instruction: instruction
     };

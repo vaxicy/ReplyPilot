@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "extDescription": {
-    "message": "E-commerce email reply assistant for Gmail",
+    "message": "Smart email reply assistant for Gmail",
     "description": "Extension description"
   },
   "assistantTitle": {
@@ -331,8 +331,8 @@
     "message": "Short",
     "description": "Tone option"
   },
-  "toneLuxury": {
-    "message": "Luxury Brand",
+  "toneWarm": {
+    "message": "Warm",
     "description": "Tone option"
   },
   "optReplyLanguage": {
@@ -344,7 +344,7 @@
     "description": "Reply language hint"
   },
   "replyLanguageAuto": {
-    "message": "Auto (follow customer email)",
+    "message": "Auto (match the email)",
     "description": "Reply language option"
   },
   "replyLanguageChinese": {
@@ -360,7 +360,7 @@
     "description": "Options list title"
   },
   "optionPositive": {
-    "message": "Positive",
+    "message": "Supportive",
     "description": "Option name"
   },
   "optionNeutral": {
@@ -439,53 +439,29 @@
     "message": "Current Provider",
     "description": "Provider field label"
   },
-  "optStoreInfo": {
-    "message": "Store Info",
-    "description": "Store info setting label"
+  "optAboutYou": {
+    "message": "About You",
+    "description": "About you setting label"
   },
-  "optStoreName": {
-    "message": "Store Name",
-    "description": "Store name field label"
+  "optMyName": {
+    "message": "Your Name",
+    "description": "User name field label"
   },
-  "optStoreNamePlaceholder": {
-    "message": "e.g. Starlight Shop",
-    "description": "Store name input placeholder"
+  "optMyNamePlaceholder": {
+    "message": "e.g. Alex / Alex Chen",
+    "description": "User name input placeholder"
   },
-  "optStoreCategory": {
-    "message": "Main Category",
-    "description": "Main category field label"
+  "optMyContext": {
+    "message": "Context / Memory",
+    "description": "User context field label"
   },
-  "optStoreCategoryPlaceholder": {
-    "message": "e.g. pet supplies, electronics",
-    "description": "Main category input placeholder"
+  "optMyContextPlaceholder": {
+    "message": "e.g. I'm a project manager; I keep replies short and friendly and sign off as Alex.",
+    "description": "User context input placeholder"
   },
-  "optShippingInfo": {
-    "message": "Shipping Info",
-    "description": "Shipping info field label"
-  },
-  "optShippingInfoPlaceholder": {
-    "message": "e.g. ships within 48h",
-    "description": "Shipping info input placeholder"
-  },
-  "optReturnPolicy": {
-    "message": "Return Policy",
-    "description": "Return policy field label"
-  },
-  "optReturnPolicyPlaceholder": {
-    "message": "e.g. 7-day free returns",
-    "description": "Return policy input placeholder"
-  },
-  "optShippingRegions": {
-    "message": "Shipping Regions",
-    "description": "Shipping regions field label"
-  },
-  "optShippingRegionsPlaceholder": {
-    "message": "e.g. Worldwide / Mainland China only / US, EU, AU",
-    "description": "Shipping regions input placeholder"
-  },
-  "optStoreInfoHint": {
-    "message": "Fill in your store details so the AI can use them when generating replies. Keep each field short.",
-    "description": "Store info hint"
+  "optAboutYouHint": {
+    "message": "Tell the AI about yourself so replies fit your voice: your role, your relationship with the sender, how you sign off, or anything you want it to remember.",
+    "description": "About you hint"
   },
   "donateTitle": {
     "message": "Support the Author",

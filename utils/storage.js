@@ -11,14 +11,38 @@ window.RP = window.RP || {};
     rp_language: '',            // '' => follow browser locale
     rp_provider: 'siliconflow', // siliconflow | openai | custom
     rp_providerConfigs: {},     // { [provider]: { apiEndpoint, apiKey, model } }
-    rp_tone: 'professional',      // professional | friendly | short | luxury
+    rp_tone: 'professional',      // professional | friendly | short | warm
     rp_replyLanguage: 'auto',     // auto | zh | en
-    rp_storeName: '',             // store name injected into prompts
-    rp_storeCategory: '',         // main category injected into prompts
-    rp_shippingInfo: '',          // shipping info injected into prompts
-    rp_returnPolicy: '',          // return policy injected into prompts
-    rp_shippingRegions: ''        // shipping regions injected into prompts
+    rp_myName: '',                // optional name to sign replies with
+    rp_myContext: ''              // free-text background the AI should keep in mind
   };
+
+  // Legacy e-commerce store fields. They are migrated into rp_myContext once so
+  // existing users don't lose the details they had already filled in.
+  var LEGACY_STORE_KEYS = [
+    'rp_storeName', 'rp_storeCategory', 'rp_shippingInfo',
+    'rp_returnPolicy', 'rp_shippingRegions'
+  ];
+
+  function migrateLegacyStoreFields(res) {
+    if (!res || res.rp_myContext) return res;
+    var parts = [];
+    if (res.rp_storeName) parts.push('Store: ' + res.rp_storeName);
+    if (res.rp_storeCategory) parts.push('Category: ' + res.rp_storeCategory);
+    if (res.rp_shippingInfo) parts.push('Shipping: ' + res.rp_shippingInfo);
+    if (res.rp_returnPolicy) parts.push('Returns: ' + res.rp_returnPolicy);
+    if (res.rp_shippingRegions) parts.push('Ships to: ' + res.rp_shippingRegions);
+    if (parts.length) {
+      res.rp_myContext = parts.join('\n');
+      var toSave = { rp_myContext: res.rp_myContext };
+      try {
+        chrome.storage.local.set(toSave, function () {
+          chrome.storage.local.remove(LEGACY_STORE_KEYS, function () { });
+        });
+      } catch (e) { /* ignore migration failures */ }
+    }
+    return res;
+  }
 
   // Ensure every known provider has its own slot in rp_providerConfigs,
   // seeding empty slots from the built-in presets so the UI and runtime never
@@ -76,8 +100,14 @@ window.RP = window.RP || {};
   function getAll() {
     return new Promise(function (resolve, reject) {
       try {
-        chrome.storage.local.get(DEFAULTS, function (res) {
-          resolve(normalizeProviderConfigs(res || {}));
+        // Request the defaults plus any legacy store keys so we can migrate
+        // their values into rp_myContext in one pass.
+        var keys = {};
+        Object.keys(DEFAULTS).forEach(function (k) { keys[k] = DEFAULTS[k]; });
+        LEGACY_STORE_KEYS.forEach(function (k) { keys[k] = ''; });
+        chrome.storage.local.get(keys, function (res) {
+          res = normalizeProviderConfigs(res || {});
+          resolve(migrateLegacyStoreFields(res));
         });
       } catch (e) {
         if (isContextInvalidatedError(e)) {

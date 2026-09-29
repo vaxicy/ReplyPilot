@@ -1,8 +1,8 @@
 <div align="center">
   <img src="icons/icon128.png" alt="ReplyPilot Logo" width="128" height="128">
   <h1>ReplyPilot for Gmail</h1>
-  <p><strong>AI 驱动的 Gmail 客服回复助手 · AI-Powered Gmail Reply Assistant</strong></p>
-  <p>专为电商卖家设计，一键生成专业客服回复</p>
+  <p><strong>AI 驱动的 Gmail 智能邮件回复助手 · AI-Powered Gmail Reply Assistant</strong></p>
+  <p>读懂来信上下文，一键生成得体的回复草稿</p>
 
   <p>
     <a href="https://chromewebstore.google.com/detail/replypilot-for-gmail/aeeapbjpefjokopgbklkalmonchijdfk?authuser=0&hl=zh-CN">
@@ -19,9 +19,9 @@
 
 ## 📖 简介 · Overview
 
-**ReplyPilot** 是一个 Manifest V3 Chrome 扩展，专为 **Gmail Web** 用户设计。它能读取当前打开的邮件内容，调用 AI 模型（支持 SiliconFlow / OpenAI / 自定义端点）生成 **3 种不同立场**的专业客服回复方案，一键插入到 Gmail 回复框或复制到剪贴板。
+**ReplyPilot** 是一个 Manifest V3 Chrome 扩展，专为 **Gmail Web** 用户设计。它能读取当前打开的邮件内容，调用 AI 模型（支持 SiliconFlow / OpenAI / 自定义端点）生成 **3 种不同立场**的回复草稿，一键插入到 Gmail 回复框或复制到剪贴板。
 
-> 适合场景：电商客服、售后邮件、客户咨询回复等需要快速、专业回应的场合。
+> 适合场景：工作往来、客户沟通、合作洽谈、个人邮件等任何需要快速、得体回复的场合。
 
 ---
 
@@ -29,11 +29,11 @@
 
 | 功能 | 说明 |
 |------|------|
-| 🤖 **AI 智能生成** | 一次生成 3 种回复方案：**积极支持** / **客观中性** / **委婉拒绝** |
+| 🤖 **AI 智能生成** | 一次生成 3 种回复方案：**赞同支持** / **客观中立** / **委婉拒绝** |
 | 🔌 **多 AI 提供商** | 支持 SiliconFlow、OpenAI 及任意 OpenAI 兼容 API 端点 |
-| 🎯 **语气定制** | 支持 4 种回复语气：专业、友好、简洁、奢侈品牌 |
+| 🎯 **语气定制** | 支持 4 种回复语气：专业、友好、简洁、温暖 |
 | 🌐 **多语言回复** | 自动检测或手动指定回复语言（中文/英文/自动） |
-| 🧠 **AI 记忆** | 可填入店铺名、常用回复、个人风格，AI 自动参考 |
+| 🧠 **AI 记忆** | 可填入你的名字、身份与风格，AI 自动参考，回复贴合你的语气 |
 | 📝 **一键插入** | 选中的回复直接插入 Gmail 回复框，无需复制粘贴 |
 | 📋 **一键复制** | 也可一键复制到剪贴板，手动粘贴 |
 | 🔄 **重新生成** | 不满意可随时重新生成 |
@@ -95,11 +95,11 @@
    - **API Key**：输入你的密钥（安全存储在 `chrome.storage.local`）
    - **Model ID**：如 `deepseek-ai/DeepSeek-V4-Flash`、`gpt-4o-mini` 等
    - **界面语言**：中文 / English
-   - **回复语气**：Professional / Friendly / Short / Luxury Brand
+   - **回复语气**：Professional / Friendly / Short / Warm
    - **回复语言**：Auto / 中文 / English
 
 4. **完善 AI 记忆（可选）**
-   - 填写店铺名称、常用回复、个人风格等，AI 会自动参考
+   - 在「关于我」中填写你的名字、身份、与收件人的关系、常用落款等，AI 会自动参考
 
 5. **点击保存**
 
@@ -125,10 +125,10 @@
 
 | 语气 | 说明 |
 |------|------|
-| 📋 **Professional** | 正式专业的客服语气 |
-| 😊 **Friendly** | 友好亲切的口吻 |
-| 📝 **Short** | 简洁高效 |
-| 💎 **Luxury Brand** | 高端奢侈品牌调性 |
+| 📋 **Professional** | 正式、专业、商务 |
+| 😊 **Friendly** | 友好、亲切、轻松 |
+| 📝 **Short** | 简洁、直接、要点明确 |
+| 🤗 **Warm** | 温暖、共情、有人情味 |
 
 ### AI 提供商
 
@@ -158,7 +158,7 @@
 - 扩展**不收集**任何用户数据
 - 远程代码：仅用 `fetch()` 调用用户配置的 AI API，**不使用** `eval` 或其他远程代码执行
 
-> 完整隐私政策：[ReplyPilot Privacy Policy](https://vaxicy.github.io/replypilot-privacy/privacy-policy.html)
+> 完整隐私政策：[ReplyPilot Privacy Policy](https://vaxicy.github.io/ReplyPilot/privacy-policy.html)
 
 ---
 
@@ -239,5 +239,5 @@ ReplyPilot/
       <img src="https://img.shields.io/badge/Chrome%20Web%20Store-立即安装-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="立即安装">
     </a>
   </p>
-  <p>Made with ❤️ for e-commerce sellers</p>
+  <p>Made with ❤️ for better email</p>
 </div>

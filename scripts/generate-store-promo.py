@@ -139,19 +139,19 @@ def draw_card_mockup(draw, x, y, w, h, compact=False):
     draw_text(draw, (X(bx0 + badge_w_ref / 2), Y(24.5)), status,
               fill=COLORS["green"], font=f_chip, anchor="mm")
 
-    # guidance input
-    draw_text(draw, (X(pad), Y(52)), "指导 AI 回复", fill=COLORS["text_sub"], font=f_label)
-    rounded_rect(draw, (X(pad), Y(64), X(CARD_REF_W - pad), Y(98)),
+    # guidance input (label sits 7px clear of the box below it)
+    draw_text(draw, (X(pad), Y(48)), "指导 AI 回复", fill=COLORS["text_sub"], font=f_label)
+    rounded_rect(draw, (X(pad), Y(68), X(CARD_REF_W - pad), Y(102)),
                  fill=COLORS["input_bg"], radius=max(3, int(8 * s)),
                  outline=COLORS["input_border"], width=1)
-    draw_text(draw, (X(pad + 9), Y(81)), "帮我委婉拒绝，简洁即可",
+    draw_text(draw, (X(pad + 9), Y(85)), "帮我委婉拒绝，简洁即可",
               fill=COLORS["text_dark"], font=f_body, anchor="lm")
 
-    # keyword chips (two rows, first chip active)
-    draw_text(draw, (X(pad), Y(114)), "关键词", fill=COLORS["text_sub"], font=f_label)
+    # keyword chips (two rows, first chip active; 12px between rows)
+    draw_text(draw, (X(pad), Y(118)), "关键词", fill=COLORS["text_sub"], font=f_label)
     chips = [(["委婉拒绝", "直接拒绝", "专业"], True),
              (["简洁", "温暖", "+"], False)]
-    cy = 126
+    cy = 138
     for row, active_first in chips:
         cx = pad                                        # cursor, in ref units
         for i, label in enumerate(row):
@@ -165,15 +165,16 @@ def draw_card_mockup(draw, x, y, w, h, compact=False):
             draw_text(draw, (X(cx + cw_ref / 2), Y(cy + 11)), label,
                       fill="#4b4fd6" if active else "#4b5060", font=f_chip, anchor="mm")
             cx += cw_ref + 6
-        cy += 28
+        cy += 34
+    assert cy - 34 + 22 <= 212 - 6, "chip rows crowd the output label"
 
     # output box
-    draw_text(draw, (X(pad), Y(190)), "生成结果", fill=COLORS["text_sub"], font=f_label)
-    rounded_rect(draw, (X(pad), Y(202), X(CARD_REF_W - pad), Y(348)),
+    draw_text(draw, (X(pad), Y(212)), "生成结果", fill=COLORS["text_sub"], font=f_label)
+    rounded_rect(draw, (X(pad), Y(232), X(CARD_REF_W - pad), Y(366)),
                  fill=COLORS["input_bg"], radius=max(4, int(10 * s)),
                  outline=COLORS["input_border"], width=1)
     body = "感谢来信。目前我暂时没有这方面的计划，这次就先不继续了。"
-    yy = 216
+    yy = 246
     if compact:
         body = "感谢来信，这次先不继续了。"
     # simple character wrap against the inner width
@@ -197,6 +198,7 @@ def draw_card_mockup(draw, x, y, w, h, compact=False):
 
     # actions
     by = CARD_REF_H - pad - 30
+    assert by - 366 >= 8, "output box crowds the action buttons"  # ref units (proportional)
     col_w = (CARD_REF_W - pad * 2 - 8) / 2
     rounded_rect(draw, (X(pad), Y(by), X(pad + col_w), Y(by + 30)),
                  fill=COLORS["primary"], radius=max(4, int(7 * s)))
@@ -258,14 +260,14 @@ def draw_large_promo(W, H):
     top_y = 76
 
     draw_text(draw, (left_x, top_y), "ReplyPilot", fill=COLORS["white"], font=F["title"])
-    draw_text(draw, (left_x, top_y + 64), "AI 邮件回复助手", fill=COLORS["off_white"],
+    draw_text(draw, (left_x, top_y + 66), "AI 邮件回复助手", fill=COLORS["off_white"],
               font=F["subtitle"])
-    draw_text(draw, (left_x, top_y + 100), "AI Email Reply Assistant", fill=COLORS["sub"],
+    draw_text(draw, (left_x, top_y + 106), "AI Email Reply Assistant", fill=COLORS["sub"],
               font=F["sub_en"])
 
     bullets_top = top_y + 152
     block_bottom = draw_bullets(draw, left_x, bullets_top, BULLETS, F["bullet"],
-                                F["bullet_en"], pitch=64, gap=30)
+                                F["bullet_en"], pitch=64, gap=34)
 
     btn_w, btn_h = 252, 52
     btn_x, btn_y = left_x, H - 112
@@ -309,14 +311,14 @@ def draw_small_promo(W, H):
     top_y = 26
 
     draw_text(draw, (left_x, top_y), "ReplyPilot", fill=COLORS["white"], font=F["title"])
-    draw_text(draw, (left_x, top_y + 40), "AI 邮件回复助手", fill=COLORS["off_white"],
+    draw_text(draw, (left_x, top_y + 42), "AI 邮件回复助手", fill=COLORS["off_white"],
               font=F["subtitle"])
-    draw_text(draw, (left_x, top_y + 60), "AI Email Reply Assistant", fill=COLORS["sub"],
+    draw_text(draw, (left_x, top_y + 68), "AI Email Reply Assistant", fill=COLORS["sub"],
               font=F["sub_en"])
 
-    bullets_top = top_y + 96
+    bullets_top = top_y + 104
     block_bottom = draw_bullets(draw, left_x, bullets_top, BULLETS_SMALL, F["bullet"],
-                                F["bullet_en"], pitch=46, gap=18)
+                                F["bullet_en"], pitch=46, gap=20)
 
     btn_w, btn_h = 168, 42
     btn_x, btn_y = left_x, H - 56

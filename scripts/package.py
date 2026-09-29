@@ -119,7 +119,9 @@ def main():
     assert manifest.get("manifest_version") == 3, "manifest_version must be 3"
     version = manifest["version"]
     zip_name = "ReplyPilot-%s.zip" % version
-    zip_path = os.path.join(ROOT, zip_name)
+    release_dir = os.path.join(ROOT, "release")
+    os.makedirs(release_dir, exist_ok=True)
+    zip_path = os.path.join(release_dir, zip_name)
 
     # (1) every file the manifest references must exist on disk
     missing = [r for r in manifest_refs(manifest)
@@ -146,7 +148,7 @@ def main():
         assert inside.get("name") == manifest.get("name"), "name mismatch inside zip"
 
     size_kb = os.path.getsize(zip_path) / 1024.0
-    print("[package] wrote %s (%d files, %.1f KB)" % (zip_name, len(files), size_kb))
+    print("[package] wrote release/%s (%d files, %.1f KB)" % (zip_name, len(files), size_kb))
 
     # (3) copy to the default output folder and make sure it is not a stale leftover
     if not os.path.isdir(DEFAULT_OUT):

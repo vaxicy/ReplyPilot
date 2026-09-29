@@ -203,6 +203,7 @@ ReplyPilot/
 ├── _locales/                      # 国际化字符串（中/英）
 ├── icons/                         # 扩展图标
 ├── store-assets/                  # Chrome Web Store 素材
+├── release/                       # 打包产物（历史版本 zip）
 └── scripts/                       # 素材生成 + 打包脚本（package.py）
 ```
 
@@ -222,7 +223,7 @@ ReplyPilot/
 python3 scripts/package.py
 ```
 
-- **版本号取自 `manifest.json`**（唯一真源），产出 `ReplyPilot-<version>.zip`。
+- **版本号取自 `manifest.json`**（唯一真源），产出 `release/ReplyPilot-<version>.zip`（历史版本统一放在 `release/`）。
 - zip 内 `manifest.json` 位于**根层级**（不是套一层文件夹），只包含扩展本体：
   `manifest.json`、`_locales/`、`background/`、`content/`、`icons/`、`options/`、
   `popup/`、`services/`、`utils/`、`LICENSE`、`README.md`、`微信赞赏码.png`。

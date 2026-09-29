@@ -81,6 +81,12 @@
       <section class="rp-section">
         <h2 class="rp-section-title" data-i18n="optAboutYou">About You</h2>
         <div class="rp-field">
+          <label class="rp-check rp-check-master">
+            <input type="checkbox" id="useSignature" name="useSignature">
+            <span data-i18n="optUseSignature">Append the closing and signature to every reply</span>
+          </label>
+        </div>
+        <div class="rp-field">
           <label for="closing" data-i18n="optClosing">Closing</label>
           <input type="text" id="closing" name="closing" maxlength="40"
                  data-i18n-placeholder="optClosingPlaceholder" />
@@ -92,16 +98,10 @@
         </div>
         <div class="rp-field">
           <label for="signature" data-i18n="optSignature">Signature</label>
-          <textarea id="signature" name="signature" rows="2"
+          <textarea id="signature" name="signature" rows="1" class="rp-input-sm"
                     data-i18n-placeholder="optSignaturePlaceholder"></textarea>
         </div>
-        <div class="rp-field">
-          <label class="rp-check">
-            <input type="checkbox" id="useSignature" name="useSignature">
-            <span data-i18n="optUseSignature">Append the closing and signature to every reply</span>
-          </label>
-        </div>
-        <div class="rp-field">
+        <div class="rp-field rp-field-group">
           <label for="myContext" data-i18n="optMyContext">Context / Memory</label>
           <textarea id="myContext" name="myContext" rows="4"
                     data-i18n-placeholder="optMyContextPlaceholder"></textarea>

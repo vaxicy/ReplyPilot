@@ -126,19 +126,59 @@ body {
   min-height: 80px;
 }
 
+/* Compact multi-line input (e.g. the signature, which is usually one line). */
+.rp-field textarea.rp-input-sm {
+  min-height: 44px;
+}
+
+/* Sub-group inside a section: a hairline separates it from the block above. */
+.rp-field.rp-field-group {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid #eef0f5;
+}
+
 .rp-check {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #2b2f3a;
+  font-weight: 400;
+  color: #4b5060;
   cursor: pointer;
 }
 
 .rp-check input {
   width: auto;
   margin: 0;
+  flex: 0 0 auto;
   accent-color: #7b7ff5;
+}
+
+.rp-check span {
+  line-height: 1.4;
+}
+
+/* A `.rp-check` is a <label> too, so beat the `.rp-field label`
+   (block + bold) rule and give it breathing room under its input. */
+.rp-field .rp-check {
+  display: inline-flex;
+  font-weight: 400;
+  margin: 10px 0 0;
+}
+
+.rp-check:first-child {
+  margin-top: 0;
+}
+
+/* The master switch that turns the whole block on/off. */
+.rp-check-master {
+  font-weight: 500;
+  color: #2b2f3a;
+}
+
+.rp-check + .rp-hint {
+  margin-top: 8px;
 }
 
 .rp-hint {

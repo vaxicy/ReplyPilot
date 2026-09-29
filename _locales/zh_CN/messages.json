@@ -160,8 +160,12 @@
     "description": "设置标签"
   },
   "optModelHint": {
-    "message": "模型 ID 会发送给接口。例如 deepseek-ai/DeepSeek-V4-Flash",
+    "message": "模型 ID 会发送给接口。硅基流动上 Qwen/Qwen2.5-7B-Instruct 免费且快；deepseek-ai/DeepSeek-V4-Flash 效果更强。",
     "description": "模型 ID 说明"
+  },
+  "optModelPlaceholder": {
+    "message": "例如 Qwen/Qwen2.5-7B-Instruct",
+    "description": "模型 ID 占位符"
   },
   "optApiEndpoint": {
     "message": "API 基础地址",

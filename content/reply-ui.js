@@ -61,15 +61,39 @@ window.RP = window.RP || {};
     ];
   }
 
+  // Bumped whenever the shipped default keyword set changes, so existing users
+  // get the new keywords merged into their list exactly once.
+  var QUICK_PROMPTS_VERSION = 2;
+
   function loadPanelState() {
     return RP.storage.getAll().then(function (s) {
       signature.text = s.rp_signature || '';
       signature.enabled = !!s.rp_useSignature;
+
+      var defaults = defaultQuickPrompts();
       if (s.rp_quickPrompts == null) {
-        quickPrompts = defaultQuickPrompts();
-        RP.storage.set('rp_quickPrompts', quickPrompts);
-      } else {
-        quickPrompts = Array.isArray(s.rp_quickPrompts) ? s.rp_quickPrompts.slice() : [];
+        quickPrompts = defaults;
+        RP.storage.setMany({
+          rp_quickPrompts: quickPrompts,
+          rp_quickPromptsVersion: QUICK_PROMPTS_VERSION
+        });
+        return;
+      }
+
+      quickPrompts = Array.isArray(s.rp_quickPrompts) ? s.rp_quickPrompts.slice() : [];
+
+      // Merge the current defaults into a user list created before this
+      // version, keeping the defaults first and preserving any custom entries.
+      if (quickPrompts.length && (s.rp_quickPromptsVersion || 1) < QUICK_PROMPTS_VERSION) {
+        var merged = defaults.slice();
+        quickPrompts.forEach(function (p) {
+          if (merged.indexOf(p) === -1) merged.push(p);
+        });
+        quickPrompts = merged;
+        RP.storage.setMany({
+          rp_quickPrompts: quickPrompts,
+          rp_quickPromptsVersion: QUICK_PROMPTS_VERSION
+        });
       }
     }).catch(function () { /* ignore */ });
   }

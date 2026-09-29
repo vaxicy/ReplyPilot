@@ -160,8 +160,12 @@
     "description": "Options label"
   },
   "optModelHint": {
-    "message": "The model ID is sent to the API. e.g. deepseek-ai/DeepSeek-V4-Flash",
+    "message": "The model ID is sent to the API. On SiliconFlow, Qwen/Qwen2.5-7B-Instruct is free and fast; deepseek-ai/DeepSeek-V4-Flash is a stronger alternative.",
     "description": "Model ID hint"
+  },
+  "optModelPlaceholder": {
+    "message": "e.g. Qwen/Qwen2.5-7B-Instruct",
+    "description": "Model ID placeholder"
   },
   "optApiEndpoint": {
     "message": "API Base URL",

@@ -13,10 +13,13 @@ window.RP = window.RP || {};
     return (cjk / total) > 0.2 ? 'zh' : 'en';
   }
 
+  // Reply-language directives. These are intentionally imperative: the user's
+  // guidance (and the incoming email) may be in another language, so the model
+  // must be told explicitly which language to answer in.
   var REPLY_LANGUAGE_LABELS = {
-    auto: 'Auto (根据来信语言自动判断)',
-    zh: 'Chinese (中文)',
-    en: 'English (英文)'
+    auto: 'match the language of the incoming email',
+    zh: 'Simplified Chinese (简体中文) ONLY',
+    en: 'English ONLY'
   };
 
   function replyLanguageLabel(lang) {
@@ -44,6 +47,8 @@ window.RP = window.RP || {};
   // Shared rules applied to every prompt. The signature is appended by the
   // extension (not the model), so the model must never write one.
   var BASE_RULES = 'Rules: write like a real person, matching the sender\'s context. ' +
+    'Write the reply in the required reply language, even if the guidance or the ' +
+    'incoming email is written in a different language. ' +
     'Do NOT fabricate facts, dates, names, numbers, or commitments you do not have. ' +
     'Ask politely if something is unknown. ' +
     'Do NOT add a signature or sign-off, and never use placeholders like "[Your Name]".';
@@ -65,12 +70,12 @@ window.RP = window.RP || {};
     // Compact prompt: ~250 tokens of template + the incoming email
     var lines = [
       'You are a smart email reply assistant helping the user draft a reply.',
-      'Reply language: ' + lang + '.',
+      'Required reply language: ' + lang + '.',
       BASE_RULES
     ];
     if (mem) lines.push('About me: ' + mem);
     lines.push('User\'s guidance for this reply: ' + instruction);
-    lines.push('', 'Return JSON: {"reply": "your reply"}',
+    lines.push('', 'Return JSON: {"reply": "your reply in the required language"}',
       '', 'Incoming email:', 'Subject: ' + subject, '', body);
     return lines.join('\n');
   }
@@ -90,7 +95,7 @@ window.RP = window.RP || {};
 
     var lines = [
       'You are a smart email reply assistant helping the user draft a reply.',
-      'Reply language: ' + lang + '.',
+      'Required reply language: ' + lang + '.',
       BASE_RULES
     ];
     if (mem) lines.push('About me: ' + mem);

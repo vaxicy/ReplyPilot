@@ -15,7 +15,8 @@ window.RP = window.RP || {};
     rp_signature: '',           // optional signature appended to replies
     rp_useSignature: false,     // whether to append the signature automatically
     rp_myContext: '',           // free-text background the AI should keep in mind
-    rp_quickPrompts: null       // null = uninitialised; defaults seeded on first use
+    rp_quickPrompts: null,      // null = uninitialised; defaults seeded on first use
+    rp_quickPromptsVersion: 0   // bumped when the default keyword set changes
   };
 
   // Legacy fields kept only for a one-time migration. After migrating they are

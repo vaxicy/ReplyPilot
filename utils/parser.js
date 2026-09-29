@@ -49,6 +49,11 @@ window.RP = window.RP || {};
   var BASE_RULES = 'Rules: write like a real person, matching the sender\'s context. ' +
     'Write the reply in the required reply language, even if the guidance or the ' +
     'incoming email is written in a different language. ' +
+    'The user is the one replying to the sender: stay strictly in the user\'s ' +
+    'first-person voice and never speak for the sender. Never ask the sender to do ' +
+    'something that is actually up to the user (for example telling the user about ' +
+    'changes in the user\'s own plans or availability) — say "I will let you know" ' +
+    'instead. ' +
     'Do NOT fabricate facts, dates, names, numbers, or commitments you do not have. ' +
     'Ask politely if something is unknown. ' +
     'Never use placeholders like "[Your Name]".';

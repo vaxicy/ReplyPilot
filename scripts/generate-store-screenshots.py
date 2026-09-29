@@ -339,16 +339,37 @@ COPY = {
 
 # ------------------------------------------------------------ gmail chrome --
 
+def draw_gmail_mark(draw, x, cy):
+    """Simplified envelope mark in Gmail red, left of the wordmark."""
+    x0, y0, x1, y1 = x, cy - 11, x + 26, cy + 11
+    rounded_rect(draw, (x0, y0, x1, y1), fill="white", radius=4,
+                 outline="#ea4335", width=2)
+    mid = (x0 + x1) / 2
+    draw.line([(x0 + 2, y0 + 3), (mid, cy + 2)], fill="#ea4335", width=2)
+    draw.line([(x1 - 2, y0 + 3), (mid, cy + 2)], fill="#ea4335", width=2)
+
+
+def draw_search_icon(draw, cx, cy, color):
+    draw.ellipse([cx - 7, cy - 7, cx + 7, cy + 7], outline=color, width=2)
+    draw.line([(cx + 5, cy + 5), (cx + 11, cy + 11)], fill=color, width=2)
+
+
 def draw_gmail_background(draw, lang="zh"):
     draw.rectangle([0, 0, W, H], fill=COLORS["gmail_bg"])
     draw.rectangle([0, 0, W, 64], fill=COLORS["gmail_card"])
     draw.rectangle([0, 64, 220, H], fill=COLORS["gmail_side"])
+
+    # wordmark with envelope mark sits in the top bar, clear of the search pill
+    draw_gmail_mark(draw, 28, 32)
+    draw_text(draw, (62, 32), "Gmail", fill="#5f6368",
+              font=F["gmail_logo"], anchor="lm")
+
+    # search pill: magnifier icon + placeholder, properly padded
     rounded_rect(draw, (236, 12, 720, 52), fill=COLORS["gmail_bg"], radius=8,
                  outline=COLORS["gmail_border"], width=1)
-    draw_text(draw, (244, 32), "Gmail", fill=COLORS["gmail_text"],
-              font=F["gmail_logo"], anchor="lm")
+    draw_search_icon(draw, 262, 32, COLORS["gmail_sub"])
     search_hint = {"zh": "搜索邮件", "en": "Search mail"}[lang]
-    draw_text(draw, (326, 32), search_hint, fill=COLORS["gmail_sub"],
+    draw_text(draw, (284, 32), search_hint, fill=COLORS["gmail_sub"],
               font=F["gmail_search"], anchor="lm")
 
 
@@ -366,8 +387,8 @@ def draw_gmail_sidebar(draw, lang="zh"):
         draw_nav_icon(draw, icon, 33, y + 16, COLORS["gmail_text"])
         draw_text(draw, (56, y + 10), label, fill=COLORS["gmail_text"], font=F["gmail_nav"])
         if cnt:
-            draw_text(draw, (188, y + 10), cnt, fill=COLORS["gmail_sub"],
-                      font=F["gmail_nav_count"])
+            draw_text(draw, (196, y + 10), cnt, fill=COLORS["gmail_sub"],
+                      font=F["gmail_nav_count"], anchor="rm")
     draw_nav_icon(draw, "chevron_down", 32, 348, COLORS["gmail_text"])
     draw_text(draw, (24, H - 60), "Store Emails", fill=COLORS["gmail_sub"],
               font=F["gmail_nav_count"])

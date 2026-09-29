@@ -385,9 +385,10 @@ def draw_gmail_sidebar(draw, lang="zh"):
         if i == 0:
             rounded_rect(draw, (8, y - 4, 204, y + 36), fill="#d3e3fd", radius=20)
         draw_nav_icon(draw, icon, 33, y + 16, COLORS["gmail_text"])
-        draw_text(draw, (56, y + 10), label, fill=COLORS["gmail_text"], font=F["gmail_nav"])
+        draw_text(draw, (56, y + 16), label, fill=COLORS["gmail_text"],
+                  font=F["gmail_nav"], anchor="lm")
         if cnt:
-            draw_text(draw, (196, y + 10), cnt, fill=COLORS["gmail_sub"],
+            draw_text(draw, (196, y + 16), cnt, fill=COLORS["gmail_sub"],
                       font=F["gmail_nav_count"], anchor="rm")
     draw_nav_icon(draw, "chevron_down", 32, 348, COLORS["gmail_text"])
     draw_text(draw, (24, H - 60), "Store Emails", fill=COLORS["gmail_sub"],

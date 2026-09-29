@@ -50,14 +50,16 @@
 
 <table>
   <tr>
-    <td align="center"><strong>AI 回复方案生成</strong></td>
-    <td align="center"><strong>语气选择与指导输入</strong></td>
-    <td align="center"><strong>一键插入回复</strong></td>
+    <td align="center"><strong>打开邮件，浮窗出现</strong></td>
+    <td align="center"><strong>写指导 / 点关键词</strong></td>
   </tr>
   <tr>
-    <td><img src="store-assets/screenshots/zh/screenshot-01.png" width="400" alt="打开邮件，ReplyPilot 卡片自动出现"></td>
-    <td><img src="store-assets/screenshots/zh/screenshot-02.png" width="400" alt="AI 按所选语气生成多份回复方案"></td>
-    <td><img src="store-assets/screenshots/zh/screenshot-03.png" width="400" alt="选择方案并插入回复框"></td>
+    <td><img src="store-assets/screenshots/zh/screenshot-01-open.png" width="400" alt="打开邮件，浮窗出现"></td>
+    <td><img src="store-assets/screenshots/zh/screenshot-02-guide.png" width="400" alt="写一句指导或点关键词"></td>
+  </tr>
+  <tr>
+    <td><img src="store-assets/screenshots/zh/screenshot-03-reply.png" width="400"></td>
+    <td><img src="store-assets/screenshots/zh/screenshot-04-settings.png" width="400"></td>
   </tr>
 </table>
 

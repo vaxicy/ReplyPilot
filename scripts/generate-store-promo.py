@@ -130,9 +130,9 @@ def draw_card_mockup(draw, x, y, w, h, scale):
     # Options preview
     option_y = y + int(40 * scale)
     for label, preview in [
-        ("积极支持", "感谢您主动联系并提供反馈..."),
-        ("客观中性", "关于发货时间，具体取决于..."),
-        ("委婉拒绝", "目前我们暂不接收额外反馈..."),
+        ("指导 AI 回复", "帮我委婉拒绝，简洁即可"),
+        ("关键词", "委婉拒绝 · 直接拒绝 · 专业 · 简洁"),
+        ("生成结果", "已自动附上 Best regards 与署名"),
     ]:
         oh = int(58 * scale)
         rounded_rect(draw, (x + int(10 * scale), option_y, x + w - int(10 * scale), option_y + oh), fill="#fbfbfd", radius=8, outline=COLORS["card_border"], width=1)
@@ -175,9 +175,9 @@ def draw_large_promo(W, H):
     draw_text(draw, (left_x, top_y + 108), "AI Email Reply Assistant", fill=COLORS["sub"], font=F["small"])
 
     bullets = [
-        ("一键生成 3 个回复方案", "Generate 3 reply options in one click"),
+        ("一句话指挥 AI 写回复", "Tell the AI in one line what to write"),
         ("直接插入 Gmail 回复框", "Insert directly into Gmail reply box"),
-        ("支持多种语气与场景", "Multiple tones and scenarios"),
+        ("结束语与署名自动落款", "Closing and signature added for you"),
     ]
     by = top_y + 170
     for zh, en in bullets:
@@ -226,7 +226,7 @@ def draw_small_promo(W, H):
     draw_text(draw, (left_x, top_y + 64), "AI Email Reply Assistant", fill=COLORS["sub"], font=F["small"])
 
     bullets = [
-        ("一键生成 3 个方案", "3 options in one click"),
+        ("一句话指挥 AI", "One-line prompts"),
         ("直接插入 Gmail", "Insert into Gmail"),
     ]
     by = top_y + 96

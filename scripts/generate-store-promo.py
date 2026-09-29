@@ -90,6 +90,14 @@ def draw_star(draw, cx, cy, r, fill):
                  fill=fill)
 
 
+def draw_left_aligned(draw, xy, text, fill, font):
+    """Draw so the ink's left edge lands exactly on xy[0] (cancels the glyph's
+    side bearing, which otherwise makes mixed-size lines look misaligned)."""
+    x, y = xy
+    bbox = draw.textbbox((x, y), text, font=font)
+    draw.text((2 * x - bbox[0], y), text, fill=fill, font=font)
+
+
 # ------------------------------------------------------------------- card ---
 
 # The card mock is authored against this reference box, then scaled to fit.
@@ -259,11 +267,12 @@ def draw_large_promo(W, H):
     left_x = margin
     top_y = 76
 
-    draw_text(draw, (left_x, top_y), "ReplyPilot", fill=COLORS["white"], font=F["title"])
-    draw_text(draw, (left_x, top_y + 66), "AI 邮件回复助手", fill=COLORS["off_white"],
-              font=F["subtitle"])
-    draw_text(draw, (left_x, top_y + 106), "AI Email Reply Assistant", fill=COLORS["sub"],
-              font=F["sub_en"])
+    # hero title, then a clear break before the subtitle pair
+    draw_left_aligned(draw, (left_x, top_y), "ReplyPilot", COLORS["white"], F["title"])
+    draw_left_aligned(draw, (left_x, top_y + 76), "AI 邮件回复助手",
+                      COLORS["off_white"], F["subtitle"])
+    draw_left_aligned(draw, (left_x, top_y + 117), "AI Email Reply Assistant",
+                      COLORS["sub"], F["sub_en"])
 
     bullets_top = top_y + 152
     block_bottom = draw_bullets(draw, left_x, bullets_top, BULLETS, F["bullet"],
@@ -310,13 +319,14 @@ def draw_small_promo(W, H):
     left_x = margin
     top_y = 26
 
-    draw_text(draw, (left_x, top_y), "ReplyPilot", fill=COLORS["white"], font=F["title"])
-    draw_text(draw, (left_x, top_y + 42), "AI 邮件回复助手", fill=COLORS["off_white"],
-              font=F["subtitle"])
-    draw_text(draw, (left_x, top_y + 68), "AI Email Reply Assistant", fill=COLORS["sub"],
-              font=F["sub_en"])
+    # hero title, then a clear break before the subtitle pair
+    draw_left_aligned(draw, (left_x, top_y), "ReplyPilot", COLORS["white"], F["title"])
+    draw_left_aligned(draw, (left_x, top_y + 50), "AI 邮件回复助手",
+                      COLORS["off_white"], F["subtitle"])
+    draw_left_aligned(draw, (left_x, top_y + 74), "AI Email Reply Assistant",
+                      COLORS["sub"], F["sub_en"])
 
-    bullets_top = top_y + 104
+    bullets_top = top_y + 106
     block_bottom = draw_bullets(draw, left_x, bullets_top, BULLETS_SMALL, F["bullet"],
                                 F["bullet_en"], pitch=46, gap=20)
 

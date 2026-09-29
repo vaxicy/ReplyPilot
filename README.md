@@ -201,7 +201,7 @@ ReplyPilot/
 ├── _locales/                      # 国际化字符串（中/英）
 ├── icons/                         # 扩展图标
 ├── store-assets/                  # Chrome Web Store 素材
-└── scripts/                       # 素材生成脚本
+└── scripts/                       # 素材生成 + 打包脚本（package.py）
 ```
 
 ### 技术亮点
@@ -211,6 +211,24 @@ ReplyPilot/
 - **容错选择器系统**：20+ 种备选选择器适应 Gmail 频繁的标记变化
 - **结构回退检测**：选择器均失败时自动检测回复框位置
 - **健壮 JSON 解析**：自动处理 AI 返回的各种格式变体
+
+---
+
+## 📦 打包 · Packaging
+
+```bash
+python3 scripts/package.py
+```
+
+- **版本号取自 `manifest.json`**（唯一真源），产出 `ReplyPilot-<version>.zip`。
+- zip 内 `manifest.json` 位于**根层级**（不是套一层文件夹），只包含扩展本体：
+  `manifest.json`、`_locales/`、`background/`、`content/`、`icons/`、`options/`、
+  `popup/`、`services/`、`utils/`、`LICENSE`、`README.md`、`微信赞赏码.png`。
+- **不打包**：`store-assets/`（商店截图与 promo 单独上传）、`scripts/`、
+  `docs/`（隐私政策走 GitHub Pages）、`.git` / `.codebuddy` 等开发文件。
+- 脚本自带校验：`manifest_version == 3`、版本一致、manifest 引用的文件都存在、
+  `manifest.json` 位于 zip 根层级、包内 manifest 可重新解析、HTML 里的 `../` 引用可解析。
+- 完成后自动复制一份到默认输出目录（工作区根目录，路径由项目位置推导，不硬编码）。
 
 ---
 

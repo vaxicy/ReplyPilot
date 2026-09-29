@@ -403,13 +403,13 @@ def draw_email_content(draw, lang="zh"):
 
     for icon, cx in [("reply", 272), ("trash", 312), ("envelope", 352),
                      ("clock", 392), ("send", 432)]:
-        draw_nav_icon(draw, icon, cx, 112, COLORS["gmail_sub"])
+        draw_nav_icon(draw, icon, cx, 108, COLORS["gmail_sub"])
 
     subject = {
         "zh": "有机会给你一些店铺反馈吗？",
         "en": "Open to some feedback on your store?",
     }[lang]
-    draw_text(draw, (264, 158), subject, fill=COLORS["gmail_text"], font=F["email_subject"])
+    draw_text(draw, (264, 148), subject, fill=COLORS["gmail_text"], font=F["email_subject"])
 
     avatar_letter = {"zh": "李", "en": "J"}[lang]
     sender_name = {"zh": "李华", "en": "Jordan Lee"}[lang]
@@ -421,7 +421,7 @@ def draw_email_content(draw, lang="zh"):
 
     date_text = {"zh": "7月17日周五 19:10 (6天前)",
                  "en": "Fri, Jul 17, 2026, 7:10 PM (6 days ago)"}[lang]
-    draw_text(draw, (x1 - 20, 198), date_text, fill=COLORS["gmail_sub"],
+    draw_text(draw, (x1 - 20, 207), date_text, fill=COLORS["gmail_sub"],
               font=F["email_body"], anchor="rm")
 
     banner_y = 250

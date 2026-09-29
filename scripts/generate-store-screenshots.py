@@ -444,7 +444,7 @@ def draw_email_content(draw, lang="zh"):
                       font=F["email_body"])
             body_y += 24
 
-    reply_y = H - 120
+    reply_y = H - 140  # keeps a 20px bottom padding inside the email card
     assert body_y < reply_y - 12, "email body runs into the reply box"
     rounded_rect(draw, (264, reply_y, 560, reply_y + 50), fill=COLORS["gmail_bg"],
                  radius=24, outline=COLORS["gmail_border"], width=1)

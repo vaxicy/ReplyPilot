@@ -50,16 +50,26 @@
 
 <table>
   <tr>
-    <td align="center"><strong>打开邮件，浮窗出现</strong></td>
-    <td align="center"><strong>写指导 / 点关键词</strong></td>
+    <td align="center"><strong>① 配置 AI 提供商</strong></td>
+    <td align="center"><strong>② 打开邮件，浮窗出现</strong></td>
   </tr>
   <tr>
-    <td><img src="store-assets/screenshots/zh/screenshot-01-open.png" width="400" alt="打开邮件，浮窗出现"></td>
-    <td><img src="store-assets/screenshots/zh/screenshot-02-guide.png" width="400" alt="写一句指导或点关键词"></td>
+    <td><img src="store-assets/screenshots/zh/screenshot-01-provider.png" width="400" alt="配置 AI 提供商"></td>
+    <td><img src="store-assets/screenshots/zh/screenshot-02-open.png" width="400" alt="打开邮件，浮窗出现"></td>
   </tr>
   <tr>
-    <td><img src="store-assets/screenshots/zh/screenshot-03-reply.png" width="400"></td>
-    <td><img src="store-assets/screenshots/zh/screenshot-04-settings.png" width="400"></td>
+    <td align="center"><strong>③ 写指导 / 点关键词</strong></td>
+    <td align="center"><strong>④ AI 生成回复草稿</strong></td>
+  </tr>
+  <tr>
+    <td><img src="store-assets/screenshots/zh/screenshot-03-guide.png" width="400" alt="写一句指导或点关键词"></td>
+    <td><img src="store-assets/screenshots/zh/screenshot-04-reply.png" width="400" alt="AI 生成回复草稿"></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2"><strong>⑤ 结束语 / 署名 / AI 记忆可自定义</strong></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2"><img src="store-assets/screenshots/zh/screenshot-05-settings.png" width="400" alt="结束语与署名设置"></td>
   </tr>
 </table>
 

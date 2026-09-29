@@ -1,9 +1,10 @@
 # Generate Chrome Web Store screenshots for ReplyPilot (guided-generator UI).
-# Outputs four 1280x800 PNGs per language into store-assets/screenshots/{zh,en}/:
-#   01 open     - the floating card appears next to the email
-#   02 guide    - type a one-line instruction, or tap a keyword chip
-#   03 reply    - the AI draft, already carrying the closing + signature
-#   04 settings - closing / signature / memory are customisable
+# Outputs five 1280x800 PNGs per language into store-assets/screenshots/{zh,en}/:
+#   01 provider - connect your AI provider (Base URL / API Key / model)
+#   02 open     - the floating card appears next to the email
+#   03 guide    - type a one-line instruction, or tap a keyword chip
+#   04 reply    - the AI draft, already carrying the closing + signature
+#   05 settings - closing / signature / memory are customisable
 #
 # Visual QA is enforced with asserts (see the store-asset-generator skill) so a
 # bad layout fails at generation time instead of shipping.
@@ -227,11 +228,29 @@ COPY = {
         "btn_revise": "按意见重新生成",
         "revise_placeholder": "例如：更正式一点",
         "steps": {
-            1: "打开邮件，浮窗自动出现",
-            2: "写一句指导，或点关键词",
-            3: "AI 直接生成回复草稿",
-            4: "结束语 / 署名都能自定义",
+            1: "配置 AI 提供商",
+            2: "打开邮件，浮窗自动出现",
+            3: "写一句指导，或点关键词",
+            4: "AI 直接生成回复草稿",
+            5: "结束语 / 署名都能自定义",
         },
+        "prov_title": "ReplyPilot 设置",
+        "prov_sub": "AI 提供商 · 首次配置",
+        "prov_section": "AI 提供商",
+        "prov_provider": "当前提供商",
+        "prov_provider_val": "SiliconFlow",
+        "prov_provider_hint": "选择服务商，或选「自定义」接入任意 OpenAI 兼容 API。",
+        "prov_endpoint": "API 地址",
+        "prov_endpoint_val": "https://api.siliconflow.cn/v1",
+        "prov_endpoint_hint": "OpenAI 兼容 Base URL，会自动补上 /chat/completions。",
+        "prov_key": "API Key",
+        "prov_key_val": "sk-••••••••••••••••••••••••",
+        "prov_key_hint": "仅保存在本地 chrome.storage.local，绝不上传到第三方。",
+        "prov_model": "模型 ID",
+        "prov_model_val": "deepseek-ai/DeepSeek-V4-Flash",
+        "prov_model_hint": "把模型 ID 发送给 API，例如 deepseek-ai/DeepSeek-V4-Flash。",
+        "prov_test": "测试连接",
+        "prov_test_ok": "连接成功",
         "set_title": "ReplyPilot 设置",
         "set_sub": "偏好设置 · 关于我",
         "sec_pref": "偏好设置",
@@ -256,7 +275,7 @@ COPY = {
         "label_keywords": "Quick phrases",
         "guide_placeholder": "e.g. Politely decline and keep it short",
         "guide_text": "Politely decline, keep it short",
-        "output_placeholder": "Click Generate and the AI drafts one reply to your brief",
+        "output_placeholder": "Click Generate and the AI drafts a reply for you",
         "reply": (
             "Hi Jordan, thanks for reaching out - but I'm not able to move forward with this "
             "right now.\nI'll reach out if anything changes on my end. All the best!"
@@ -275,11 +294,29 @@ COPY = {
         "btn_revise": "Revise by feedback",
         "revise_placeholder": "e.g. more formal",
         "steps": {
-            1: "Open the email - the card appears",
-            2: "Type a brief, or tap a keyword",
-            3: "The AI drafts the reply for you",
-            4: "Closing & signature are yours to set",
+            1: "Connect your AI provider",
+            2: "Open the email - the card appears",
+            3: "Type a brief, or tap a keyword",
+            4: "The AI drafts the reply for you",
+            5: "Closing & signature are yours to set",
         },
+        "prov_title": "ReplyPilot Settings",
+        "prov_sub": "AI Provider - first-time setup",
+        "prov_section": "AI Provider",
+        "prov_provider": "Current Provider",
+        "prov_provider_val": "SiliconFlow",
+        "prov_provider_hint": "Pick a provider, or choose Custom for any OpenAI-compatible API.",
+        "prov_endpoint": "API Base URL",
+        "prov_endpoint_val": "https://api.siliconflow.cn/v1",
+        "prov_endpoint_hint": "OpenAI-compatible Base URL; /chat/completions is appended automatically.",
+        "prov_key": "API Key",
+        "prov_key_val": "sk-••••••••••••••••••••••••",
+        "prov_key_hint": "Stored locally in chrome.storage.local. Never uploaded.",
+        "prov_model": "Model ID",
+        "prov_model_val": "deepseek-ai/DeepSeek-V4-Flash",
+        "prov_model_hint": "The model ID sent to the API, e.g. deepseek-ai/DeepSeek-V4-Flash.",
+        "prov_test": "Test Connection",
+        "prov_test_ok": "Connected",
         "set_title": "ReplyPilot Settings",
         "set_sub": "Preferences - About you",
         "sec_pref": "Preferences",
@@ -449,16 +486,38 @@ def draw_chip(draw, x, y, text, font, active=False, is_add=False):
 
 
 def draw_chips(draw, x, y, max_w, labels, font, active_idx=(), is_last_add=False, max_rows=3):
-    """Lay chips out in wrapping rows; stop after max_rows (the real card scrolls)."""
-    cx, cy, rows = x, y, 1
-    for i, label in enumerate(labels):
-        tw = text_width(draw, label, font)
-        w = tw + 18
+    """Lay chips out in wrapping rows. Trailing keywords are dropped first so the
+    add chip never ends up alone on the last row (no orphan rows), and everything
+    shown fits within max_rows (the real card scrolls)."""
+    widths = [text_width(draw, lb, font) + 18 for lb in labels]
+
+    def row_counts_for(idxs):
+        counts, cx, cur_count = [], 0, 0
+        for i in idxs:
+            w = widths[i]
+            if cx > 0 and cx + w > max_w:
+                counts.append(cur_count)
+                cx, cur_count = 0, 0
+                if len(counts) >= max_rows:
+                    return None  # a new row would exceed max_rows
+            cur_count += 1
+            cx += w + 6
+        counts.append(cur_count)
+        return counts
+
+    idxs = list(range(len(labels)))
+    counts = row_counts_for(idxs)
+    while (counts is None or counts[-1] < 2) and len(idxs) > 2:
+        del idxs[-2]  # drop the last keyword, keep the add chip last
+        counts = row_counts_for(idxs)
+    assert counts is not None, "chips do not fit within max_rows"
+
+    cx, cy, rows = x, y, len(counts)
+    for i in idxs:
+        w = widths[i]
         if cx > x and cx + w > x + max_w:
-            cx, cy, rows = x, cy + 22 + 6, rows + 1
-            if rows > max_rows:
-                break
-        draw_chip(draw, cx, cy, label, font, active=(i in active_idx),
+            cx, cy = x, cy + 22 + 6
+        draw_chip(draw, cx, cy, labels[i], font, active=(i in active_idx),
                   is_add=(is_last_add and i == len(labels) - 1))
         cx += w + 6
     return rows * 22 + (rows - 1) * 6
@@ -632,7 +691,7 @@ def draw_settings_screenshot(lang):
     draw.rectangle([0, 0, W, H], fill=COLORS["set_bg"])
     c = COPY[lang]
 
-    draw_step_label(draw, lang, 4, SET_X, SET_W)
+    draw_step_label(draw, lang, 5, SET_X, SET_W)
 
     rounded_rect(draw, (SET_X, SET_Y, SET_X + SET_W, SET_Y + SET_H),
                  fill=COLORS["set_panel"], radius=16, outline=COLORS["set_border"], width=1)
@@ -707,6 +766,71 @@ def draw_settings_screenshot(lang):
     return img
 
 
+# ------------------------------------------------------- provider screenshot --
+
+PROV_Y, PROV_H = 90, 610
+
+
+def draw_provider_screenshot(lang):
+    """First-run setup: the AI Provider section of the options page."""
+    img = Image.new("RGBA", (W, H), COLORS["set_bg"])
+    draw = ImageDraw.Draw(img)
+    draw.rectangle([0, 0, W, H], fill=COLORS["set_bg"])
+    c = COPY[lang]
+
+    draw_step_label(draw, lang, 1, SET_X, SET_W)
+
+    rounded_rect(draw, (SET_X, PROV_Y, SET_X + SET_W, PROV_Y + PROV_H),
+                 fill=COLORS["set_panel"], radius=16, outline=COLORS["set_border"], width=1)
+
+    px = SET_X + 30
+    pw = SET_W - 60
+
+    draw_star(draw, px + 9, PROV_Y + 32, 8, fill="#f59e0b")
+    draw_text(draw, (px + 26, PROV_Y + 32), c["prov_title"], fill=COLORS["set_ink"],
+              font=F["set_title"], anchor="lm")
+    draw_text(draw, (px, PROV_Y + 58), c["prov_sub"], fill=COLORS["set_hint"],
+              font=F["set_hint"])
+
+    def field(yy, label, value, hint, is_select=False):
+        draw_text(draw, (px, yy), label, fill=COLORS["set_ink"], font=F["set_label"])
+        yy += 20
+        if is_select:
+            draw_select(draw, px, yy, pw, value)
+        else:
+            draw_input(draw, px, yy, pw, value)
+        yy += 34 + 8
+        assert text_width(draw, hint, F["set_hint"]) <= pw, "provider hint overflows"
+        draw_text(draw, (px, yy), hint, fill=COLORS["set_hint"], font=F["set_hint"])
+        return yy + 14
+
+    yy = PROV_Y + 96
+    draw_text(draw, (px, yy), c["prov_section"], fill=COLORS["set_ink"], font=F["set_section"])
+    yy += 40
+    yy = field(yy, c["prov_provider"], c["prov_provider_val"], c["prov_provider_hint"],
+               is_select=True) + 24
+    yy = field(yy, c["prov_endpoint"], c["prov_endpoint_val"], c["prov_endpoint_hint"]) + 24
+    yy = field(yy, c["prov_key"], c["prov_key_val"], c["prov_key_hint"]) + 24
+    yy = field(yy, c["prov_model"], c["prov_model_val"], c["prov_model_hint"]) + 28
+
+    # test-connection button + success status
+    btn_w = text_width(draw, c["prov_test"], F["set_label"]) + 40
+    rounded_rect(draw, (px, yy, px + btn_w, yy + 34), fill="white", radius=8,
+                 outline=COLORS["rp_input_border"], width=1)
+    draw_text(draw, (px + btn_w / 2, yy + 18), c["prov_test"], fill=COLORS["set_ink"],
+              font=F["set_label"], anchor="mm")
+    cx = px + btn_w + 16
+    draw.ellipse([cx, yy + 10, cx + 14, yy + 24], fill=COLORS["rp_green"])
+    draw.line([(cx + 4, yy + 18), (cx + 7, yy + 21), (cx + 11, yy + 14)],
+              fill="white", width=2)
+    draw_text(draw, (cx + 21, yy + 18), c["prov_test_ok"], fill=COLORS["rp_green"],
+              font=F["set_input"], anchor="lm")
+
+    assert yy + 34 < PROV_Y + PROV_H - 12, "provider panel content overflows: %d" % (yy + 34)
+    assert yy + 34 < SAFE_BOTTOM, "provider content below safe bottom"
+    return img
+
+
 # ------------------------------------------------------------------ compose --
 
 def screenshot(lang, state, filename, step):
@@ -735,10 +859,11 @@ def clean_old():
     """Remove stale screenshot files so the folder is always the current set."""
     keep = set()
     for lang in ("zh", "en"):
-        keep.add("screenshot-01-open.png")
-        keep.add("screenshot-02-guide.png")
-        keep.add("screenshot-03-reply.png")
-        keep.add("screenshot-04-settings.png")
+        keep.add("screenshot-01-provider.png")
+        keep.add("screenshot-02-open.png")
+        keep.add("screenshot-03-guide.png")
+        keep.add("screenshot-04-reply.png")
+        keep.add("screenshot-05-settings.png")
     for lang in ("zh", "en"):
         d = OUT / lang
         if not d.is_dir():
@@ -751,12 +876,18 @@ def clean_old():
 
 if __name__ == "__main__":
     for lang in ("zh", "en"):
-        screenshot(lang, "idle", "screenshot-01-open.png", 1)
-        screenshot(lang, "guide", "screenshot-02-guide.png", 2)
-        screenshot(lang, "reply", "screenshot-03-reply.png", 3)
         (OUT / lang).mkdir(parents=True, exist_ok=True)
-        draw_settings_screenshot(lang).convert("RGB").save(
-            OUT / lang / "screenshot-04-settings.png")
-        print("saved: %s" % (OUT / lang / "screenshot-04-settings.png"))
+
+        out = OUT / lang / "screenshot-01-provider.png"
+        draw_provider_screenshot(lang).convert("RGB").save(out)
+        print("saved: %s" % out)
+
+        screenshot(lang, "idle", "screenshot-02-open.png", 2)
+        screenshot(lang, "guide", "screenshot-03-guide.png", 3)
+        screenshot(lang, "reply", "screenshot-04-reply.png", 4)
+
+        out = OUT / lang / "screenshot-05-settings.png"
+        draw_settings_screenshot(lang).convert("RGB").save(out)
+        print("saved: %s" % out)
     clean_old()
     print("Done. Outputs in %s" % OUT)

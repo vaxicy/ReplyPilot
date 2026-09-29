@@ -131,6 +131,15 @@ body {
   min-height: 44px;
 }
 
+/* A field revealed under a select (e.g. the manual closing input). */
+.rp-subfield {
+  margin-top: 10px;
+}
+
+.rp-subfield[hidden] {
+  display: none;
+}
+
 /* Sub-group inside a section: a hairline separates it from the block above. */
 .rp-field.rp-field-group {
   margin-top: 22px;

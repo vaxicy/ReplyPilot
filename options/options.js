@@ -6,7 +6,7 @@
 
   var ids = ['provider', 'apiEndpoint', 'apiKey', 'model',
              'language', 'replyLanguage',
-             'closing', 'signature', 'myContext'];
+             'closingMode', 'closing', 'signature', 'myContext'];
 
   // Per-provider defaults. Custom has no preset models/endpoint.
   var PROVIDER_PRESETS = {
@@ -55,12 +55,12 @@
         el.value = settings['rp_' + id] || '';
       });
 
-      // Signature + closing toggles.
+      // Signature toggle + closing mode.
       var useSig = document.getElementById('useSignature');
       if (useSig) useSig.checked = !!settings.rp_useSignature;
-      var closingAi = document.getElementById('closingAi');
-      if (closingAi) closingAi.checked = !!settings.rp_closingAi;
-      syncClosingDisabled();
+      var closingMode = document.getElementById('closingMode');
+      if (closingMode) closingMode.value = settings.rp_closingMode || 'manual';
+      syncClosingVisibility();
 
       var provider = settings.rp_provider || 'siliconflow';
       currentProvider = provider;
@@ -82,11 +82,11 @@
 
   // (Tones are selected in the floating panel, not here.)
 
-  // Disable the manual closing input while the AI picks the closing.
-  function syncClosingDisabled() {
-    var ai = document.getElementById('closingAi');
-    var input = document.getElementById('closing');
-    if (input) input.disabled = !!(ai && ai.checked);
+  // Show the manual closing input only when the closing mode is "manual".
+  function syncClosingVisibility() {
+    var mode = document.getElementById('closingMode');
+    var wrap = document.getElementById('closingInputWrap');
+    if (wrap) wrap.hidden = !!(mode && mode.value === 'ai');
   }
 
   // Persist the current input values into the active provider's own slot.
@@ -150,10 +150,10 @@
     // Signature + closing toggles also auto-save.
     var useSig = document.getElementById('useSignature');
     if (useSig) useSig.addEventListener('change', scheduleAutoSave);
-    var closingAi = document.getElementById('closingAi');
-    if (closingAi) {
-      closingAi.addEventListener('change', function () {
-        syncClosingDisabled();
+    var closingMode = document.getElementById('closingMode');
+    if (closingMode) {
+      closingMode.addEventListener('change', function () {
+        syncClosingVisibility();
         scheduleAutoSave();
       });
     }
@@ -352,11 +352,11 @@
         obj['rp_' + id] = el.value;
       });
 
-      // Signature + closing toggles.
+      // Signature toggle + closing mode.
       var useSig = document.getElementById('useSignature');
       obj.rp_useSignature = !!(useSig && useSig.checked);
-      var closingAi = document.getElementById('closingAi');
-      obj.rp_closingAi = !!(closingAi && closingAi.checked);
+      var closingMode = document.getElementById('closingMode');
+      obj.rp_closingMode = (closingMode && closingMode.value) || 'manual';
 
       // Save the active provider's key/endpoint/model into its own slot,
       // merging into the existing providerConfigs instead of replacing them.

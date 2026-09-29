@@ -13,7 +13,7 @@ window.RP = window.RP || {};
     rp_providerConfigs: {},     // { [provider]: { apiEndpoint, apiKey, model } }
     rp_replyLanguage: 'auto',   // auto | zh | en
     rp_closing: 'Best regards', // sign-off line placed above the signature
-    rp_closingAi: false,        // true = let the AI pick the closing from context
+    rp_closingMode: 'manual',   // manual | ai (ai = let the model choose the closing)
     rp_signature: '',           // optional name/signature appended to replies
     rp_useSignature: false,     // whether to append the closing + signature
     rp_myContext: '',           // free-text background the AI should keep in mind
@@ -27,7 +27,7 @@ window.RP = window.RP || {};
     'rp_storeName', 'rp_storeCategory', 'rp_shippingInfo',
     'rp_returnPolicy', 'rp_shippingRegions'
   ];
-  var LEGACY_KEYS = LEGACY_STORE_KEYS.concat(['rp_myName', 'rp_tone', 'rp_toneSet']);
+  var LEGACY_KEYS = LEGACY_STORE_KEYS.concat(['rp_myName', 'rp_tone', 'rp_toneSet', 'rp_closingAi']);
 
   function migrateLegacy(res) {
     if (!res) return res;
@@ -52,6 +52,12 @@ window.RP = window.RP || {};
 
     // 3) Legacy tone / tone set: tones are now keyword chips, so just discard.
     if (res.rp_tone || (Array.isArray(res.rp_toneSet) && res.rp_toneSet.length)) {
+      changed = true;
+    }
+
+    // 4) Legacy closing AI toggle -> closing mode select.
+    if (res.rp_closingAi) {
+      res.rp_closingMode = 'ai';
       changed = true;
     }
 

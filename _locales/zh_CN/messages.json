@@ -487,9 +487,13 @@
     "message": "如：Best regards / 此致敬礼",
     "description": "结束语输入框占位符"
   },
+  "optClosingManual": {
+    "message": "自定义",
+    "description": "结束语模式：自定义"
+  },
   "optClosingAi": {
-    "message": "由 AI 根据语境生成结束语",
-    "description": "是否由 AI 选择结束语"
+    "message": "由 AI 根据语境生成",
+    "description": "结束语模式：AI"
   },
   "optClosingHint": {
     "message": "正文之后、署名之前的敬语，例如「Best regards」（英文叫 sign-off / closing）。",

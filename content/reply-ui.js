@@ -70,7 +70,7 @@ window.RP = window.RP || {};
       signature.text = s.rp_signature || '';
       signature.enabled = !!s.rp_useSignature;
       closing.text = s.rp_closing || '';
-      closing.ai = !!s.rp_closingAi;
+      closing.ai = (s.rp_closingMode === 'ai');
 
       var defaults = defaultQuickPrompts();
       if (s.rp_quickPrompts == null) {

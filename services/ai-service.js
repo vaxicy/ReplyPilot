@@ -107,7 +107,7 @@ window.RP = window.RP || {};
     return settingsPromise.then(function (s) {
       checkApiKey(s);
       var cfg = resolveProviderConfig(s);
-      var closingAi = !!(s.rp_useSignature && s.rp_closingAi);
+      var closingAi = !!(s.rp_useSignature && s.rp_closingMode === 'ai');
 
       var prompt = RP.parser.buildGuidedPrompt({
         replyLanguage: s.rp_replyLanguage || 'auto',

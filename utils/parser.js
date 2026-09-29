@@ -22,12 +22,14 @@ window.RP = window.RP || {};
     warm: 'Warm (温暖、共情、体贴、有人情味)',
     formal: 'Formal (正式、严谨、庄重)',
     direct: 'Direct (直接、果断、明确立场)',
-    enthusiastic: 'Enthusiastic (热情、积极、有感染力)'
+    enthusiastic: 'Enthusiastic (热情、积极、有感染力)',
+    declinePolite: 'Polite decline (委婉拒绝、礼貌、留有余地，给对方台阶)',
+    declineDirect: 'Direct decline (明确、直接地拒绝，不绕弯子)'
   };
 
   // Canonical tone order; the single source of truth for the tone key list.
   var TONE_ORDER = ['professional', 'friendly', 'casual', 'short',
-    'warm', 'formal', 'direct', 'enthusiastic'];
+    'warm', 'formal', 'direct', 'enthusiastic', 'declinePolite', 'declineDirect'];
 
   // Shared rules applied to every generation prompt. The signature is appended
   // by the extension (not the model), so the model must never write one.
@@ -90,47 +92,24 @@ window.RP = window.RP || {};
     return lines.join('\n');
   }
 
-  // Build the prompt that generates one reply per requested tone.
-  function buildTonesPrompt(ctx) {
+  // Build the prompt for the guided single-reply generator: the user picks a
+  // tone and may add a short instruction guiding how to reply.
+  function buildGuidedPrompt(ctx) {
     ctx = ctx || {};
-    var tones = (ctx.tones && ctx.tones.length) ? ctx.tones : ['professional', 'friendly', 'short'];
     var lang = replyLanguageLabel(ctx.replyLanguage);
     var subject = ctx.subject || '';
     var body = clampText(ctx.emailBody, MAX_BODY, 'content');
     var mem = buildUserContext(ctx);
-    var toneList = tones.map(function (t) {
-      return '"' + t + '" (' + toneLabel(t) + ')';
-    }).join(', ');
+    var instruction = (ctx.instruction || '').trim();
 
     // Compact prompt: ~250 tokens of template + the incoming email
     var lines = [
       'You are a smart email reply assistant helping the user draft a reply.',
-      'Reply language: ' + lang + '.',
-      'Write one reply for each of these tones: ' + toneList + '.',
+      'Tone: ' + toneLabel(ctx.tone) + '. Reply language: ' + lang + '.',
       BASE_RULES
     ];
     if (mem) lines.push('About me: ' + mem);
-    lines.push('', 'Return strict JSON only, no markdown:',
-      '{"replies": [{"tone": "<tone>", "reply": "..."}]}',
-      '', 'Incoming email:', 'Subject: ' + subject, '', body);
-    return lines.join('\n');
-  }
-
-  // Build the prompt that regenerates a single reply for one tone.
-  function buildRegenOnePrompt(ctx) {
-    ctx = ctx || {};
-    var lang = replyLanguageLabel(ctx.replyLanguage);
-    var subject = ctx.subject || '';
-    var body = clampText(ctx.emailBody, MAX_BODY, 'content');
-    var mem = buildUserContext(ctx);
-
-    var lines = [
-      'You are a smart email reply assistant helping the user draft a reply.',
-      'Reply language: ' + lang + '.',
-      'Write ONE reply in this tone: ' + toneLabel(ctx.tone) + '.',
-      BASE_RULES
-    ];
-    if (mem) lines.push('About me: ' + mem);
+    if (instruction) lines.push('User\'s guidance for this reply: ' + instruction);
     lines.push('', 'Return JSON: {"reply": "your reply"}',
       '', 'Incoming email:', 'Subject: ' + subject, '', body);
     return lines.join('\n');
@@ -181,8 +160,7 @@ window.RP = window.RP || {};
     replyLanguageLabel: replyLanguageLabel,
     TONES: TONE_ORDER,
     buildPrompt: buildPrompt,
-    buildTonesPrompt: buildTonesPrompt,
-    buildRegenOnePrompt: buildRegenOnePrompt,
+    buildGuidedPrompt: buildGuidedPrompt,
     buildRevisePrompt: buildRevisePrompt
   };
 })(window.RP);

@@ -195,14 +195,6 @@
     "message": "控制扩展的界面语言。回复语言在下方单独设置。",
     "description": "语言设置说明"
   },
-  "optTones": {
-    "message": "回复语气",
-    "description": "设置标签"
-  },
-  "optTonesHint": {
-    "message": "可选 1–4 种语气，每种语气生成一份回复草稿，且每条都能单独重新生成。",
-    "description": "语气多选说明"
-  },
   "optPreferences": {
     "message": "偏好设置",
     "description": "偏好设置分组标题"
@@ -355,6 +347,14 @@
     "message": "热情",
     "description": "语气选项"
   },
+  "toneDeclinePolite": {
+    "message": "委婉拒绝",
+    "description": "语气选项"
+  },
+  "toneDeclineDirect": {
+    "message": "直接拒绝",
+    "description": "语气选项"
+  },
   "optReplyLanguage": {
     "message": "回复语言",
     "description": "回复语言设置标签"
@@ -375,21 +375,57 @@
     "message": "英文",
     "description": "回复语言选项"
   },
-  "optionTitle": {
-    "message": "选择一个方案",
-    "description": "方案列表标题"
+  "panelToneLabel": {
+    "message": "语气",
+    "description": "浮窗：语气选择标签"
   },
-  "selectThisOption": {
-    "message": "选择此方案",
-    "description": "选择方案按钮"
+  "guidingLabel": {
+    "message": "指导 AI 回复",
+    "description": "浮窗：指导输入框标签"
   },
-  "regenOption": {
-    "message": "重新生成",
-    "description": "单独重新生成某条方案"
+  "guidingPlaceholder": {
+    "message": "例如：帮我委婉拒绝，简洁即可",
+    "description": "浮窗：指导输入框占位符"
   },
-  "regenerating": {
-    "message": "重新生成中…",
-    "description": "某条方案正在重新生成"
+  "quickPromptsLabel": {
+    "message": "快捷词",
+    "description": "浮窗：快捷词标签"
+  },
+  "addQuickPrompt": {
+    "message": "新增快捷词",
+    "description": "浮窗：新增快捷词"
+  },
+  "quickPromptPlaceholder": {
+    "message": "新的快捷词…",
+    "description": "浮窗：新快捷词占位符"
+  },
+  "removeQuickPrompt": {
+    "message": "删除",
+    "description": "浮窗：删除快捷词"
+  },
+  "qpPolitelyDecline": {
+    "message": "委婉拒绝",
+    "description": "默认快捷词"
+  },
+  "qpDeclineDirect": {
+    "message": "直接拒绝",
+    "description": "默认快捷词"
+  },
+  "qpShorten": {
+    "message": "简洁一点",
+    "description": "默认快捷词"
+  },
+  "qpWarmAgree": {
+    "message": "热情同意",
+    "description": "默认快捷词"
+  },
+  "qpAskMore": {
+    "message": "询问更多信息",
+    "description": "默认快捷词"
+  },
+  "qpFollowUp": {
+    "message": "稍后跟进",
+    "description": "默认快捷词"
   },
   "replyStrategy": {
     "message": "回复策略",

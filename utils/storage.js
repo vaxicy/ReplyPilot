@@ -11,11 +11,12 @@ window.RP = window.RP || {};
     rp_language: '',            // '' => follow browser locale
     rp_provider: 'siliconflow', // siliconflow | openai | custom
     rp_providerConfigs: {},     // { [provider]: { apiEndpoint, apiKey, model } }
-    rp_toneSet: ['professional', 'friendly', 'short'], // tones to generate (1-4)
+    rp_tone: 'professional',    // last used tone (single-select in the panel)
     rp_replyLanguage: 'auto',   // auto | zh | en
     rp_signature: '',           // optional signature appended to replies
     rp_useSignature: false,     // whether to append the signature automatically
-    rp_myContext: ''            // free-text background the AI should keep in mind
+    rp_myContext: '',           // free-text background the AI should keep in mind
+    rp_quickPrompts: null       // null = uninitialised; defaults seeded on first use
   };
 
   // Legacy fields kept only for a one-time migration. After migrating they are
@@ -24,7 +25,7 @@ window.RP = window.RP || {};
     'rp_storeName', 'rp_storeCategory', 'rp_shippingInfo',
     'rp_returnPolicy', 'rp_shippingRegions'
   ];
-  var LEGACY_KEYS = LEGACY_STORE_KEYS.concat(['rp_myName', 'rp_tone']);
+  var LEGACY_KEYS = LEGACY_STORE_KEYS.concat(['rp_myName', 'rp_toneSet']);
 
   function migrateLegacy(res) {
     if (!res) return res;
@@ -47,19 +48,20 @@ window.RP = window.RP || {};
       changed = true;
     }
 
-    // 3) Legacy single tone -> tone set used for generation.
-    if (res.rp_tone) {
-      res.rp_toneSet = [res.rp_tone];
+    // 3) Legacy tone set (multi-select) -> single last-used tone.
+    if (Array.isArray(res.rp_toneSet) && res.rp_toneSet.length) {
+      if (!res.rp_tone) res.rp_tone = res.rp_toneSet[0];
       changed = true;
     }
 
     if (changed) {
+      var toSave = {
+        rp_myContext: res.rp_myContext,
+        rp_signature: res.rp_signature
+      };
+      if (res.rp_tone) toSave.rp_tone = res.rp_tone;
       try {
-        chrome.storage.local.set({
-          rp_myContext: res.rp_myContext,
-          rp_signature: res.rp_signature,
-          rp_toneSet: res.rp_toneSet
-        }, function () {
+        chrome.storage.local.set(toSave, function () {
           chrome.storage.local.remove(LEGACY_KEYS, function () { });
         });
       } catch (e) { /* ignore migration failures */ }

@@ -195,14 +195,6 @@
     "message": "Controls the extension's UI language. Reply language is set separately below.",
     "description": "Hint for language setting"
   },
-  "optTones": {
-    "message": "Reply Tones",
-    "description": "Options label"
-  },
-  "optTonesHint": {
-    "message": "Pick 1–4 tones. One reply draft is generated per tone, and each can be regenerated on its own.",
-    "description": "Tone multi-select hint"
-  },
   "optPreferences": {
     "message": "Preferences",
     "description": "Preferences section legend"
@@ -355,6 +347,14 @@
     "message": "Enthusiastic",
     "description": "Tone option"
   },
+  "toneDeclinePolite": {
+    "message": "Politely decline",
+    "description": "Tone option"
+  },
+  "toneDeclineDirect": {
+    "message": "Decline directly",
+    "description": "Tone option"
+  },
   "optReplyLanguage": {
     "message": "Reply Language",
     "description": "Reply language setting label"
@@ -375,21 +375,57 @@
     "message": "English",
     "description": "Reply language option"
   },
-  "optionTitle": {
-    "message": "Choose a reply",
-    "description": "Options list title"
+  "panelToneLabel": {
+    "message": "Tone",
+    "description": "Panel: tone selector label"
   },
-  "selectThisOption": {
-    "message": "Use this",
-    "description": "Select option button"
+  "guidingLabel": {
+    "message": "Guide the AI",
+    "description": "Panel: instruction input label"
   },
-  "regenOption": {
-    "message": "Regenerate",
-    "description": "Regenerate a single option"
+  "guidingPlaceholder": {
+    "message": "e.g. Politely decline and keep it short",
+    "description": "Panel: instruction input placeholder"
   },
-  "regenerating": {
-    "message": "Regenerating…",
-    "description": "A single option is being regenerated"
+  "quickPromptsLabel": {
+    "message": "Quick phrases",
+    "description": "Panel: quick phrases label"
+  },
+  "addQuickPrompt": {
+    "message": "Add a quick phrase",
+    "description": "Panel: add quick phrase"
+  },
+  "quickPromptPlaceholder": {
+    "message": "New phrase…",
+    "description": "Panel: new quick phrase placeholder"
+  },
+  "removeQuickPrompt": {
+    "message": "Remove",
+    "description": "Panel: remove quick phrase"
+  },
+  "qpPolitelyDecline": {
+    "message": "politely decline",
+    "description": "Default quick phrase"
+  },
+  "qpDeclineDirect": {
+    "message": "decline directly",
+    "description": "Default quick phrase"
+  },
+  "qpShorten": {
+    "message": "keep it short",
+    "description": "Default quick phrase"
+  },
+  "qpWarmAgree": {
+    "message": "warmly agree",
+    "description": "Default quick phrase"
+  },
+  "qpAskMore": {
+    "message": "ask for more info",
+    "description": "Default quick phrase"
+  },
+  "qpFollowUp": {
+    "message": "ask to follow up later",
+    "description": "Default quick phrase"
   },
   "replyStrategy": {
     "message": "Reply Strategy",

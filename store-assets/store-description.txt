@@ -1,12 +1,12 @@
 === 中文详细说明 ===
 
-ReplyPilot 是一款为 Gmail 打造的 AI 智能邮件回复助手。打开任意 Gmail 邮件，点击 ReplyPilot 浮窗中的「生成回复」，AI 会自动阅读邮件上下文，并按你选择的语气生成多份回复草稿，一键插入 Gmail 回复框或复制到剪贴板。
+ReplyPilot 是一款为 Gmail 打造的 AI 智能邮件回复助手。打开任意 Gmail 邮件，在 ReplyPilot 浮窗里选好语气、写一句指导（例如「帮我委婉拒绝，简洁即可」），AI 就会阅读邮件上下文并直接生成对应的回复草稿，一键插入 Gmail 回复框或复制到剪贴板。
 
 核心功能：
 
-- 多语气方案生成：在设置里勾选 1–4 种语气，ReplyPilot 会为每种语气各生成一份回复草稿，一次对比不同写法，预览后选中最合适的一套使用。
-- 逐条重新生成：对某一条方案不满意时，可只重写这一条，不影响其他方案。
-- 8 种语气：专业、友好、轻松、简洁、温暖、正式、直接、热情，适配工作往来、客户沟通、合作洽谈、个人邮件等不同场景。
+- 语气 + 指导生成：在浮窗里选择语气，并可写一句要求引导 AI；点「生成回复」即可得到贴合要求的草稿，不再是千篇一律的模板。
+- 10 种语气：专业、友好、轻松、简洁、温暖、正式、直接、热情，以及「委婉拒绝」「直接拒绝」——拒绝也能挑语气，从容又得体。
+- 自定义快捷词：把常用说法（如「委婉拒绝」「简洁一点」）存成快捷词，一键插入指导框；浮窗内可随时增删，越用越顺手。
 - 署名设置：可自定义署名内容，并选择是否在每次回复末尾自动带上。
 - 表达自然：回复符合真实人际沟通习惯，不生硬；支持自动跟随来信语言（中/英），也可锁定为指定语言输出。
 - 个人上下文注入：可在设置「关于我」中填写你的身份、与收件人的关系、回复偏好等（AI 记忆），AI 生成回复时自动参考，让回复更贴合你的语气与身份。
@@ -21,19 +21,19 @@ ReplyPilot 是一款为 Gmail 打造的 AI 智能邮件回复助手。打开任�
 
 === English Detailed Description ===
 
-ReplyPilot is an AI-powered smart email reply assistant for Gmail. Open any Gmail message, click "Generate Reply" in the ReplyPilot floating card, and the AI reads the conversation context and drafts several replies — one per tone you selected — for you to preview, choose, and insert or copy with one click.
+ReplyPilot is an AI-powered smart email reply assistant for Gmail. Open any Gmail message, pick a tone in the ReplyPilot floating card, optionally add a one-line instruction (e.g. "politely decline, keep it short"), and the AI reads the conversation context and drafts the matching reply — ready to insert into Gmail or copy with one click.
 
 Key Features:
 
-- Multi-Tone Drafts: Pick 1–4 tones in Settings; ReplyPilot writes one draft per tone so you can compare different styles at a glance and pick the best fit.
-- Per-Option Regenerate: Not happy with one draft? Regenerate just that one without touching the others.
-- Eight Tones: Professional, Friendly, Casual, Short, Warm, Formal, Direct, and Enthusiastic — suited for work correspondence, client communication, partnerships, personal emails, and more.
+- Tone + Guidance: Choose a tone in the floating card and add a short instruction to steer the AI. One click gives you a draft that matches what you asked for.
+- Ten Tones: Professional, Friendly, Casual, Short, Warm, Formal, Direct, Enthusiastic, plus "Politely decline" and "Decline directly" — you can even decline with the right tone.
+- Custom Quick Phrases: Save the phrases you use often ("politely decline", "keep it short") as one-click chips that fill the instruction box. Add or remove them right in the card.
 - Signature Setting: Set your own signature and choose whether to append it to every reply automatically.
 - Natural Phrasing: Replies read like genuine human correspondence (no machine-translation feel). Supports auto-detecting the incoming email's language (Chinese/English) or locking to a specific output language.
 - Personal Context Injection: Fill in your role, relationship with the sender, and preferences in "About You" (AI Memory). The AI automatically incorporates these details so replies match your voice and identity.
 - Multiple AI Providers: Supports SiliconFlow, OpenAI, and any OpenAI-compatible endpoint. Configure your own Base URL, API Key, and model.
 - Privacy & Security: Email content is used solely for generating replies, sent via your own API key to your configured AI provider. Your API key is stored locally in chrome.storage.local — never uploaded to third-party servers or used for model training.
-- Floating Card UI: Interacts directly within the Gmail page via a draggable floating card. Generate, regenerate, insert into the reply box, copy to clipboard, and clear — all without leaving your inbox.
+- Floating Card UI: Interacts directly within the Gmail page via a draggable, scrollable floating card. Generate, regenerate, insert into the reply box, copy to clipboard, and clear — all without leaving your inbox.
 - Bilingual Interface: Supports Simplified Chinese and English UI, switchable at runtime.
 
 After installation, open any Gmail email and click the ReplyPilot icon to get started. First-time users need to configure an AI provider and API Key in the Settings page.

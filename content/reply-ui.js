@@ -2,6 +2,11 @@
 // Builds and manages the single "ReplyPilot" floating card. It lives in the
 // top-right corner of the Gmail page, can be dragged by its header, and
 // operates on the currently active reply box.
+//
+// The card is a guided generator: pick a tone, optionally write a short
+// instruction ("politely decline, keep it short"), then generate one reply
+// straight into the output box. Quick phrases can be added to the instruction
+// with one click and are user-customisable.
 window.RP = window.RP || {};
 
 (function (RP) {
@@ -28,14 +33,14 @@ window.RP = window.RP || {};
 
   var cardRefs = null;
   var activeBox = null;
-  // Remembered conversation + last generated reply so we can revise it.
+  // Remembered conversation + last used tone so we can revise a reply.
   var lastContext = null;
-  var lastReply = '';
   var lastTone = 'professional';
 
-  // Signature config (loaded from storage). The signature is appended by the
-  // extension, never by the model, so the exact text is always respected.
+  // Panel state (loaded from storage).
   var signature = { text: '', enabled: false };
+  var selectedTone = 'professional';
+  var quickPrompts = [];
 
   function loadSignature() {
     return RP.storage.getAll().then(function (s) {
@@ -44,6 +49,34 @@ window.RP = window.RP || {};
     }).catch(function () { /* ignore */ });
   }
 
+  function defaultQuickPrompts() {
+    return [
+      RP.i18n.t('qpPolitelyDecline'),
+      RP.i18n.t('qpDeclineDirect'),
+      RP.i18n.t('qpShorten'),
+      RP.i18n.t('qpWarmAgree'),
+      RP.i18n.t('qpAskMore'),
+      RP.i18n.t('qpFollowUp')
+    ];
+  }
+
+  function loadPanelState() {
+    return RP.storage.getAll().then(function (s) {
+      signature.text = s.rp_signature || '';
+      signature.enabled = !!s.rp_useSignature;
+      selectedTone = s.rp_tone || 'professional';
+      lastTone = selectedTone;
+      if (s.rp_quickPrompts == null) {
+        quickPrompts = defaultQuickPrompts();
+        RP.storage.set('rp_quickPrompts', quickPrompts);
+      } else {
+        quickPrompts = Array.isArray(s.rp_quickPrompts) ? s.rp_quickPrompts.slice() : [];
+      }
+    }).catch(function () { /* ignore */ });
+  }
+
+  // Append the signature (by code, never by the model) so the exact text is
+  // always respected. Skipped when disabled or already present.
   function applySignature(reply) {
     var r = reply || '';
     var sig = (signature.text || '').replace(/\r/g, '').trim();
@@ -72,6 +105,15 @@ window.RP = window.RP || {};
     b.textContent = RP.i18n.t(i18nKey);
     b._i18nKey = i18nKey;
     return b;
+  }
+
+  function makeFieldLabel(i18nKey) {
+    var el = document.createElement('div');
+    el.className = 'rp-field-label';
+    el.setAttribute('data-i18n', i18nKey);
+    el.textContent = RP.i18n.t(i18nKey);
+    el._i18nKey = i18nKey;
+    return el;
   }
 
   function createCard() {
@@ -112,7 +154,7 @@ window.RP = window.RP || {};
     head.appendChild(title);
     head.appendChild(headRight);
 
-    // Body: error banner + textarea + options panel
+    // Body (scrollable)
     var body = document.createElement('div');
     body.className = 'rp-card-body';
 
@@ -120,25 +162,54 @@ window.RP = window.RP || {};
     errorBanner.className = 'rp-error-banner';
     errorBanner.style.display = 'none';
 
+    // Tone selector
+    var toneField = document.createElement('div');
+    toneField.className = 'rp-field-block';
+    var toneLabel = makeFieldLabel('panelToneLabel');
+    var toneChips = document.createElement('div');
+    toneChips.className = 'rp-chips';
+    toneField.appendChild(toneLabel);
+    toneField.appendChild(toneChips);
+
+    // Instruction input
+    var guideField = document.createElement('div');
+    guideField.className = 'rp-field-block';
+    var guideLabel = makeFieldLabel('guidingLabel');
+    var guideInput = document.createElement('input');
+    guideInput.type = 'text';
+    guideInput.className = 'rp-guide-input';
+    guideInput.setAttribute('data-i18n-placeholder', 'guidingPlaceholder');
+    guideInput.placeholder = 'e.g. Politely decline, keep it short';
+    guideField.appendChild(guideLabel);
+    guideField.appendChild(guideInput);
+
+    // Quick phrases
+    var quickField = document.createElement('div');
+    quickField.className = 'rp-field-block';
+    var quickLabel = makeFieldLabel('quickPromptsLabel');
+    var quickChips = document.createElement('div');
+    quickChips.className = 'rp-chips';
+    var quickAddInput = document.createElement('input');
+    quickAddInput.type = 'text';
+    quickAddInput.className = 'rp-quick-add-input';
+    quickAddInput.setAttribute('data-i18n-placeholder', 'quickPromptPlaceholder');
+    quickAddInput.placeholder = RP.i18n.t('quickPromptPlaceholder');
+    var quickAdd = document.createElement('button');
+    quickAdd.type = 'button';
+    quickAdd.className = 'rp-chip rp-chip-add';
+    quickAdd.textContent = '+';
+    quickAdd.setAttribute('data-i18n-title', 'addQuickPrompt');
+    quickAdd.title = RP.i18n.t('addQuickPrompt');
+    quickField.appendChild(quickLabel);
+    quickField.appendChild(quickChips);
+    quickField.appendChild(quickAddInput);
+    quickField.appendChild(quickAdd);
+
+    // Output textarea
     var text = document.createElement('textarea');
     text.className = 'rp-card-text';
     text.rows = 6;
     text.setAttribute('data-i18n-placeholder', 'statusReady');
-
-    var optionsPanel = document.createElement('div');
-    optionsPanel.className = 'rp-card-options';
-    optionsPanel.style.display = 'none';
-
-    var optionsTitle = document.createElement('div');
-    optionsTitle.className = 'rp-card-options-title';
-    optionsTitle.setAttribute('data-i18n', 'optionTitle');
-    optionsTitle.textContent = 'Choose a reply';
-
-    var optionsList = document.createElement('div');
-    optionsList.className = 'rp-card-options-list';
-
-    optionsPanel.appendChild(optionsTitle);
-    optionsPanel.appendChild(optionsList);
 
     // Revise-by-feedback row: appears once a reply exists so the user can
     // ask for a tweak without losing the draft they already have.
@@ -158,9 +229,11 @@ window.RP = window.RP || {};
     reviseRow.appendChild(reviseBtn);
 
     body.appendChild(errorBanner);
+    body.appendChild(toneField);
+    body.appendChild(guideField);
+    body.appendChild(quickField);
     body.appendChild(text);
     body.appendChild(reviseRow);
-    body.appendChild(optionsPanel);
 
     // Actions
     var actions = document.createElement('div');
@@ -172,7 +245,7 @@ window.RP = window.RP || {};
     var copy = makeButton('rp-btn rp-btn-ghost', 'copyReply');
     var clear = makeButton('rp-btn rp-btn-ghost rp-btn-block', 'clearReply');
 
-    // Insert/Copy are disabled until the user selects an option.
+    // Insert/Copy are disabled until a reply exists.
     ins.disabled = true;
     copy.disabled = true;
     clear.disabled = true;
@@ -201,9 +274,14 @@ window.RP = window.RP || {};
       copy: copy,
       clear: clear,
       collapseBtn: collapseBtn,
-      optionsPanel: optionsPanel,
-      optionsTitle: optionsTitle,
-      optionsList: optionsList,
+      toneLabel: toneLabel,
+      toneChips: toneChips,
+      guideLabel: guideLabel,
+      guideInput: guideInput,
+      quickLabel: quickLabel,
+      quickChips: quickChips,
+      quickAdd: quickAdd,
+      quickAddInput: quickAddInput,
       reviseRow: reviseRow,
       reviseInput: reviseInput,
       reviseBtn: reviseBtn
@@ -218,38 +296,109 @@ window.RP = window.RP || {};
     return cardRefs;
   }
 
-  // --- Hover tooltip for full reply text -------------------------------
-  var optionTooltip = null;
-
-  function getOptionTooltip() {
-    if (optionTooltip) return optionTooltip;
-    optionTooltip = document.createElement('div');
-    optionTooltip.className = 'rp-option-tooltip';
-    optionTooltip.setAttribute('role', 'tooltip');
-    optionTooltip.style.display = 'none';
-    document.body.appendChild(optionTooltip);
-    return optionTooltip;
+  // --- Tone chips -------------------------------------------------------
+  function renderToneChips() {
+    var refs = ensureCard();
+    refs.toneChips.innerHTML = '';
+    var tones = RP.parser.TONES || ['professional'];
+    tones.forEach(function (tone) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'rp-chip rp-tone-chip' + (tone === selectedTone ? ' rp-chip-active' : '');
+      chip.setAttribute('data-tone', tone);
+      chip.textContent = RP.i18n.t(toneI18nKey(tone));
+      chip.addEventListener('click', function () { selectTone(tone); });
+      refs.toneChips.appendChild(chip);
+    });
   }
 
-  function showOptionTooltip(reply, anchor) {
-    var tip = getOptionTooltip();
-    tip.textContent = reply.replace(/\s+/g, ' ').trim();
-    tip.style.display = 'block';
-
-    var rect = anchor.getBoundingClientRect();
-    var tipRect = tip.getBoundingClientRect();
-    var top = rect.top - tipRect.height - 8;
-    if (top < 8) top = rect.bottom + 8; // flip below if no room above
-    var left = rect.left;
-    var maxLeft = window.innerWidth - tipRect.width - 8;
-    if (left > maxLeft) left = maxLeft;
-    if (left < 8) left = 8;
-    tip.style.top = top + 'px';
-    tip.style.left = left + 'px';
+  function selectTone(tone) {
+    selectedTone = tone;
+    lastTone = tone;
+    var refs = ensureCard();
+    var chips = refs.toneChips.querySelectorAll('.rp-tone-chip');
+    for (var i = 0; i < chips.length; i++) {
+      chips[i].classList.toggle('rp-chip-active',
+        chips[i].getAttribute('data-tone') === tone);
+    }
+    RP.storage.set('rp_tone', tone);
   }
 
-  function hideOptionTooltip() {
-    if (optionTooltip) optionTooltip.style.display = 'none';
+  // --- Quick phrases ----------------------------------------------------
+  function persistQuickPrompts() {
+    RP.storage.set('rp_quickPrompts', quickPrompts);
+  }
+
+  function appendToGuide(text) {
+    var refs = ensureCard();
+    var cur = refs.guideInput.value.trim();
+    refs.guideInput.value = cur ? (cur + ' ' + text) : text;
+    refs.guideInput.focus();
+    try {
+      refs.guideInput.setSelectionRange(refs.guideInput.value.length,
+        refs.guideInput.value.length);
+    } catch (e) { /* ignore */ }
+  }
+
+  function removeQuickPrompt(text) {
+    var idx = quickPrompts.indexOf(text);
+    if (idx === -1) return;
+    quickPrompts.splice(idx, 1);
+    persistQuickPrompts();
+    renderQuickPrompts();
+  }
+
+  function renderQuickPrompts() {
+    var refs = ensureCard();
+    refs.quickChips.innerHTML = '';
+    quickPrompts.forEach(function (p) {
+      var chip = document.createElement('span');
+      chip.className = 'rp-chip rp-quick-chip';
+
+      var label = document.createElement('button');
+      label.type = 'button';
+      label.className = 'rp-chip-label';
+      label.textContent = p;
+      label.addEventListener('click', function () { appendToGuide(p); });
+
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'rp-chip-del';
+      del.textContent = '×';
+      del.setAttribute('data-i18n-title', 'removeQuickPrompt');
+      del.title = RP.i18n.t('removeQuickPrompt');
+      del.addEventListener('click', function (e) {
+        e.stopPropagation();
+        removeQuickPrompt(p);
+      });
+
+      chip.appendChild(label);
+      chip.appendChild(del);
+      refs.quickChips.appendChild(chip);
+    });
+  }
+
+  function showQuickAdd() {
+    var refs = ensureCard();
+    refs.quickAddInput.value = '';
+    refs.quickAddInput.style.display = 'inline-block';
+    refs.quickAdd.style.display = 'none';
+    refs.quickAddInput.focus();
+  }
+
+  function commitQuickAdd() {
+    if (!cardRefs) return;
+    var refs = cardRefs;
+    refs.quickAddInput.style.display = 'none';
+    refs.quickAdd.style.display = '';
+    var v = refs.quickAddInput.value.trim();
+    refs.quickAddInput.value = '';
+    if (!v) return;
+    if (quickPrompts.indexOf(v) === -1) {
+      quickPrompts.push(v);
+      persistQuickPrompts();
+      renderQuickPrompts();
+    }
   }
 
   function bindCardEvents(refs) {
@@ -265,6 +414,22 @@ window.RP = window.RP || {};
         onRevise();
       }
     });
+
+    // Enter in the instruction box generates right away.
+    refs.guideInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        onGenerate();
+      }
+    });
+
+    // Quick-phrase add flow.
+    refs.quickAdd.addEventListener('click', function () { showQuickAdd(); });
+    refs.quickAddInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); commitQuickAdd(); }
+      else if (e.key === 'Escape') { e.preventDefault(); commitQuickAdd(); }
+    });
+    refs.quickAddInput.addEventListener('blur', function () { commitQuickAdd(); });
 
     // Collapse / expand the card body+actions, leaving only the header.
     refs.collapseBtn.addEventListener('click', function (e) {
@@ -370,15 +535,8 @@ window.RP = window.RP || {};
     return null;
   }
 
-  function showOptions(show) {
-    var refs = ensureCard();
-    refs.text.style.display = show ? 'none' : 'block';
-    refs.optionsPanel.style.display = show ? 'block' : 'none';
-  }
-
   // Hard cooldown so a fast double-click (or a click right after a request
-  // settles) can't fire a second API call within COOLDOWN_MS. NVIDIA's free
-  // tier is only 40 rpm, so even two accidental requests in a row burn quota.
+  // settles) can't fire a second API call within COOLDOWN_MS.
   var COOLDOWN_MS = 1500;
   var cooldownUntil = 0;
 
@@ -389,7 +547,6 @@ window.RP = window.RP || {};
     refs.clear.disabled = false;
     setActionsEnabled(false);
     setBusy(true);
-    showOptions(false);
     setStatus(RP.i18n.t('statusGenerating'), 'generating');
 
     // Safety net: ensure setBusy(false) always runs even if everything else fails
@@ -402,17 +559,22 @@ window.RP = window.RP || {};
       return;
     }
     lastContext = ctx;
-    lastReply = '';
 
-    // Refresh signature settings first so previews reflect the latest config.
+    var instruction = refs.guideInput.value.trim();
+    var tone = selectedTone;
+
+    // Refresh the signature so the freshly generated reply uses the latest config.
     var p = loadSignature()
-      .then(function () { return RP.ai.generateReplies(ctx); })
-      .then(function (options) {
-        if (!options || !options.length) {
-          setStatus(RP.i18n.t('statusError', { reason: RP.i18n.t('errModel') }), 'error');
-          return;
-        }
-        renderOptions(options, ctx);
+      .then(function () {
+        return RP.ai.generateGuided({
+          subject: ctx.subject,
+          emailBody: ctx.emailBody,
+          tone: tone,
+          instruction: instruction
+        });
+      })
+      .then(function (reply) {
+        refilledReply(reply, ctx);
         setStatus(RP.i18n.t('statusDone'), 'done');
       })
       .catch(function (e) {
@@ -432,105 +594,12 @@ window.RP = window.RP || {};
     Promise.resolve(p).then(settle, settle);
   }
 
-  function renderOptions(options, ctx) {
-    var refs = ensureCard();
-    refs.optionsList.innerHTML = '';
-
-    options.forEach(function (opt) {
-      var item = document.createElement('div');
-      item.className = 'rp-option-item';
-      item._opt = opt;
-      item._ctx = ctx;
-
-      var head = document.createElement('div');
-      head.className = 'rp-option-head';
-
-      var title = document.createElement('div');
-      title.className = 'rp-option-title';
-      title.textContent = RP.i18n.t(toneI18nKey(opt.tone));
-
-      var regen = document.createElement('button');
-      regen.type = 'button';
-      regen.className = 'rp-btn rp-btn-small rp-btn-ghost rp-option-regen';
-      regen.setAttribute('data-i18n', 'regenOption');
-      regen.textContent = RP.i18n.t('regenOption');
-      regen.addEventListener('click', function (e) {
-        e.stopPropagation();
-        onRegenerateOne(item);
-      });
-
-      head.appendChild(title);
-      head.appendChild(regen);
-
-      var preview = document.createElement('div');
-      preview.className = 'rp-option-preview';
-      item._preview = preview;
-
-      item.addEventListener('mouseenter', function (e) {
-        showOptionTooltip(applySignature(opt.reply), e.currentTarget);
-      });
-      item.addEventListener('mouseleave', hideOptionTooltip);
-
-      var choose = document.createElement('button');
-      choose.type = 'button';
-      choose.className = 'rp-btn rp-btn-small';
-      choose.setAttribute('data-i18n', 'selectThisOption');
-      choose.textContent = RP.i18n.t('selectThisOption');
-      choose.addEventListener('click', function () {
-        refilledReply(opt.reply, ctx, opt.tone);
-        setStatus(RP.i18n.t('statusDone'), 'done');
-      });
-
-      item.appendChild(head);
-      item.appendChild(preview);
-      item.appendChild(choose);
-      refs.optionsList.appendChild(item);
-
-      updateOptionPreview(item);
-    });
-
-    showOptions(true);
-  }
-
-  function updateOptionPreview(item) {
-    if (!item || !item._preview || !item._opt) return;
-    var snippet = applySignature(item._opt.reply).replace(/\s+/g, ' ').trim();
-    item._preview.textContent = snippet.length > 80 ? snippet.slice(0, 80) + '…' : snippet;
-  }
-
-  // Regenerate only this option's reply, leaving the other options untouched.
-  function onRegenerateOne(item) {
-    if (Date.now() < cooldownUntil) return;
-    var opt = item._opt;
-    var ctx = item._ctx || lastContext;
-    if (!opt || !ctx) return;
-    var btn = item.querySelector('.rp-option-regen');
-    if (btn) { btn.disabled = true; btn.textContent = RP.i18n.t('regenerating'); }
-
-    var p = loadSignature()
-      .then(function () { return RP.ai.regenerateOne(ctx, opt.tone); })
-      .then(function (reply) {
-        opt.reply = reply;
-        updateOptionPreview(item);
-        setStatus(RP.i18n.t('statusDone'), 'done');
-      }, function (e) {
-        setStatus(RP.i18n.t('statusError', { reason: friendlyError(e) }), 'error');
-      });
-
-    function restore() {
-      if (btn) { btn.disabled = false; btn.textContent = RP.i18n.t('regenOption'); }
-    }
-    p.then(restore, restore);
-  }
-
-  // Replace the reply textarea with a new reply and keep it selected/ready.
+  // Fill the output box with a new reply and keep it ready to insert/copy.
   function refilledReply(reply, ctx, tone) {
     var refs = ensureCard();
-    lastReply = reply || '';
     if (ctx) lastContext = ctx;
     if (tone) lastTone = tone;
     refs.text.value = applySignature(reply);
-    showOptions(false);
     setActionsEnabled(true);
     refs.clear.disabled = false;
     // Once a reply exists, show the "revise by feedback" row.
@@ -561,7 +630,6 @@ window.RP = window.RP || {};
   function onClear() {
     var refs = ensureCard();
     refs.text.value = '';
-    showOptions(false);
     setActionsEnabled(false);
     refs.clear.disabled = true;
     setStatus(RP.i18n.t('statusReady'), 'ready');
@@ -670,28 +738,30 @@ window.RP = window.RP || {};
       ].forEach(function (b) {
       b.textContent = RP.i18n.t(b._i18nKey);
     });
+    [cardRefs.toneLabel, cardRefs.guideLabel, cardRefs.quickLabel].forEach(function (el) {
+      el.textContent = RP.i18n.t(el._i18nKey);
+    });
     cardRefs.text.setAttribute('placeholder', RP.i18n.t('statusReady'));
     cardRefs.reviseInput.setAttribute('placeholder', RP.i18n.t('revisePlaceholder'));
-    cardRefs.optionsTitle.textContent = RP.i18n.t('optionTitle');
-    var chooseBtns = cardRefs.optionsList.querySelectorAll('button[data-i18n="selectThisOption"]');
-    for (var i = 0; i < chooseBtns.length; i++) {
-      chooseBtns[i].textContent = RP.i18n.t('selectThisOption');
-    }
-    var regenBtns = cardRefs.optionsList.querySelectorAll('button[data-i18n="regenOption"]');
-    for (var j = 0; j < regenBtns.length; j++) {
-      regenBtns[j].textContent = RP.i18n.t('regenOption');
-    }
+    cardRefs.guideInput.setAttribute('placeholder', RP.i18n.t('guidingPlaceholder'));
+    cardRefs.quickAddInput.setAttribute('placeholder', RP.i18n.t('quickPromptPlaceholder'));
+    cardRefs.quickAdd.title = RP.i18n.t('addQuickPrompt');
+    // Chip labels depend on the language, so rebuild them.
+    renderToneChips();
+    renderQuickPrompts();
   }
 
   function refreshAll() {
     refreshTexts();
-    loadSignature();
+    loadPanelState().then(function () {
+      renderToneChips();
+      renderQuickPrompts();
+    });
   }
 
   function resetCard() {
     if (cardRefs) {
       cardRefs.text.value = '';
-      showOptions(false);
       setActionsEnabled(false);
       cardRefs.clear.disabled = true;
       cardRefs.reviseRow.style.display = 'none';
@@ -699,14 +769,20 @@ window.RP = window.RP || {};
       cardRefs.reviseInput.disabled = false;
       cardRefs.reviseBtn.disabled = false;
       cardRefs.reviseBtn.textContent = RP.i18n.t('reviseReply');
+      cardRefs.guideInput.value = '';
       lastContext = null;
-      lastReply = '';
       setStatus(RP.i18n.t('statusReady'), 'ready');
     }
   }
 
   RP.ui = {
-    init: function () { ensureCard(); loadSignature(); },
+    init: function () {
+      ensureCard();
+      loadPanelState().then(function () {
+        renderToneChips();
+        renderQuickPrompts();
+      });
+    },
     attachTo: attachTo,
     refreshAll: refreshAll,
     refreshTexts: refreshTexts,

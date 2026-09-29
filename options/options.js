@@ -55,10 +55,9 @@
         el.value = settings['rp_' + id] || '';
       });
 
-      // Signature toggle + tone set (checkbox controls).
+      // Signature toggle.
       var useSig = document.getElementById('useSignature');
       if (useSig) useSig.checked = !!settings.rp_useSignature;
-      setToneSet(settings.rp_toneSet);
 
       var provider = settings.rp_provider || 'siliconflow';
       currentProvider = provider;
@@ -78,23 +77,7 @@
     if (el) el.value = value || '';
   }
 
-  // Tone multi-select helpers (the tones used to generate one draft each).
-  function getToneSet() {
-    var out = [];
-    var boxes = document.querySelectorAll('#toneSet input[type="checkbox"]');
-    for (var i = 0; i < boxes.length; i++) {
-      if (boxes[i].checked) out.push(boxes[i].value);
-    }
-    return out;
-  }
-
-  function setToneSet(arr) {
-    arr = (arr && arr.length) ? arr : ['professional', 'friendly', 'short'];
-    var boxes = document.querySelectorAll('#toneSet input[type="checkbox"]');
-    for (var i = 0; i < boxes.length; i++) {
-      boxes[i].checked = arr.indexOf(boxes[i].value) !== -1;
-    }
-  }
+  // (Tones are selected in the floating panel, not here.)
 
   // Persist the current input values into the active provider's own slot.
   function writeCurrentSlot(settings) {
@@ -154,13 +137,9 @@
       el.addEventListener('change', scheduleAutoSave);
     });
 
-    // Checkbox controls (signature toggle + tone set) also auto-save.
+    // Signature toggle also auto-saves.
     var useSig = document.getElementById('useSignature');
     if (useSig) useSig.addEventListener('change', scheduleAutoSave);
-    var toneBoxes = document.querySelectorAll('#toneSet input[type="checkbox"]');
-    for (var i = 0; i < toneBoxes.length; i++) {
-      toneBoxes[i].addEventListener('change', scheduleAutoSave);
-    }
 
     bindTestConnection();
     bindTutorialModal();
@@ -356,15 +335,9 @@
         obj['rp_' + id] = el.value;
       });
 
-      // Signature toggle + tone set.
+      // Signature toggle.
       var useSig = document.getElementById('useSignature');
       obj.rp_useSignature = !!(useSig && useSig.checked);
-      var toneSet = getToneSet();
-      if (!toneSet.length) {
-        toneSet = (existing.rp_toneSet && existing.rp_toneSet.length)
-          ? existing.rp_toneSet : ['professional'];
-      }
-      obj.rp_toneSet = toneSet;
 
       // Save the active provider's key/endpoint/model into its own slot,
       // merging into the existing providerConfigs instead of replacing them.

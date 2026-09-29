@@ -195,9 +195,13 @@
     "message": "Controls the extension's UI language. Reply language is set separately below.",
     "description": "Hint for language setting"
   },
-  "optTone": {
-    "message": "Reply Tone",
+  "optTones": {
+    "message": "Reply Tones",
     "description": "Options label"
+  },
+  "optTonesHint": {
+    "message": "Pick 1–4 tones. One reply draft is generated per tone, and each can be regenerated on its own.",
+    "description": "Tone multi-select hint"
   },
   "optPreferences": {
     "message": "Preferences",
@@ -300,7 +304,7 @@
     "description": "Tutorial step 4 title"
   },
   "optTutorialStep4": {
-    "message": "Type the model ID, e.g. deepseek-ai/DeepSeek-V4-Flash or gpt-4o-mini.",
+    "message": "Type the model ID, e.g. deepseek-ai/DeepSeek-V4-Flash or gpt-5-mini.",
     "description": "Tutorial step 4 description"
   },
   "optTutorialExampleTitle": {
@@ -335,6 +339,22 @@
     "message": "Warm",
     "description": "Tone option"
   },
+  "toneCasual": {
+    "message": "Casual",
+    "description": "Tone option"
+  },
+  "toneFormal": {
+    "message": "Formal",
+    "description": "Tone option"
+  },
+  "toneDirect": {
+    "message": "Direct",
+    "description": "Tone option"
+  },
+  "toneEnthusiastic": {
+    "message": "Enthusiastic",
+    "description": "Tone option"
+  },
   "optReplyLanguage": {
     "message": "Reply Language",
     "description": "Reply language setting label"
@@ -359,21 +379,17 @@
     "message": "Choose a reply",
     "description": "Options list title"
   },
-  "optionPositive": {
-    "message": "Supportive",
-    "description": "Option name"
-  },
-  "optionNeutral": {
-    "message": "Neutral",
-    "description": "Option name"
-  },
-  "optionDecline": {
-    "message": "Decline",
-    "description": "Option name"
-  },
   "selectThisOption": {
     "message": "Use this",
     "description": "Select option button"
+  },
+  "regenOption": {
+    "message": "Regenerate",
+    "description": "Regenerate a single option"
+  },
+  "regenerating": {
+    "message": "Regenerating…",
+    "description": "A single option is being regenerated"
   },
   "replyStrategy": {
     "message": "Reply Strategy",
@@ -443,20 +459,24 @@
     "message": "About You",
     "description": "About you setting label"
   },
-  "optMyName": {
-    "message": "Your Name",
-    "description": "User name field label"
+  "optSignature": {
+    "message": "Signature",
+    "description": "Signature field label"
   },
-  "optMyNamePlaceholder": {
-    "message": "e.g. Alex / Alex Chen",
-    "description": "User name input placeholder"
+  "optSignaturePlaceholder": {
+    "message": "e.g. Best regards, Alex",
+    "description": "Signature input placeholder"
+  },
+  "optUseSignature": {
+    "message": "Append the signature to every reply",
+    "description": "Whether to append the signature automatically"
   },
   "optMyContext": {
     "message": "Context / Memory",
     "description": "User context field label"
   },
   "optMyContextPlaceholder": {
-    "message": "e.g. I'm a project manager; I keep replies short and friendly and sign off as Alex.",
+    "message": "e.g. I'm a project manager; I like short, friendly replies.",
     "description": "User context input placeholder"
   },
   "optAboutYouHint": {

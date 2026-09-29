@@ -32,39 +32,33 @@ window.RP = window.RP || {};
     return t;
   }
 
-  function parseOptions(text) {
+  // Parse the multi-tone response: {"replies":[{"tone":"...","reply":"..."}]}.
+  // `tones` is the requested tone list, used as a positional fallback when the
+  // model omits or mangles the tone field.
+  function parseToneReplies(text, tones) {
     if (!text) return [];
     var t = String(text).trim();
 
     var fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
     if (fence) t = fence[1].trim();
 
-    try {
-      var obj = JSON.parse(t);
-      var opts = normalizeOptions(obj);
-      if (opts.length) return opts;
-    } catch (e) { /* fall through */ }
-
-    var m = t.match(/\{[\s\S]*\}/);
-    if (m) {
-      try {
-        var obj2 = JSON.parse(m[0]);
-        var opts2 = normalizeOptions(obj2);
-        if (opts2.length) return opts2;
-      } catch (e2) { /* fall through */ }
+    var obj = null;
+    try { obj = JSON.parse(t); } catch (e) { /* fall through */ }
+    if (!obj) {
+      var m = t.match(/\{[\s\S]*\}/);
+      if (m) { try { obj = JSON.parse(m[0]); } catch (e2) { /* fall through */ } }
     }
+    if (!obj) return [];
 
-    return [];
-  }
+    var arr = Array.isArray(obj) ? obj : obj.replies;
+    if (!Array.isArray(arr)) return [];
 
-  function normalizeOptions(obj) {
-    if (!obj || typeof obj !== 'object') return [];
-    var keys = ['positive', 'neutral', 'decline'];
     var out = [];
-    keys.forEach(function (key) {
-      if (obj[key] && typeof obj[key] === 'string') {
-        out.push({ key: key, reply: obj[key].trim() });
-      }
+    arr.forEach(function (item) {
+      if (!item || typeof item.reply !== 'string') return;
+      var tone = item.tone || (tones && tones[out.length]) || '';
+      tone = String(tone).trim() || 'professional';
+      out.push({ tone: tone, reply: item.reply.trim() });
     });
     return out;
   }
@@ -118,9 +112,8 @@ window.RP = window.RP || {};
       var cfg = resolveProviderConfig(s);
 
       var prompt = RP.parser.buildPrompt({
-        tone: s.rp_tone,
+        tone: (s.rp_toneSet && s.rp_toneSet[0]) || 'professional',
         replyLanguage: s.rp_replyLanguage || 'auto',
-        myName: s.rp_myName || '',
         myContext: s.rp_myContext || '',
         subject: context.subject,
         emailBody: context.emailBody
@@ -152,20 +145,27 @@ window.RP = window.RP || {};
     });
   }
 
+  // The configured tones to generate (1-4), with a safe fallback set.
+  function getToneSet(s) {
+    var set = (s.rp_toneSet && s.rp_toneSet.length) ? s.rp_toneSet : ['professional', 'friendly', 'short'];
+    return set.slice(0, 4);
+  }
+
   // context: { subject, sender:{name,email}, emailBody }
+  // Generates one reply per configured tone; returns [{ tone, reply }].
   // settings: full settings object (optional; fetched if omitted)
-  function generateOptions(context, settings) {
+  function generateReplies(context, settings) {
     context = context || {};
     var settingsPromise = settings ? Promise.resolve(settings) : RP.storage.getAll();
 
     return settingsPromise.then(function (s) {
       checkApiKey(s);
       var cfg = resolveProviderConfig(s);
+      var tones = getToneSet(s);
 
-      var prompt = RP.parser.buildOptionsPrompt({
-        tone: s.rp_tone,
+      var prompt = RP.parser.buildTonesPrompt({
+        tones: tones,
         replyLanguage: s.rp_replyLanguage || 'auto',
-        myName: s.rp_myName || '',
         myContext: s.rp_myContext || '',
         subject: context.subject,
         emailBody: context.emailBody
@@ -176,7 +176,7 @@ window.RP = window.RP || {};
           role: 'system',
           content: 'You are a helpful smart email reply assistant. ' +
             'Always respond with valid JSON in the exact format ' +
-            '{"positive": "...", "neutral": "...", "decline": "..."}. ' +
+            '{"replies": [{"tone": "<tone>", "reply": "..."}]}. ' +
             'Do not wrap it in markdown code fences.'
         },
         { role: 'user', content: prompt }
@@ -189,16 +189,59 @@ window.RP = window.RP || {};
         messages: messages,
         max_tokens: 2048
       }).then(function (data) {
-        var options = parseOptions(extractContent(data));
-        if (!options.length) {
-          throw makeError('Could not parse model options', 'PARSE_FAILED');
+        var replies = parseToneReplies(extractContent(data), tones);
+        if (!replies.length) {
+          throw makeError('Could not parse model replies', 'PARSE_FAILED');
         }
-        return options;
+        return replies;
       });
     });
   }
 
-  // ctx: { subject, emailBody, tone, replyLanguage, myName, myContext,
+  // Regenerate a single reply for one tone. Returns the reply string.
+  function regenerateOne(context, tone, settings) {
+    context = context || {};
+    var settingsPromise = settings ? Promise.resolve(settings) : RP.storage.getAll();
+
+    return settingsPromise.then(function (s) {
+      checkApiKey(s);
+      var cfg = resolveProviderConfig(s);
+
+      var prompt = RP.parser.buildRegenOnePrompt({
+        tone: tone,
+        replyLanguage: s.rp_replyLanguage || 'auto',
+        myContext: s.rp_myContext || '',
+        subject: context.subject,
+        emailBody: context.emailBody
+      });
+
+      var messages = [
+        {
+          role: 'system',
+          content: 'You are a helpful smart email reply assistant. ' +
+            'Always respond with valid JSON in the exact format {"reply": "..."}. ' +
+            'Do not wrap it in markdown code fences.'
+        },
+        { role: 'user', content: prompt }
+      ];
+
+      return RP.siliconflow.chat({
+        apiKey: cfg.apiKey,
+        model: cfg.model,
+        endpoint: cfg.endpoint,
+        messages: messages,
+        max_tokens: 2048
+      }).then(function (data) {
+        var reply = parseReply(extractContent(data));
+        if (!reply) {
+          throw makeError('Could not parse model reply', 'PARSE_FAILED');
+        }
+        return reply;
+      });
+    });
+  }
+
+  // ctx: { subject, emailBody, tone, replyLanguage, myContext,
   //        currentReply, instruction }
   // settings: full settings object (optional; fetched if omitted)
   function reviseReply(ctx, settings) {
@@ -216,9 +259,8 @@ window.RP = window.RP || {};
       var cfg = resolveProviderConfig(s);
 
       var prompt = RP.parser.buildRevisePrompt({
-        tone: s.rp_tone,
+        tone: ctx.tone || (s.rp_toneSet && s.rp_toneSet[0]) || 'professional',
         replyLanguage: s.rp_replyLanguage || 'auto',
-        myName: s.rp_myName || '',
         myContext: s.rp_myContext || '',
         subject: ctx.subject,
         emailBody: ctx.emailBody,
@@ -254,9 +296,10 @@ window.RP = window.RP || {};
 
   RP.ai = {
     generateReply: generateReply,
-    generateOptions: generateOptions,
+    generateReplies: generateReplies,
+    regenerateOne: regenerateOne,
     reviseReply: reviseReply,
     parseReply: parseReply,
-    parseOptions: parseOptions
+    parseToneReplies: parseToneReplies
   };
 })(window.RP);

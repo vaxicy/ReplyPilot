@@ -195,9 +195,13 @@
     "message": "控制扩展的界面语言。回复语言在下方单独设置。",
     "description": "语言设置说明"
   },
-  "optTone": {
+  "optTones": {
     "message": "回复语气",
     "description": "设置标签"
+  },
+  "optTonesHint": {
+    "message": "可选 1–4 种语气，每种语气生成一份回复草稿，且每条都能单独重新生成。",
+    "description": "语气多选说明"
   },
   "optPreferences": {
     "message": "偏好设置",
@@ -300,7 +304,7 @@
     "description": "教程步骤4标题"
   },
   "optTutorialStep4": {
-    "message": "填写模型 ID，例如 deepseek-ai/DeepSeek-V4-Flash 或 gpt-4o-mini。",
+    "message": "填写模型 ID，例如 deepseek-ai/DeepSeek-V4-Flash 或 gpt-5-mini。",
     "description": "教程步骤4说明"
   },
   "optTutorialExampleTitle": {
@@ -335,6 +339,22 @@
     "message": "温暖",
     "description": "语气选项"
   },
+  "toneCasual": {
+    "message": "轻松",
+    "description": "语气选项"
+  },
+  "toneFormal": {
+    "message": "正式",
+    "description": "语气选项"
+  },
+  "toneDirect": {
+    "message": "直接",
+    "description": "语气选项"
+  },
+  "toneEnthusiastic": {
+    "message": "热情",
+    "description": "语气选项"
+  },
   "optReplyLanguage": {
     "message": "回复语言",
     "description": "回复语言设置标签"
@@ -359,21 +379,17 @@
     "message": "选择一个方案",
     "description": "方案列表标题"
   },
-  "optionPositive": {
-    "message": "赞同支持",
-    "description": "方案名称"
-  },
-  "optionNeutral": {
-    "message": "客观中立",
-    "description": "方案名称"
-  },
-  "optionDecline": {
-    "message": "委婉拒绝",
-    "description": "方案名称"
-  },
   "selectThisOption": {
     "message": "选择此方案",
     "description": "选择方案按钮"
+  },
+  "regenOption": {
+    "message": "重新生成",
+    "description": "单独重新生成某条方案"
+  },
+  "regenerating": {
+    "message": "重新生成中…",
+    "description": "某条方案正在重新生成"
   },
   "replyStrategy": {
     "message": "回复策略",
@@ -443,20 +459,24 @@
     "message": "关于我",
     "description": "关于我设置标签"
   },
-  "optMyName": {
-    "message": "我的名字",
-    "description": "用户名字字段标签"
+  "optSignature": {
+    "message": "署名",
+    "description": "署名字段标签"
   },
-  "optMyNamePlaceholder": {
-    "message": "如：小霖 / 黄丽霖",
-    "description": "用户名字输入框占位符"
+  "optSignaturePlaceholder": {
+    "message": "如：Best regards, Alex",
+    "description": "署名输入框占位符"
+  },
+  "optUseSignature": {
+    "message": "每次回复自动带上署名",
+    "description": "是否自动追加署名"
   },
   "optMyContext": {
     "message": "上下文 / AI 记忆",
     "description": "用户上下文字段标签"
   },
   "optMyContextPlaceholder": {
-    "message": "如：我是项目经理；回复习惯简短、友好，落款署名「小霖」。",
+    "message": "如：我是项目经理；回复习惯简短、友好。",
     "description": "用户上下文输入框占位符"
   },
   "optAboutYouHint": {

@@ -19,7 +19,7 @@
 
 ## 📖 简介 · Overview
 
-**ReplyPilot** 是一个 Manifest V3 Chrome 扩展，专为 **Gmail Web** 用户设计。它能读取当前打开的邮件内容，调用 AI 模型（支持 SiliconFlow / OpenAI / 自定义端点）生成 **3 种不同立场**的回复草稿，一键插入到 Gmail 回复框或复制到剪贴板。
+**ReplyPilot** 是一个 Manifest V3 Chrome 扩展，专为 **Gmail Web** 用户设计。它能读取当前打开的邮件内容，调用 AI 模型（支持 SiliconFlow / OpenAI / 自定义端点）一次生成 **多种语气**的回复草稿，每条都能单独重新生成，一键插入到 Gmail 回复框或复制到剪贴板。
 
 > 适合场景：工作往来、客户沟通、合作洽谈、个人邮件等任何需要快速、得体回复的场合。
 
@@ -29,14 +29,15 @@
 
 | 功能 | 说明 |
 |------|------|
-| 🤖 **AI 智能生成** | 一次生成 3 种回复方案：**赞同支持** / **客观中立** / **委婉拒绝** |
+| 🤖 **AI 智能生成** | 一次生成多种语气的回复方案（可选 1–4 种语气） |
 | 🔌 **多 AI 提供商** | 支持 SiliconFlow、OpenAI 及任意 OpenAI 兼容 API 端点 |
-| 🎯 **语气定制** | 支持 4 种回复语气：专业、友好、简洁、温暖 |
+| 🎯 **语气定制** | 内置 8 种语气：专业、友好、轻松、简洁、温暖、正式、直接、热情 |
 | 🌐 **多语言回复** | 自动检测或手动指定回复语言（中文/英文/自动） |
-| 🧠 **AI 记忆** | 可填入你的名字、身份与风格，AI 自动参考，回复贴合你的语气 |
+| ✍️ **署名设置** | 可自定义署名，并选择是否在每次回复末尾自动带上 |
+| 🧠 **AI 记忆** | 可填写身份、背景与风格，AI 自动参考，回复更贴合你的语气 |
 | 📝 **一键插入** | 选中的回复直接插入 Gmail 回复框，无需复制粘贴 |
 | 📋 **一键复制** | 也可一键复制到剪贴板，手动粘贴 |
-| 🔄 **重新生成** | 不满意可随时重新生成 |
+| 🔄 **逐条重新生成** | 对某条语气方案不满意时，可只重写这一条，不影响其他 |
 | 🗣️ **双语界面** | 支持中文（简体）和英文界面，运行时即时切换 |
 | 🔒 **隐私安全** | API Key 仅存储在本地，绝不记录到日志 |
 | 🖱️ **可拖动卡片** | 浮动卡片可任意拖动位置，不遮挡邮件内容 |
@@ -49,12 +50,12 @@
 <table>
   <tr>
     <td align="center"><strong>AI 回复方案生成</strong></td>
-    <td align="center"><strong>3 种回复选择</strong></td>
+    <td align="center"><strong>多语气方案选择</strong></td>
     <td align="center"><strong>一键插入回复</strong></td>
   </tr>
   <tr>
     <td><img src="store-assets/screenshots/zh/screenshot-01.png" width="400" alt="打开邮件，ReplyPilot 卡片自动出现"></td>
-    <td><img src="store-assets/screenshots/zh/screenshot-02.png" width="400" alt="AI 生成三种回复方案"></td>
+    <td><img src="store-assets/screenshots/zh/screenshot-02.png" width="400" alt="AI 按所选语气生成多份回复方案"></td>
     <td><img src="store-assets/screenshots/zh/screenshot-03.png" width="400" alt="选择方案并插入回复框"></td>
   </tr>
 </table>
@@ -95,11 +96,12 @@
    - **API Key**：输入你的密钥（安全存储在 `chrome.storage.local`）
    - **Model ID**：如 `deepseek-ai/DeepSeek-V4-Flash`、`gpt-4o-mini` 等
    - **界面语言**：中文 / English
-   - **回复语气**：Professional / Friendly / Short / Warm
+   - **回复语气**：多选 1–4 种（Professional / Friendly / Casual / Short / Warm / Formal / Direct / Enthusiastic）
    - **回复语言**：Auto / 中文 / English
 
-4. **完善 AI 记忆（可选）**
-   - 在「关于我」中填写你的名字、身份、与收件人的关系、常用落款等，AI 会自动参考
+4. **完善「关于我」（可选）**
+   - **署名**：填写你的署名，并选择是否每次回复自动带上
+   - **上下文 / AI 记忆**：填写身份、与收件人的关系、回复偏好等，AI 会自动参考
 
 5. **点击保存**
 
@@ -109,8 +111,8 @@
 
 1. 打开 [Gmail](https://mail.google.com) 并打开任意一封邮件
 2. 点击 **回复（Reply）** → `✨ ReplyPilot` 浮动卡片自动出现在回复框上方
-3. 点击 **Generate Reply** → AI 分析邮件内容，生成 3 个回复方案
-4. 预览各方案，点击「选择此方案」选中
+3. 点击 **Generate Reply** → AI 分析邮件内容，按所选语气生成多份回复草稿
+4. 预览各方案（每条可单独「重新生成」），点击「选择此方案」选中
 5. 可在文本框内编辑微调
 6. 点击 **Insert Reply** → 文本自动插入 Gmail 回复框
 7. 或点击 **Copy Reply** → 复制到剪贴板，自行粘贴发送
@@ -127,8 +129,12 @@
 |------|------|
 | 📋 **Professional** | 正式、专业、商务 |
 | 😊 **Friendly** | 友好、亲切、轻松 |
+| 💬 **Casual** | 轻松、随意、口语化 |
 | 📝 **Short** | 简洁、直接、要点明确 |
 | 🤗 **Warm** | 温暖、共情、有人情味 |
+| 🏛️ **Formal** | 正式、严谨、庄重 |
+| 🎯 **Direct** | 直接、果断、明确立场 |
+| 🔥 **Enthusiastic** | 热情、积极、有感染力 |
 
 ### AI 提供商
 

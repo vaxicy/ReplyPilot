@@ -68,13 +68,18 @@
         </div>
 
         <div class="rp-field">
-          <label for="tone" data-i18n="optTone">Reply Tone</label>
-          <select id="tone" name="tone">
-            <option value="professional" data-i18n="toneProfessional">Professional</option>
-            <option value="friendly" data-i18n="toneFriendly">Friendly</option>
-            <option value="short" data-i18n="toneShort">Short</option>
-            <option value="warm" data-i18n="toneWarm">Warm</option>
-          </select>
+          <label data-i18n="optTones">Reply Tones</label>
+          <div class="rp-tone-chips" id="toneSet">
+            <label class="rp-chip"><input type="checkbox" value="professional"><span data-i18n="toneProfessional">Professional</span></label>
+            <label class="rp-chip"><input type="checkbox" value="friendly"><span data-i18n="toneFriendly">Friendly</span></label>
+            <label class="rp-chip"><input type="checkbox" value="casual"><span data-i18n="toneCasual">Casual</span></label>
+            <label class="rp-chip"><input type="checkbox" value="short"><span data-i18n="toneShort">Short</span></label>
+            <label class="rp-chip"><input type="checkbox" value="warm"><span data-i18n="toneWarm">Warm</span></label>
+            <label class="rp-chip"><input type="checkbox" value="formal"><span data-i18n="toneFormal">Formal</span></label>
+            <label class="rp-chip"><input type="checkbox" value="direct"><span data-i18n="toneDirect">Direct</span></label>
+            <label class="rp-chip"><input type="checkbox" value="enthusiastic"><span data-i18n="toneEnthusiastic">Enthusiastic</span></label>
+          </div>
+          <p class="rp-hint" data-i18n="optTonesHint">Pick 1–4 tones. One reply draft is generated per tone, and each can be regenerated on its own.</p>
         </div>
 
         <div class="rp-field">
@@ -91,9 +96,15 @@
       <section class="rp-section">
         <h2 class="rp-section-title" data-i18n="optAboutYou">About You</h2>
         <div class="rp-field">
-          <label for="myName" data-i18n="optMyName">Your Name</label>
-          <input type="text" id="myName" name="myName" maxlength="40"
-                 data-i18n-placeholder="optMyNamePlaceholder" />
+          <label for="signature" data-i18n="optSignature">Signature</label>
+          <textarea id="signature" name="signature" rows="2"
+                    data-i18n-placeholder="optSignaturePlaceholder"></textarea>
+        </div>
+        <div class="rp-field">
+          <label class="rp-check">
+            <input type="checkbox" id="useSignature" name="useSignature">
+            <span data-i18n="optUseSignature">Append the signature to every reply</span>
+          </label>
         </div>
         <div class="rp-field">
           <label for="myContext" data-i18n="optMyContext">Context / Memory</label>
@@ -170,7 +181,7 @@
         <div class="rp-tutorial-examples">
           <div class="rp-example-title" data-i18n="optTutorialExampleTitle">Examples</div>
           <div class="rp-example-row"><code>deepseek-ai/DeepSeek-V4-Flash</code><span data-i18n="optTutorialExampleSf">— SiliconFlow</span></div>
-          <div class="rp-example-row"><code>gpt-4o-mini</code><span data-i18n="optTutorialExampleOai">— OpenAI</span></div>
+          <div class="rp-example-row"><code>gpt-5-mini</code><span data-i18n="optTutorialExampleOai">— OpenAI</span></div>
         </div>
       </div>
       <div class="rp-modal-foot">

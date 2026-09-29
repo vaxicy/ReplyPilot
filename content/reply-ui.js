@@ -20,19 +20,38 @@ window.RP = window.RP || {};
     CONTEXT_INVALIDATED: 'errContextInvalidated'
   };
 
-  // The three reply strategies shown as options after generation.
-  var OPTION_KEYS = ['positive', 'neutral', 'decline'];
-  var OPTION_I18N = {
-    positive: 'optionPositive',
-    neutral: 'optionNeutral',
-    decline: 'optionDecline'
-  };
+  // i18n key for a tone id, e.g. "professional" -> "toneProfessional".
+  function toneI18nKey(tone) {
+    tone = String(tone || 'professional');
+    return 'tone' + tone.charAt(0).toUpperCase() + tone.slice(1);
+  }
 
   var cardRefs = null;
   var activeBox = null;
   // Remembered conversation + last generated reply so we can revise it.
   var lastContext = null;
   var lastReply = '';
+  var lastTone = 'professional';
+
+  // Signature config (loaded from storage). The signature is appended by the
+  // extension, never by the model, so the exact text is always respected.
+  var signature = { text: '', enabled: false };
+
+  function loadSignature() {
+    return RP.storage.getAll().then(function (s) {
+      signature.text = s.rp_signature || '';
+      signature.enabled = !!s.rp_useSignature;
+    }).catch(function () { /* ignore */ });
+  }
+
+  function applySignature(reply) {
+    var r = reply || '';
+    var sig = (signature.text || '').replace(/\r/g, '').trim();
+    if (!signature.enabled || !sig) return r;
+    var trimmed = r.replace(/\s+$/, '');
+    if (trimmed.slice(-sig.length) === sig) return r;
+    return trimmed + '\n\n' + sig;
+  }
 
   function friendlyError(e) {
     var code = e && e.code;
@@ -385,19 +404,20 @@ window.RP = window.RP || {};
     lastContext = ctx;
     lastReply = '';
 
-    var p = RP.ai.generateOptions(ctx);
-    // Attach a noop catch so the chain always has a .then to clean up
-    p.then(function (options) {
-      if (!options || !options.length) {
-        setStatus(RP.i18n.t('statusError', { reason: RP.i18n.t('errModel') }), 'error');
-        return;
-      }
-      renderOptions(options, ctx);
-      setStatus(RP.i18n.t('statusDone'), 'done');
-    }).catch(function (e) {
-      var msg = friendlyError(e);
-      setStatus(RP.i18n.t('statusError', { reason: msg }), 'error');
-    });
+    // Refresh signature settings first so previews reflect the latest config.
+    var p = loadSignature()
+      .then(function () { return RP.ai.generateReplies(ctx); })
+      .then(function (options) {
+        if (!options || !options.length) {
+          setStatus(RP.i18n.t('statusError', { reason: RP.i18n.t('errModel') }), 'error');
+          return;
+        }
+        renderOptions(options, ctx);
+        setStatus(RP.i18n.t('statusDone'), 'done');
+      })
+      .catch(function (e) {
+        setStatus(RP.i18n.t('statusError', { reason: friendlyError(e) }), 'error');
+      });
 
     // Always restore the button state after the request settles (success or error),
     // then keep the buttons disabled for COOLDOWN_MS to prevent rapid re-clicks.
@@ -419,18 +439,35 @@ window.RP = window.RP || {};
     options.forEach(function (opt) {
       var item = document.createElement('div');
       item.className = 'rp-option-item';
+      item._opt = opt;
+      item._ctx = ctx;
+
+      var head = document.createElement('div');
+      head.className = 'rp-option-head';
 
       var title = document.createElement('div');
       title.className = 'rp-option-title';
-      title.textContent = RP.i18n.t(OPTION_I18N[opt.key] || 'optionPositive');
+      title.textContent = RP.i18n.t(toneI18nKey(opt.tone));
+
+      var regen = document.createElement('button');
+      regen.type = 'button';
+      regen.className = 'rp-btn rp-btn-small rp-btn-ghost rp-option-regen';
+      regen.setAttribute('data-i18n', 'regenOption');
+      regen.textContent = RP.i18n.t('regenOption');
+      regen.addEventListener('click', function (e) {
+        e.stopPropagation();
+        onRegenerateOne(item);
+      });
+
+      head.appendChild(title);
+      head.appendChild(regen);
 
       var preview = document.createElement('div');
       preview.className = 'rp-option-preview';
-      var snippet = opt.reply.replace(/\s+/g, ' ').trim();
-      preview.textContent = snippet.length > 80 ? snippet.slice(0, 80) + '…' : snippet;
+      item._preview = preview;
 
       item.addEventListener('mouseenter', function (e) {
-        showOptionTooltip(opt.reply, e.currentTarget);
+        showOptionTooltip(applySignature(opt.reply), e.currentTarget);
       });
       item.addEventListener('mouseleave', hideOptionTooltip);
 
@@ -440,25 +477,59 @@ window.RP = window.RP || {};
       choose.setAttribute('data-i18n', 'selectThisOption');
       choose.textContent = RP.i18n.t('selectThisOption');
       choose.addEventListener('click', function () {
-        refilledReply(opt.reply, ctx);
+        refilledReply(opt.reply, ctx, opt.tone);
         setStatus(RP.i18n.t('statusDone'), 'done');
       });
 
-      item.appendChild(title);
+      item.appendChild(head);
       item.appendChild(preview);
       item.appendChild(choose);
       refs.optionsList.appendChild(item);
+
+      updateOptionPreview(item);
     });
 
     showOptions(true);
   }
 
+  function updateOptionPreview(item) {
+    if (!item || !item._preview || !item._opt) return;
+    var snippet = applySignature(item._opt.reply).replace(/\s+/g, ' ').trim();
+    item._preview.textContent = snippet.length > 80 ? snippet.slice(0, 80) + '…' : snippet;
+  }
+
+  // Regenerate only this option's reply, leaving the other options untouched.
+  function onRegenerateOne(item) {
+    if (Date.now() < cooldownUntil) return;
+    var opt = item._opt;
+    var ctx = item._ctx || lastContext;
+    if (!opt || !ctx) return;
+    var btn = item.querySelector('.rp-option-regen');
+    if (btn) { btn.disabled = true; btn.textContent = RP.i18n.t('regenerating'); }
+
+    var p = loadSignature()
+      .then(function () { return RP.ai.regenerateOne(ctx, opt.tone); })
+      .then(function (reply) {
+        opt.reply = reply;
+        updateOptionPreview(item);
+        setStatus(RP.i18n.t('statusDone'), 'done');
+      }, function (e) {
+        setStatus(RP.i18n.t('statusError', { reason: friendlyError(e) }), 'error');
+      });
+
+    function restore() {
+      if (btn) { btn.disabled = false; btn.textContent = RP.i18n.t('regenOption'); }
+    }
+    p.then(restore, restore);
+  }
+
   // Replace the reply textarea with a new reply and keep it selected/ready.
-  function refilledReply(reply, ctx) {
+  function refilledReply(reply, ctx, tone) {
     var refs = ensureCard();
     lastReply = reply || '';
     if (ctx) lastContext = ctx;
-    refs.text.value = reply;
+    if (tone) lastTone = tone;
+    refs.text.value = applySignature(reply);
     showOptions(false);
     setActionsEnabled(true);
     refs.clear.disabled = false;
@@ -556,6 +627,7 @@ window.RP = window.RP || {};
     var ctx = {
       subject: lastContext.subject,
       emailBody: lastContext.emailBody,
+      tone: lastTone,
       currentReply: currentReply,
       instruction: instruction
     };
@@ -605,10 +677,15 @@ window.RP = window.RP || {};
     for (var i = 0; i < chooseBtns.length; i++) {
       chooseBtns[i].textContent = RP.i18n.t('selectThisOption');
     }
+    var regenBtns = cardRefs.optionsList.querySelectorAll('button[data-i18n="regenOption"]');
+    for (var j = 0; j < regenBtns.length; j++) {
+      regenBtns[j].textContent = RP.i18n.t('regenOption');
+    }
   }
 
   function refreshAll() {
     refreshTexts();
+    loadSignature();
   }
 
   function resetCard() {
@@ -629,7 +706,7 @@ window.RP = window.RP || {};
   }
 
   RP.ui = {
-    init: function () { ensureCard(); },
+    init: function () { ensureCard(); loadSignature(); },
     attachTo: attachTo,
     refreshAll: refreshAll,
     refreshTexts: refreshTexts,

@@ -126,6 +126,59 @@ body {
   min-height: 80px;
 }
 
+.rp-tone-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #e2e5ee;
+  border-radius: 999px;
+  background: #fbfbfd;
+  font-size: 13px;
+  color: #2b2f3a;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.rp-chip:hover {
+  border-color: #d3d7e3;
+  background: #f6f7fb;
+}
+
+.rp-chip input {
+  width: auto;
+  margin: 0;
+  accent-color: #7b7ff5;
+}
+
+.rp-chip:has(input:checked) {
+  border-color: #8b8ef5;
+  background: #eef0fe;
+  color: #4b4fd6;
+}
+
+.rp-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #2b2f3a;
+  cursor: pointer;
+}
+
+.rp-check input {
+  width: auto;
+  margin: 0;
+  accent-color: #7b7ff5;
+}
+
 .rp-hint {
   margin: 6px 0 0;
   font-size: 12px;

@@ -5,8 +5,8 @@
   'use strict';
 
   var ids = ['provider', 'apiEndpoint', 'apiKey', 'model',
-             'language', 'tone', 'replyLanguage',
-             'myName', 'myContext'];
+             'language', 'replyLanguage',
+             'signature', 'myContext'];
 
   // Per-provider defaults. Custom has no preset models/endpoint.
   var PROVIDER_PRESETS = {
@@ -16,7 +16,7 @@
     },
     openai: {
       endpoint: 'https://api.openai.com/v1',
-      model: 'gpt-4o-mini'
+      model: 'gpt-5-mini'
     },
     custom: {
       endpoint: '',
@@ -48,17 +48,17 @@
 
   function loadSettings() {
     RP.storage.getAll().then(function (settings) {
-      // Non-provider fields (language, tone, store info, etc.)
-      ['language', 'tone', 'replyLanguage', 'myName', 'myContext'].forEach(function (id) {
+      // Non-provider fields (language, signature, context, etc.)
+      ['language', 'replyLanguage', 'signature', 'myContext'].forEach(function (id) {
         var el = document.getElementById(id);
         if (!el) return;
-        var value = settings['rp_' + id];
-        if (el.type === 'checkbox') {
-          el.checked = !!value;
-        } else {
-          el.value = value || '';
-        }
+        el.value = settings['rp_' + id] || '';
       });
+
+      // Signature toggle + tone set (checkbox controls).
+      var useSig = document.getElementById('useSignature');
+      if (useSig) useSig.checked = !!settings.rp_useSignature;
+      setToneSet(settings.rp_toneSet);
 
       var provider = settings.rp_provider || 'siliconflow';
       currentProvider = provider;
@@ -76,6 +76,24 @@
   function setField(id, value) {
     var el = document.getElementById(id);
     if (el) el.value = value || '';
+  }
+
+  // Tone multi-select helpers (the tones used to generate one draft each).
+  function getToneSet() {
+    var out = [];
+    var boxes = document.querySelectorAll('#toneSet input[type="checkbox"]');
+    for (var i = 0; i < boxes.length; i++) {
+      if (boxes[i].checked) out.push(boxes[i].value);
+    }
+    return out;
+  }
+
+  function setToneSet(arr) {
+    arr = (arr && arr.length) ? arr : ['professional', 'friendly', 'short'];
+    var boxes = document.querySelectorAll('#toneSet input[type="checkbox"]');
+    for (var i = 0; i < boxes.length; i++) {
+      boxes[i].checked = arr.indexOf(boxes[i].value) !== -1;
+    }
   }
 
   // Persist the current input values into the active provider's own slot.
@@ -135,6 +153,14 @@
       el.addEventListener('input', scheduleAutoSave);
       el.addEventListener('change', scheduleAutoSave);
     });
+
+    // Checkbox controls (signature toggle + tone set) also auto-save.
+    var useSig = document.getElementById('useSignature');
+    if (useSig) useSig.addEventListener('change', scheduleAutoSave);
+    var toneBoxes = document.querySelectorAll('#toneSet input[type="checkbox"]');
+    for (var i = 0; i < toneBoxes.length; i++) {
+      toneBoxes[i].addEventListener('change', scheduleAutoSave);
+    }
 
     bindTestConnection();
     bindTutorialModal();
@@ -324,11 +350,21 @@
     existingPromise.then(function (existing) {
       var obj = {};
       // Persist everything except the provider api fields (those live in slots).
-      ['language', 'tone', 'replyLanguage', 'myName', 'myContext', 'provider'].forEach(function (id) {
+      ['language', 'replyLanguage', 'signature', 'myContext', 'provider'].forEach(function (id) {
         var el = document.getElementById(id);
         if (!el) return;
         obj['rp_' + id] = el.value;
       });
+
+      // Signature toggle + tone set.
+      var useSig = document.getElementById('useSignature');
+      obj.rp_useSignature = !!(useSig && useSig.checked);
+      var toneSet = getToneSet();
+      if (!toneSet.length) {
+        toneSet = (existing.rp_toneSet && existing.rp_toneSet.length)
+          ? existing.rp_toneSet : ['professional'];
+      }
+      obj.rp_toneSet = toneSet;
 
       // Save the active provider's key/endpoint/model into its own slot,
       // merging into the existing providerConfigs instead of replacing them.

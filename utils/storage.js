@@ -11,35 +11,59 @@ window.RP = window.RP || {};
     rp_language: '',            // '' => follow browser locale
     rp_provider: 'siliconflow', // siliconflow | openai | custom
     rp_providerConfigs: {},     // { [provider]: { apiEndpoint, apiKey, model } }
-    rp_tone: 'professional',      // professional | friendly | short | warm
-    rp_replyLanguage: 'auto',     // auto | zh | en
-    rp_myName: '',                // optional name to sign replies with
-    rp_myContext: ''              // free-text background the AI should keep in mind
+    rp_toneSet: ['professional', 'friendly', 'short'], // tones to generate (1-4)
+    rp_replyLanguage: 'auto',   // auto | zh | en
+    rp_signature: '',           // optional signature appended to replies
+    rp_useSignature: false,     // whether to append the signature automatically
+    rp_myContext: ''            // free-text background the AI should keep in mind
   };
 
-  // Legacy e-commerce store fields. They are migrated into rp_myContext once so
-  // existing users don't lose the details they had already filled in.
+  // Legacy fields kept only for a one-time migration. After migrating they are
+  // removed from storage so callers never see them again.
   var LEGACY_STORE_KEYS = [
     'rp_storeName', 'rp_storeCategory', 'rp_shippingInfo',
     'rp_returnPolicy', 'rp_shippingRegions'
   ];
+  var LEGACY_KEYS = LEGACY_STORE_KEYS.concat(['rp_myName', 'rp_tone']);
 
-  function migrateLegacyStoreFields(res) {
-    if (!res || res.rp_myContext) return res;
-    var parts = [];
-    if (res.rp_storeName) parts.push('Store: ' + res.rp_storeName);
-    if (res.rp_storeCategory) parts.push('Category: ' + res.rp_storeCategory);
-    if (res.rp_shippingInfo) parts.push('Shipping: ' + res.rp_shippingInfo);
-    if (res.rp_returnPolicy) parts.push('Returns: ' + res.rp_returnPolicy);
-    if (res.rp_shippingRegions) parts.push('Ships to: ' + res.rp_shippingRegions);
-    if (parts.length) {
-      res.rp_myContext = parts.join('\n');
-      var toSave = { rp_myContext: res.rp_myContext };
+  function migrateLegacy(res) {
+    if (!res) return res;
+    var changed = false;
+
+    // 1) Legacy e-commerce store fields -> free-text myContext.
+    if (!res.rp_myContext) {
+      var parts = [];
+      if (res.rp_storeName) parts.push('Store: ' + res.rp_storeName);
+      if (res.rp_storeCategory) parts.push('Category: ' + res.rp_storeCategory);
+      if (res.rp_shippingInfo) parts.push('Shipping: ' + res.rp_shippingInfo);
+      if (res.rp_returnPolicy) parts.push('Returns: ' + res.rp_returnPolicy);
+      if (res.rp_shippingRegions) parts.push('Ships to: ' + res.rp_shippingRegions);
+      if (parts.length) { res.rp_myContext = parts.join('\n'); changed = true; }
+    }
+
+    // 2) Legacy single "my name" -> signature text.
+    if (!res.rp_signature && res.rp_myName) {
+      res.rp_signature = res.rp_myName;
+      changed = true;
+    }
+
+    // 3) Legacy single tone -> tone set used for generation.
+    if (res.rp_tone) {
+      res.rp_toneSet = [res.rp_tone];
+      changed = true;
+    }
+
+    if (changed) {
       try {
-        chrome.storage.local.set(toSave, function () {
-          chrome.storage.local.remove(LEGACY_STORE_KEYS, function () { });
+        chrome.storage.local.set({
+          rp_myContext: res.rp_myContext,
+          rp_signature: res.rp_signature,
+          rp_toneSet: res.rp_toneSet
+        }, function () {
+          chrome.storage.local.remove(LEGACY_KEYS, function () { });
         });
       } catch (e) { /* ignore migration failures */ }
+      LEGACY_KEYS.forEach(function (k) { delete res[k]; });
     }
     return res;
   }
@@ -100,14 +124,14 @@ window.RP = window.RP || {};
   function getAll() {
     return new Promise(function (resolve, reject) {
       try {
-        // Request the defaults plus any legacy store keys so we can migrate
-        // their values into rp_myContext in one pass.
+        // Request the defaults plus any legacy keys so we can migrate their
+        // values in one pass.
         var keys = {};
         Object.keys(DEFAULTS).forEach(function (k) { keys[k] = DEFAULTS[k]; });
-        LEGACY_STORE_KEYS.forEach(function (k) { keys[k] = ''; });
+        LEGACY_KEYS.forEach(function (k) { keys[k] = ''; });
         chrome.storage.local.get(keys, function (res) {
           res = normalizeProviderConfigs(res || {});
-          resolve(migrateLegacyStoreFields(res));
+          resolve(migrateLegacy(res));
         });
       } catch (e) {
         if (isContextInvalidatedError(e)) {

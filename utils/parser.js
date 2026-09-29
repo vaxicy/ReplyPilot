@@ -17,9 +17,24 @@ window.RP = window.RP || {};
   var TONE_LABELS = {
     professional: 'Professional (专业、礼貌、商务)',
     friendly: 'Friendly (友好、亲切、轻松)',
+    casual: 'Casual (轻松、随意、口语化)',
     short: 'Short (简洁、直接、要点明确)',
-    warm: 'Warm (温暖、共情、体贴、有人情味)'
+    warm: 'Warm (温暖、共情、体贴、有人情味)',
+    formal: 'Formal (正式、严谨、庄重)',
+    direct: 'Direct (直接、果断、明确立场)',
+    enthusiastic: 'Enthusiastic (热情、积极、有感染力)'
   };
+
+  // Canonical tone order; the single source of truth for the tone key list.
+  var TONE_ORDER = ['professional', 'friendly', 'casual', 'short',
+    'warm', 'formal', 'direct', 'enthusiastic'];
+
+  // Shared rules applied to every generation prompt. The signature is appended
+  // by the extension (not the model), so the model must never write one.
+  var BASE_RULES = 'Rules: write like a real person, matching the sender\'s context. ' +
+    'Do NOT fabricate facts, dates, names, numbers, or commitments you do not have. ' +
+    'Ask politely if something is unknown. ' +
+    'Do NOT add a signature or sign-off, and never use placeholders like "[Your Name]".';
 
   var REPLY_LANGUAGE_LABELS = {
     auto: 'Auto (根据客户邮件语言自动判断)',
@@ -50,7 +65,6 @@ window.RP = window.RP || {};
   function buildUserContext(ctx) {
     ctx = ctx || {};
     var parts = [];
-    if (ctx.myName) parts.push('Name to sign as: ' + ctx.myName.trim());
     if (ctx.myContext) parts.push('Background: ' + ctx.myContext.trim());
     return parts.length ? parts.join('. ') + '.' : '';
   }
@@ -68,35 +82,57 @@ window.RP = window.RP || {};
     var lines = [
       'You are a smart email reply assistant helping the user draft a reply.',
       'Tone: ' + tone + '. Reply language: ' + lang + '.',
-      'Rules: write like a real person, matching the sender\'s context. Do NOT fabricate facts, dates, names, numbers, or commitments you do not have. Ask politely if something is unknown. No apologies unless warranted.',
-      ''
+      BASE_RULES
     ];
-    if (mem) lines.push('About me: ' + mem, '');
-    lines.push('Incoming email:', 'Subject: ' + subject, '', body, '', 'Return JSON: {"reply": "your reply"}');
+    if (mem) lines.push('About me: ' + mem);
+    lines.push('', 'Return JSON: {"reply": "your reply"}',
+      '', 'Incoming email:', 'Subject: ' + subject, '', body);
     return lines.join('\n');
   }
 
-  // Build the prompt that asks the model to return multiple reply options.
-  function buildOptionsPrompt(ctx) {
+  // Build the prompt that generates one reply per requested tone.
+  function buildTonesPrompt(ctx) {
     ctx = ctx || {};
-    var tone = toneLabel(ctx.tone);
+    var tones = (ctx.tones && ctx.tones.length) ? ctx.tones : ['professional', 'friendly', 'short'];
+    var lang = replyLanguageLabel(ctx.replyLanguage);
+    var subject = ctx.subject || '';
+    var body = clampText(ctx.emailBody, MAX_BODY, 'content');
+    var mem = buildUserContext(ctx);
+    var toneList = tones.map(function (t) {
+      return '"' + t + '" (' + toneLabel(t) + ')';
+    }).join(', ');
+
+    // Compact prompt: ~250 tokens of template + the incoming email
+    var lines = [
+      'You are a smart email reply assistant helping the user draft a reply.',
+      'Reply language: ' + lang + '.',
+      'Write one reply for each of these tones: ' + toneList + '.',
+      BASE_RULES
+    ];
+    if (mem) lines.push('About me: ' + mem);
+    lines.push('', 'Return strict JSON only, no markdown:',
+      '{"replies": [{"tone": "<tone>", "reply": "..."}]}',
+      '', 'Incoming email:', 'Subject: ' + subject, '', body);
+    return lines.join('\n');
+  }
+
+  // Build the prompt that regenerates a single reply for one tone.
+  function buildRegenOnePrompt(ctx) {
+    ctx = ctx || {};
     var lang = replyLanguageLabel(ctx.replyLanguage);
     var subject = ctx.subject || '';
     var body = clampText(ctx.emailBody, MAX_BODY, 'content');
     var mem = buildUserContext(ctx);
 
-    // Compact prompt: ~250 tokens of template + the incoming email
     var lines = [
       'You are a smart email reply assistant helping the user draft a reply.',
-      'Tone: ' + tone + '. Reply language: ' + lang + '.',
-      'Generate 3 reply options with different stances: positive (supportive, agreeing), neutral (balanced, factual), decline (polite refusal or pushback).',
-      'Rules: write like a real person, matching the sender\'s context. Do NOT fabricate facts, dates, names, numbers, or commitments you do not have. Ask politely if something is unknown.',
-      '',
-      'Return strict JSON only, no markdown:',
-      '{"positive": "...", "neutral": "...", "decline": "..."}'
+      'Reply language: ' + lang + '.',
+      'Write ONE reply in this tone: ' + toneLabel(ctx.tone) + '.',
+      BASE_RULES
     ];
-    if (mem) lines.splice(4, 0, 'About me: ' + mem);
-    lines.push('', 'Incoming email:', 'Subject: ' + subject, '', body);
+    if (mem) lines.push('About me: ' + mem);
+    lines.push('', 'Return JSON: {"reply": "your reply"}',
+      '', 'Incoming email:', 'Subject: ' + subject, '', body);
     return lines.join('\n');
   }
 
@@ -117,10 +153,9 @@ window.RP = window.RP || {};
     var lines = [
       'You are a smart email reply assistant helping the user draft a reply.',
       'Tone: ' + tone + '. Reply language: ' + lang + '.',
-      'Rules: write like a real person, matching the sender\'s context. Do NOT fabricate facts, dates, names, numbers, or commitments you do not have. Ask politely if something is unknown.',
-      ''
+      BASE_RULES
     ];
-    if (mem) lines.push('About me: ' + mem, '');
+    if (mem) lines.push('About me: ' + mem);
     lines.push(
       'Incoming email:',
       'Subject: ' + subject,
@@ -144,8 +179,10 @@ window.RP = window.RP || {};
     detectLanguage: detectLanguage,
     toneLabel: toneLabel,
     replyLanguageLabel: replyLanguageLabel,
+    TONES: TONE_ORDER,
     buildPrompt: buildPrompt,
-    buildOptionsPrompt: buildOptionsPrompt,
+    buildTonesPrompt: buildTonesPrompt,
+    buildRegenOnePrompt: buildRegenOnePrompt,
     buildRevisePrompt: buildRevisePrompt
   };
 })(window.RP);

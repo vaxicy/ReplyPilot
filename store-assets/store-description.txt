@@ -1,14 +1,15 @@
 === 中文详细说明 ===
 
-ReplyPilot 是一款为 Gmail 打造的 AI 智能邮件回复助手。打开任意 Gmail 邮件，点击 ReplyPilot 浮窗中的「生成回复」，AI 会自动阅读邮件上下文并生成三套回复方案（赞同支持 / 客观中立 / 委婉拒绝），一键插入 Gmail 回复框或复制到剪贴板。
+ReplyPilot 是一款为 Gmail 打造的 AI 智能邮件回复助手。打开任意 Gmail 邮件，点击 ReplyPilot 浮窗中的「生成回复」，AI 会自动阅读邮件上下文，并按你选择的语气生成多份回复草稿，一键插入 Gmail 回复框或复制到剪贴板。
 
 核心功能：
 
-- 三方案智能生成：在 Gmail 邮件页面打开任意来信，ReplyPilot 自动理解上下文，同时生成三种不同立场的回复草稿（赞同支持、客观中立、委婉拒绝），预览后选中最合适的一套使用。
-- 多场景语气：支持专业、友好、简洁、温暖四种语气风格，适配工作往来、客户沟通、合作洽谈、个人邮件等不同场景。
-- 灵活回复策略：可设为自动判断，也可手动指定积极 / 中性 / 婉拒等策略方向。
+- 多语气方案生成：在设置里勾选 1–4 种语气，ReplyPilot 会为每种语气各生成一份回复草稿，一次对比不同写法，预览后选中最合适的一套使用。
+- 逐条重新生成：对某一条方案不满意时，可只重写这一条，不影响其他方案。
+- 8 种语气：专业、友好、轻松、简洁、温暖、正式、直接、热情，适配工作往来、客户沟通、合作洽谈、个人邮件等不同场景。
+- 署名设置：可自定义署名内容，并选择是否在每次回复末尾自动带上。
 - 表达自然：回复符合真实人际沟通习惯，不生硬；支持自动跟随来信语言（中/英），也可锁定为指定语言输出。
-- 个人上下文注入：可在设置「关于我」中填写你的名字、身份、与收件人的关系、常用落款等（AI 记忆），AI 生成回复时自动参考，让回复更贴合你的语气与身份。
+- 个人上下文注入：可在设置「关于我」中填写你的身份、与收件人的关系、回复偏好等（AI 记忆），AI 生成回复时自动参考，让回复更贴合你的语气与身份。
 - 多 AI 服务商支持：支持 SiliconFlow、OpenAI 以及任意 OpenAI 兼容接口，自定义 Base URL、API Key 与模型。
 - 隐私安全：你的邮件内容仅用于生成回复，通过你自己的 API Key 发送至你配置的 AI 服务商。API Key 存储在本地 chrome.storage.local，不会上传至任何第三方服务器或用于模型训练。
 - 浮窗交互：在 Gmail 页面内以可拖拽浮窗形式呈现，支持生成、重新生成、插入回复框、复制到剪贴板、清空等操作，无需离开邮箱页面。
@@ -20,15 +21,16 @@ ReplyPilot 是一款为 Gmail 打造的 AI 智能邮件回复助手。打开任�
 
 === English Detailed Description ===
 
-ReplyPilot is an AI-powered smart email reply assistant for Gmail. Open any Gmail message, click "Generate Reply" in the ReplyPilot floating card, and the AI reads the conversation context to produce three reply options (Supportive / Neutral / Decline) for you to preview, choose, and insert or copy with one click.
+ReplyPilot is an AI-powered smart email reply assistant for Gmail. Open any Gmail message, click "Generate Reply" in the ReplyPilot floating card, and the AI reads the conversation context and drafts several replies — one per tone you selected — for you to preview, choose, and insert or copy with one click.
 
 Key Features:
 
-- Three-Option Smart Generation: While viewing any email in Gmail, ReplyPilot automatically analyzes the context and generates three draft replies with different stances (supportive, neutral, decline). Preview each option and pick the best fit.
-- Multiple Tone Styles: Choose from Professional, Friendly, Short, and Warm tones — suited for work correspondence, client communication, partnerships, personal emails, and more.
-- Flexible Reply Strategies: Set to auto-detect, or manually specify a strategy direction such as positive, neutral, or decline.
+- Multi-Tone Drafts: Pick 1–4 tones in Settings; ReplyPilot writes one draft per tone so you can compare different styles at a glance and pick the best fit.
+- Per-Option Regenerate: Not happy with one draft? Regenerate just that one without touching the others.
+- Eight Tones: Professional, Friendly, Casual, Short, Warm, Formal, Direct, and Enthusiastic — suited for work correspondence, client communication, partnerships, personal emails, and more.
+- Signature Setting: Set your own signature and choose whether to append it to every reply automatically.
 - Natural Phrasing: Replies read like genuine human correspondence (no machine-translation feel). Supports auto-detecting the incoming email's language (Chinese/English) or locking to a specific output language.
-- Personal Context Injection: Fill in your name, role, relationship with the sender, and preferred sign-off in the "About You" (AI Memory) section. The AI automatically incorporates these details so replies match your voice and identity.
+- Personal Context Injection: Fill in your role, relationship with the sender, and preferences in "About You" (AI Memory). The AI automatically incorporates these details so replies match your voice and identity.
 - Multiple AI Providers: Supports SiliconFlow, OpenAI, and any OpenAI-compatible endpoint. Configure your own Base URL, API Key, and model.
 - Privacy & Security: Email content is used solely for generating replies, sent via your own API key to your configured AI provider. Your API key is stored locally in chrome.storage.local — never uploaded to third-party servers or used for model training.
 - Floating Card UI: Interacts directly within the Gmail page via a draggable floating card. Generate, regenerate, insert into the reply box, copy to clipboard, and clear — all without leaving your inbox.

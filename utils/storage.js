@@ -12,8 +12,10 @@ window.RP = window.RP || {};
     rp_provider: 'siliconflow', // siliconflow | openai | custom
     rp_providerConfigs: {},     // { [provider]: { apiEndpoint, apiKey, model } }
     rp_replyLanguage: 'auto',   // auto | zh | en
-    rp_signature: '',           // optional signature appended to replies
-    rp_useSignature: false,     // whether to append the signature automatically
+    rp_closing: 'Best regards', // sign-off line placed above the signature
+    rp_closingAi: false,        // true = let the AI pick the closing from context
+    rp_signature: '',           // optional name/signature appended to replies
+    rp_useSignature: false,     // whether to append the closing + signature
     rp_myContext: '',           // free-text background the AI should keep in mind
     rp_quickPrompts: null,      // null = uninitialised; defaults seeded on first use
     rp_quickPromptsVersion: 0   // bumped when the default keyword set changes

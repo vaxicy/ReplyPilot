@@ -6,7 +6,7 @@
 
   var ids = ['provider', 'apiEndpoint', 'apiKey', 'model',
              'language', 'replyLanguage',
-             'signature', 'myContext'];
+             'closing', 'signature', 'myContext'];
 
   // Per-provider defaults. Custom has no preset models/endpoint.
   var PROVIDER_PRESETS = {
@@ -48,16 +48,19 @@
 
   function loadSettings() {
     RP.storage.getAll().then(function (settings) {
-      // Non-provider fields (language, signature, context, etc.)
-      ['language', 'replyLanguage', 'signature', 'myContext'].forEach(function (id) {
+      // Non-provider fields (language, closing, signature, context, etc.)
+      ['language', 'replyLanguage', 'closing', 'signature', 'myContext'].forEach(function (id) {
         var el = document.getElementById(id);
         if (!el) return;
         el.value = settings['rp_' + id] || '';
       });
 
-      // Signature toggle.
+      // Signature + closing toggles.
       var useSig = document.getElementById('useSignature');
       if (useSig) useSig.checked = !!settings.rp_useSignature;
+      var closingAi = document.getElementById('closingAi');
+      if (closingAi) closingAi.checked = !!settings.rp_closingAi;
+      syncClosingDisabled();
 
       var provider = settings.rp_provider || 'siliconflow';
       currentProvider = provider;
@@ -78,6 +81,13 @@
   }
 
   // (Tones are selected in the floating panel, not here.)
+
+  // Disable the manual closing input while the AI picks the closing.
+  function syncClosingDisabled() {
+    var ai = document.getElementById('closingAi');
+    var input = document.getElementById('closing');
+    if (input) input.disabled = !!(ai && ai.checked);
+  }
 
   // Persist the current input values into the active provider's own slot.
   function writeCurrentSlot(settings) {
@@ -137,9 +147,16 @@
       el.addEventListener('change', scheduleAutoSave);
     });
 
-    // Signature toggle also auto-saves.
+    // Signature + closing toggles also auto-save.
     var useSig = document.getElementById('useSignature');
     if (useSig) useSig.addEventListener('change', scheduleAutoSave);
+    var closingAi = document.getElementById('closingAi');
+    if (closingAi) {
+      closingAi.addEventListener('change', function () {
+        syncClosingDisabled();
+        scheduleAutoSave();
+      });
+    }
 
     bindTestConnection();
     bindTutorialModal();
@@ -329,15 +346,17 @@
     existingPromise.then(function (existing) {
       var obj = {};
       // Persist everything except the provider api fields (those live in slots).
-      ['language', 'replyLanguage', 'signature', 'myContext', 'provider'].forEach(function (id) {
+      ['language', 'replyLanguage', 'closing', 'signature', 'myContext', 'provider'].forEach(function (id) {
         var el = document.getElementById(id);
         if (!el) return;
         obj['rp_' + id] = el.value;
       });
 
-      // Signature toggle.
+      // Signature + closing toggles.
       var useSig = document.getElementById('useSignature');
       obj.rp_useSignature = !!(useSig && useSig.checked);
+      var closingAi = document.getElementById('closingAi');
+      obj.rp_closingAi = !!(closingAi && closingAi.checked);
 
       // Save the active provider's key/endpoint/model into its own slot,
       // merging into the existing providerConfigs instead of replacing them.

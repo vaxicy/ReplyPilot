@@ -479,17 +479,33 @@
     "message": "About You",
     "description": "About you setting label"
   },
+  "optClosing": {
+    "message": "Closing",
+    "description": "Closing (sign-off) field label"
+  },
+  "optClosingPlaceholder": {
+    "message": "e.g. Best regards",
+    "description": "Closing input placeholder"
+  },
+  "optClosingAi": {
+    "message": "Let the AI pick the closing from context",
+    "description": "Whether the AI chooses the closing"
+  },
+  "optClosingHint": {
+    "message": "The sign-off line above your name (English: sign-off / closing), e.g. “Best regards”.",
+    "description": "Closing hint"
+  },
   "optSignature": {
     "message": "Signature",
     "description": "Signature field label"
   },
   "optSignaturePlaceholder": {
-    "message": "e.g. Best regards, Alex",
+    "message": "e.g. Alex",
     "description": "Signature input placeholder"
   },
   "optUseSignature": {
-    "message": "Append the signature to every reply",
-    "description": "Whether to append the signature automatically"
+    "message": "Append the closing and signature to every reply",
+    "description": "Whether to append the closing + signature automatically"
   },
   "optMyContext": {
     "message": "Context / Memory",
@@ -500,7 +516,7 @@
     "description": "User context input placeholder"
   },
   "optAboutYouHint": {
-    "message": "Tell the AI about yourself so replies fit your voice: your role, your relationship with the sender, how you sign off, or anything you want it to remember.",
+    "message": "Tell the AI about yourself so replies fit your voice: your role, your relationship with the sender, or anything you want it to remember.",
     "description": "About you hint"
   },
   "donateTitle": {

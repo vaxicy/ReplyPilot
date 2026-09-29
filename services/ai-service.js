@@ -32,6 +32,31 @@ window.RP = window.RP || {};
     return t;
   }
 
+  // Parse a guided-generation response into { reply, closing }. `closing` is
+  // only present when the AI is asked to choose the sign-off line.
+  function parseReplyObj(text) {
+    if (!text) return { reply: '', closing: '' };
+    var t = String(text).trim();
+
+    var fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fence) t = fence[1].trim();
+
+    var obj = null;
+    try { obj = JSON.parse(t); } catch (e) { /* fall through */ }
+    if (!obj) {
+      var m = t.match(/\{[\s\S]*\}/);
+      if (m) { try { obj = JSON.parse(m[0]); } catch (e2) { /* fall through */ } }
+    }
+    if (obj && typeof obj.reply === 'string') {
+      return {
+        reply: obj.reply.trim(),
+        closing: (typeof obj.closing === 'string') ? obj.closing.trim() : ''
+      };
+    }
+    // Fallback: the model returned plain text; treat it as the reply body.
+    return { reply: parseReply(text), closing: '' };
+  }
+
   function makeError(message, code) {
     var e = new Error(message);
     e.code = code;
@@ -72,6 +97,8 @@ window.RP = window.RP || {};
 
   // ctx: { subject, emailBody, instruction }
   // Generates a single reply guided by the user's free-text instruction.
+  // Returns { reply, closing }: `closing` is filled only when the user asked
+  // the AI to pick the sign-off line from context.
   // settings: full settings object (optional; fetched if omitted)
   function generateGuided(ctx, settings) {
     ctx = ctx || {};
@@ -80,21 +107,23 @@ window.RP = window.RP || {};
     return settingsPromise.then(function (s) {
       checkApiKey(s);
       var cfg = resolveProviderConfig(s);
+      var closingAi = !!(s.rp_useSignature && s.rp_closingAi);
 
       var prompt = RP.parser.buildGuidedPrompt({
         replyLanguage: s.rp_replyLanguage || 'auto',
         myContext: s.rp_myContext || '',
         subject: ctx.subject,
         emailBody: ctx.emailBody,
-        instruction: ctx.instruction
+        instruction: ctx.instruction,
+        closingAi: closingAi
       });
 
       var messages = [
         {
           role: 'system',
           content: 'You are a helpful smart email reply assistant. ' +
-            'Always respond with valid JSON in the exact format {"reply": "..."}. ' +
-            'Do not wrap it in markdown code fences.'
+            'Always respond with valid JSON only, following the exact shape ' +
+            'requested in the user message. Do not wrap it in markdown code fences.'
         },
         { role: 'user', content: prompt }
       ];
@@ -106,11 +135,11 @@ window.RP = window.RP || {};
         messages: messages,
         max_tokens: 2048
       }).then(function (data) {
-        var reply = parseReply(extractContent(data));
-        if (!reply) {
+        var out = parseReplyObj(extractContent(data));
+        if (!out.reply) {
           throw makeError('Could not parse model reply', 'PARSE_FAILED');
         }
-        return reply;
+        return out;
       });
     });
   }
@@ -170,6 +199,7 @@ window.RP = window.RP || {};
   RP.ai = {
     generateGuided: generateGuided,
     reviseReply: reviseReply,
-    parseReply: parseReply
+    parseReply: parseReply,
+    parseReplyObj: parseReplyObj
   };
 })(window.RP);

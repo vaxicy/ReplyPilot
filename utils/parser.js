@@ -51,7 +51,14 @@ window.RP = window.RP || {};
     'incoming email is written in a different language. ' +
     'Do NOT fabricate facts, dates, names, numbers, or commitments you do not have. ' +
     'Ask politely if something is unknown. ' +
-    'Do NOT add a signature or sign-off, and never use placeholders like "[Your Name]".';
+    'Never use placeholders like "[Your Name]".';
+
+  // The closing + signature block is composed by the extension, so the model
+  // must not write one — unless we explicitly ask it for the closing text.
+  var NO_SIGNOFF_RULE = 'Do NOT add a closing line, sign-off, or signature; ' +
+    'the app appends them separately.';
+  var AI_CLOSING_RULE = 'Do NOT write the sender\'s name or any signature. ' +
+    'Put ONLY the short sign-off line (e.g. "Best regards,") in the "closing" field.';
 
   // Fallback guidance when the user leaves the box empty.
   var DEFAULT_GUIDANCE = 'Write a natural, courteous reply that fits the email.';
@@ -66,17 +73,24 @@ window.RP = window.RP || {};
     var body = clampText(ctx.emailBody, MAX_BODY, 'content');
     var mem = buildUserContext(ctx);
     var instruction = (ctx.instruction || '').trim() || DEFAULT_GUIDANCE;
+    var closingAi = !!ctx.closingAi;
 
     // Compact prompt: ~250 tokens of template + the incoming email
     var lines = [
       'You are a smart email reply assistant helping the user draft a reply.',
       'Required reply language: ' + lang + '.',
-      BASE_RULES
+      BASE_RULES + ' ' + (closingAi ? AI_CLOSING_RULE : NO_SIGNOFF_RULE)
     ];
     if (mem) lines.push('About me: ' + mem);
     lines.push('User\'s guidance for this reply: ' + instruction);
-    lines.push('', 'Return JSON: {"reply": "your reply in the required language"}',
-      '', 'Incoming email:', 'Subject: ' + subject, '', body);
+    if (closingAi) {
+      lines.push('', 'Return strict JSON only, no markdown:',
+        '{"reply": "the reply body without a closing", ' +
+        '"closing": "a short sign-off line such as \'Best regards,\'"}');
+    } else {
+      lines.push('', 'Return JSON: {"reply": "your reply in the required language"}');
+    }
+    lines.push('', 'Incoming email:', 'Subject: ' + subject, '', body);
     return lines.join('\n');
   }
 
@@ -96,7 +110,7 @@ window.RP = window.RP || {};
     var lines = [
       'You are a smart email reply assistant helping the user draft a reply.',
       'Required reply language: ' + lang + '.',
-      BASE_RULES
+      BASE_RULES + ' ' + NO_SIGNOFF_RULE
     ];
     if (mem) lines.push('About me: ' + mem);
     lines.push(

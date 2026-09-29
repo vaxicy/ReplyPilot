@@ -479,17 +479,33 @@
     "message": "关于我",
     "description": "关于我设置标签"
   },
+  "optClosing": {
+    "message": "结束语",
+    "description": "结束语字段标签"
+  },
+  "optClosingPlaceholder": {
+    "message": "如：Best regards / 此致敬礼",
+    "description": "结束语输入框占位符"
+  },
+  "optClosingAi": {
+    "message": "由 AI 根据语境生成结束语",
+    "description": "是否由 AI 选择结束语"
+  },
+  "optClosingHint": {
+    "message": "正文之后、署名之前的敬语，例如「Best regards」（英文叫 sign-off / closing）。",
+    "description": "结束语说明"
+  },
   "optSignature": {
     "message": "署名",
     "description": "署名字段标签"
   },
   "optSignaturePlaceholder": {
-    "message": "如：Best regards, Alex",
+    "message": "如：lilin",
     "description": "署名输入框占位符"
   },
   "optUseSignature": {
-    "message": "每次回复自动带上署名",
-    "description": "是否自动追加署名"
+    "message": "每次回复自动附加结束语与署名",
+    "description": "是否自动追加结束语与署名"
   },
   "optMyContext": {
     "message": "上下文 / AI 记忆",
@@ -500,7 +516,7 @@
     "description": "用户上下文输入框占位符"
   },
   "optAboutYouHint": {
-    "message": "填写关于你自己的信息，让 AI 的回复更贴合你的语气：你的身份、与收件人的关系、常用落款，或任何希望它记住的内容。",
+    "message": "填写关于你自己的信息，让 AI 的回复更贴合你的语气：你的身份、与收件人的关系，或任何希望它记住的内容。",
     "description": "关于我说明"
   },
   "donateTitle": {

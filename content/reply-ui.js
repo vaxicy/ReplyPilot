@@ -30,16 +30,16 @@ window.RP = window.RP || {};
   // Remembered conversation so we can revise a reply without re-reading Gmail.
   var lastContext = null;
 
-  // Panel state (loaded from storage).
+  // Panel state (loaded from storage). The closing ("Best regards") and the
+  // signature (the name) are separate settings, composed by the extension.
   var signature = { text: '', enabled: false };
+  var closing = { text: '', ai: false };
   var quickPrompts = [];
 
-  function loadSignature() {
-    return RP.storage.getAll().then(function (s) {
-      signature.text = s.rp_signature || '';
-      signature.enabled = !!s.rp_useSignature;
-    }).catch(function () { /* ignore */ });
-  }
+  // Body + closing of the last generated reply, so "revise" can recompose the
+  // closing + signature block cleanly instead of duplicating it.
+  var lastBody = '';
+  var lastClosing = '';
 
   // Default keyword chips. Tone names are folded in here on purpose, so the
   // user can pick a style and an intent (decline / ask more / follow up) from
@@ -69,6 +69,8 @@ window.RP = window.RP || {};
     return RP.storage.getAll().then(function (s) {
       signature.text = s.rp_signature || '';
       signature.enabled = !!s.rp_useSignature;
+      closing.text = s.rp_closing || '';
+      closing.ai = !!s.rp_closingAi;
 
       var defaults = defaultQuickPrompts();
       if (s.rp_quickPrompts == null) {
@@ -98,15 +100,37 @@ window.RP = window.RP || {};
     }).catch(function () { /* ignore */ });
   }
 
-  // Append the signature (by code, never by the model) so the exact text is
-  // always respected. Skipped when disabled or already present.
-  function applySignature(reply) {
-    var r = reply || '';
-    var sig = (signature.text || '').replace(/\r/g, '').trim();
-    if (!signature.enabled || !sig) return r;
-    var trimmed = r.replace(/\s+$/, '');
-    if (trimmed.slice(-sig.length) === sig) return r;
-    return trimmed + '\n\n' + sig;
+  // Build the "closing + signature" block. Composed by the extension (never by
+  // the model) so the formatting is always the same: a blank line after the
+  // body, then the closing line, then the name on its own line.
+  function blockLines(closingLine) {
+    var lines = [];
+    var c = (closingLine || '').replace(/\s+$/, '');
+    var n = (signature.text || '').replace(/\r/g, '').trim();
+    if (c) lines.push(c);
+    if (n) lines.push(n);
+    return lines;
+  }
+
+  function composeOutput(body, closingLine) {
+    var out = (body || '').replace(/\s+$/, '');
+    if (!signature.enabled) return out;
+    var lines = blockLines(closingLine);
+    return lines.length ? out + '\n\n' + lines.join('\n') : out;
+  }
+
+  // Remove the trailing closing + signature block (used before revising so the
+  // model edits the body only and we recompose the block afterwards).
+  function stripBlock(text, closingLine) {
+    var s = (text || '').replace(/\s+$/, '');
+    if (!signature.enabled) return s;
+    var lines = blockLines(closingLine);
+    if (!lines.length) return s;
+    var block = lines.join('\n');
+    if (s.slice(-block.length) === block) {
+      return s.slice(0, s.length - block.length).replace(/\s+$/, '');
+    }
+    return s;
   }
 
   function friendlyError(e) {
@@ -553,8 +577,8 @@ window.RP = window.RP || {};
 
     var instruction = refs.guideInput.value.trim();
 
-    // Refresh the signature so the freshly generated reply uses the latest config.
-    var p = loadSignature()
+    // Refresh the settings so the freshly generated reply uses the latest config.
+    var p = loadPanelState()
       .then(function () {
         return RP.ai.generateGuided({
           subject: ctx.subject,
@@ -562,8 +586,9 @@ window.RP = window.RP || {};
           instruction: instruction
         });
       })
-      .then(function (reply) {
-        refilledReply(reply, ctx);
+      .then(function (res) {
+        var closingLine = closing.ai ? (res.closing || closing.text) : closing.text;
+        refilledReply(res.reply, ctx, closingLine);
         setStatus(RP.i18n.t('statusDone'), 'done');
       })
       .catch(function (e) {
@@ -584,10 +609,12 @@ window.RP = window.RP || {};
   }
 
   // Fill the output box with a new reply and keep it ready to insert/copy.
-  function refilledReply(reply, ctx) {
+  function refilledReply(body, ctx, closingLine) {
     var refs = ensureCard();
     if (ctx) lastContext = ctx;
-    refs.text.value = applySignature(reply);
+    lastBody = body || '';
+    if (closingLine != null) lastClosing = closingLine;
+    refs.text.value = composeOutput(lastBody, lastClosing);
     setActionsEnabled(true);
     refs.clear.disabled = false;
     // Once a reply exists, show the "revise by feedback" row.
@@ -652,13 +679,13 @@ window.RP = window.RP || {};
     if (Date.now() < cooldownUntil) return;
     var refs = ensureCard();
     var instruction = refs.reviseInput.value.trim();
-    var currentReply = refs.text.value.trim();
+    var draft = refs.text.value.trim();
 
     if (!instruction) {
       setStatus(RP.i18n.t('errNoInstruction'), 'error');
       return;
     }
-    if (!currentReply) {
+    if (!draft) {
       setStatus(RP.i18n.t('errNoEmail'), 'error');
       return;
     }
@@ -680,10 +707,11 @@ window.RP = window.RP || {};
       refs.reviseBtn.textContent = RP.i18n.t('reviseReply');
     }
 
+    // Revise the body only; the closing + signature block is recomposed after.
     var ctx = {
       subject: lastContext.subject,
       emailBody: lastContext.emailBody,
-      currentReply: currentReply,
+      currentReply: stripBlock(draft, lastClosing),
       instruction: instruction
     };
 
@@ -756,6 +784,8 @@ window.RP = window.RP || {};
       cardRefs.reviseBtn.textContent = RP.i18n.t('reviseReply');
       cardRefs.guideInput.value = '';
       lastContext = null;
+      lastBody = '';
+      lastClosing = '';
       setStatus(RP.i18n.t('statusReady'), 'ready');
     }
   }

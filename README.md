@@ -1,11 +1,11 @@
 <div align="center">
   <img src="icons/icon128.png" alt="ReplyPilot Logo" width="128" height="128">
   <h1>ReplyPilot for Gmail</h1>
-  <p><strong>Gmail 中的 AI 邮件回复助手 · AI-Powered Gmail Reply Assistant</strong></p>
-  <p>读取当前邮件上下文，生成可直接使用的回复草稿</p>
+  <p><strong>AI 驱动的 Gmail 智能邮件回复助手 · AI-Powered Gmail Reply Assistant</strong></p>
+  <p>读懂来信上下文，一键生成得体的回复草稿</p>
 
   <p>
-    <a href="https://chromewebstore.google.com/detail/replypilot-for-gmail/aeeapbjpefjokopgbklkalmonchijdfk">
+    <a href="https://chromewebstore.google.com/detail/replypilot-for-gmail/aeeapbjpefjokopgbklkalmonchijdfk?authuser=0&hl=zh-CN">
       <img src="https://img.shields.io/badge/Chrome%20Web%20Store-ReplyPilot-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Chrome Web Store">
     </a>
     <a href="LICENSE">
@@ -19,9 +19,9 @@
 
 ## 📖 简介 · Overview
 
-**ReplyPilot** 是一个 Manifest V3 Chrome 扩展，面向 **Gmail Web**。它读取当前打开的邮件内容，可在浮窗中输入回复要求（如「委婉拒绝，简洁即可」）或点击关键词快捷填入，由 AI 模型（支持 SiliconFlow / OpenAI / 自定义端点）生成回复草稿，插入 Gmail 回复框或复制到剪贴板。
+**ReplyPilot** 是一个 Manifest V3 Chrome 扩展，专为 **Gmail Web** 用户设计。它读取当前打开的邮件内容，在浮窗里写一句指导（如「委婉拒绝，简洁即可」），或点一下关键词快捷填入，调用 AI 模型（支持 SiliconFlow / OpenAI / 自定义端点）直接生成一条回复草稿，一键插入到 Gmail 回复框或复制到剪贴板。
 
-> 适用场景：工作往来、客户沟通、合作洽谈与个人邮件等需要快速、得体回复的场合。
+> 适合场景：工作往来、客户沟通、合作洽谈、个人邮件等任何需要快速、得体回复的场合。
 
 ---
 
@@ -29,20 +29,20 @@
 
 | 功能 | 说明 |
 |------|------|
-| 🤖 **AI 生成回复** | 输入回复要求或选择关键词后，生成回复草稿 |
+| 🤖 **AI 智能生成** | 写一句指导（或点关键词），AI 直接生成回复草稿 |
 | 🔌 **多 AI 提供商** | 支持 SiliconFlow、OpenAI 及任意 OpenAI 兼容 API 端点 |
-| 💬 **自然语言指导** | 用一句话说明要求，如「帮我委婉拒绝，简洁即可」 |
-| 🏷️ **关键词快捷填入** | 内置语气/意图关键词（专业、友好、简洁、委婉拒绝、询问更多信息…），点击即可填入指导框，可自定义增删 |
+| 💬 **指导 AI 回复** | 写一句要求即可，如「帮我委婉拒绝，简洁即可」 |
+| 🏷️ **关键词快捷填入** | 内置语气/意图关键词（专业、友好、简洁、委婉拒绝、询问更多信息…），点一下填入指导框，可自定义增删 |
 | 🌐 **多语言回复** | 自动检测或手动指定回复语言（中文/英文/自动） |
 | ✍️ **结束语与署名** | 结束语（如「Best regards」）与署名分开设置；结束语可自定义，也可由 AI 根据语境生成 |
 | 🧠 **AI 记忆** | 可填写身份、背景与风格，AI 自动参考，回复更贴合你的语气 |
-| 📝 **插入回复框** | 生成的回复直接插入 Gmail 回复框，无需复制粘贴 |
-| 📋 **复制到剪贴板** | 也可复制后手动粘贴 |
-| 🔄 **重新生成** | 对结果不满意时可重新生成 |
+| 📝 **一键插入** | 生成的回复直接插入 Gmail 回复框，无需复制粘贴 |
+| 📋 **一键复制** | 也可一键复制到剪贴板，手动粘贴 |
+| 🔄 **重新生成** | 不满意可一键重新生成 |
 | 🗣️ **双语界面** | 支持中文（简体）和英文界面，运行时即时切换 |
 | 🔒 **隐私安全** | API Key 仅存储在本地，绝不记录到日志 |
-| 🖱️ **可拖动卡片** | 浮动卡片可拖动位置，避免遮挡邮件内容 |
-| 📦 **免配置接入** | 完成一次 API 配置后，打开 Gmail 邮件点击回复即自动显示 |
+| 🖱️ **可拖动卡片** | 浮动卡片可任意拖动位置，不遮挡邮件内容 |
+| 📦 **开箱即用** | 安装后打开 Gmail 邮件 → 点击回复 → 自动显示 |
 
 ---
 
@@ -79,7 +79,7 @@
 
 ### Chrome Web Store（推荐）
 
-[![Chrome Web Store](https://img.shields.io/badge/安装-Chrome%20Web%20Store-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/replypilot-for-gmail/aeeapbjpefjokopgbklkalmonchijdfk)
+[![Chrome Web Store](https://img.shields.io/badge/安装-Chrome%20Web%20Store-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/replypilot-for-gmail/aeeapbjpefjokopgbklkalmonchijdfk?authuser=0&hl=zh-CN)
 
 点击上方徽章或访问 Chrome Web Store 直接安装。
 
@@ -125,7 +125,7 @@
 
 1. 打开 [Gmail](https://mail.google.com) 并打开任意一封邮件
 2. 点击 **回复（Reply）** → `✨ ReplyPilot` 浮动卡片自动出现在回复框上方
-3. 在**指导框**输入回复要求（如「帮我委婉拒绝，简洁即可」），或点击**关键词**（内置语气与常用说法）填入
+3. 在**指导框**写一句要求（如「帮我委婉拒绝，简洁即可」），或点**关键词**（内置语气与常用说法）快速填入
 4. 点击 **Generate Reply** → AI 依据指导生成一条回复草稿
 5. 可在文本框内编辑微调
 6. 点击 **Insert Reply** → 文本自动插入 Gmail 回复框
@@ -154,7 +154,7 @@
 | ❓ **Ask more** | 询问更多信息 |
 | ⏭️ **Follow up** | 稍后跟进 |
 
-> 以上关键词均可点击填入指导框，也可在浮窗中自定义增删。
+> 以上关键词均可一键填入指导框，也可在浮窗里自定义增删。
 
 ### AI 提供商
 
@@ -177,10 +177,10 @@
 
 ## 🔒 隐私与安全 · Privacy & Security
 
-- **API Key** 仅存储在 `chrome.storage.local`，不写入日志，也不随其他数据上传
+- **API Key** 仅存储在 `chrome.storage.local`，绝不到处日志或上传
 - 邮件内容**仅发送**到用户选择的 AI 提供商（您配置的 API 端点）
 - **不会**自动发送邮件，所有发送需用户手动确认
-- 日志模块对密钥做脱敏处理，不会记录密钥内容
+- 日志器有显式安全机制，密钥永远不会被记录
 - 扩展**不收集**任何用户数据
 - 远程代码：仅用 `fetch()` 调用用户配置的 AI API，**不使用** `eval` 或其他远程代码执行
 
@@ -219,7 +219,7 @@ ReplyPilot/
 
 ### 技术亮点
 
-- **Manifest V3**：Chrome 当前扩展规范
+- **Manifest V3**：最新的 Chrome 扩展标准
 - **单一全局命名空间 `window.RP`**：多文件内容脚本间通信
 - **容错选择器系统**：20+ 种备选选择器适应 Gmail 频繁的标记变化
 - **结构回退检测**：选择器均失败时自动检测回复框位置
@@ -280,7 +280,7 @@ python3 scripts/package.py
 
 <div align="center">
   <p>
-    <a href="https://chromewebstore.google.com/detail/replypilot-for-gmail/aeeapbjpefjokopgbklkalmonchijdfk">
+    <a href="https://chromewebstore.google.com/detail/replypilot-for-gmail/aeeapbjpefjokopgbklkalmonchijdfk?authuser=0&hl=zh-CN">
       <img src="https://img.shields.io/badge/Chrome%20Web%20Store-立即安装-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="立即安装">
     </a>
   </p>
